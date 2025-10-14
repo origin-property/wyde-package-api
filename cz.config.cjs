@@ -35,13 +35,7 @@ module.exports = {
     },
   ],
 
-  scopes: [
-    { name: 'apps/api' },
-    { name: 'apps/web' },
-    { name: 'docker' },
-    { name: 'pipeline' },
-    { name: 'general' },
-  ],
+  scopes: [{ name: 'docker' }, { name: 'pipeline' }, { name: 'general' }],
 
   usePreparedCommit: false, // to re-use commit from ./.git/COMMIT_EDITMSG
   allowTicketNumber: true,

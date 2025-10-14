@@ -39,6 +39,9 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   lastnameEng: string;
 
+  @Column({ default: 0 })
+  securityCount: number;
+
   @ManyToMany(() => Role, (role) => role.users, {
     cascade: true,
   })

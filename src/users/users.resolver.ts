@@ -29,7 +29,7 @@ export class UsersResolver {
     return this.usersService.findOne({ id });
   }
 
-  @ResolveField(() => [User], { nullable: true })
+  @ResolveField(() => User, { nullable: true })
   async createdBy(
     @Parent() { createdBy }: User,
     @Loader(UserLoader) loader: DataLoader<string, User>,
@@ -37,7 +37,7 @@ export class UsersResolver {
     return createdBy ? loader.load(createdBy) : null;
   }
 
-  @ResolveField(() => [User], { nullable: true })
+  @ResolveField(() => User, { nullable: true })
   async updatedBy(
     @Parent() { updatedBy }: User,
     @Loader(UserLoader) loader: DataLoader<string, User>,
@@ -45,7 +45,7 @@ export class UsersResolver {
     return updatedBy ? loader.load(updatedBy) : null;
   }
 
-  @ResolveField(() => [User], { nullable: true })
+  @ResolveField(() => User, { nullable: true })
   async deletedBy(
     @Parent() { deletedBy }: User,
     @Loader(UserLoader) loader: DataLoader<string, User>,

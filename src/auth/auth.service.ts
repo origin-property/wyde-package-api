@@ -1,3 +1,5 @@
+import { MYORIGIN } from '@/config/data-source.service';
+import { Employee } from '@/database/myorigin/employee.entity';
 import {
   Injectable,
   Logger,
@@ -6,8 +8,10 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { Client } from 'ldapts';
+import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import {
   JwtPayload,
@@ -20,6 +24,9 @@ export class AuthService {
     private configService: ConfigService,
     private usersService: UsersService,
     private jwtService: JwtService,
+
+    @InjectRepository(Employee, MYORIGIN)
+    private employeeRepository: Repository<Employee>,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
@@ -53,6 +60,12 @@ export class AuthService {
   }
 
   async validateRefreshTokenPayload(payload: RefreshTokenPayload) {
+    const user = await this.usersService.findOne({ id: payload.id });
+
+    if (user.securityCount !== payload.securityCount) {
+      return null;
+    }
+
     return this.usersService.findOne({ id: payload.id });
   }
 
@@ -63,10 +76,34 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const user = await this.usersService.findOne({ username });
+    let user = await this.usersService.findOne({ username });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      const newUser = await this.employeeRepository.findOne({
+        where: { user: { username } },
+        relations: ['user'],
+      });
+
+      if (!newUser) {
+        throw new NotFoundException('User not found');
+      }
+
+      /* TODO: create user from employee MyOrigin */
+      const createdUser = await this.usersService.create(
+        {
+          id: newUser.user.id,
+          username: newUser.user.username,
+          employeeId: newUser.employeeId,
+          email: newUser.email,
+          firstnameThai: newUser.firstnameThai,
+          lastnameThai: newUser.lastnameThai,
+          firstnameEng: newUser.firstnameEng,
+          lastnameEng: newUser.lastnameEng,
+        },
+        newUser.user.id,
+      );
+
+      user = createdUser;
     }
 
     return this.genTokenPackage(user.id);
@@ -78,6 +115,7 @@ export class AuthService {
     const tokenData: JwtPayload = {
       id: user.id,
       username: user.username,
+      securityCount: user.securityCount,
     };
 
     const accessExpiresIn = parseInt(
@@ -96,6 +134,7 @@ export class AuthService {
 
     const refreshTokendata: RefreshTokenPayload = {
       id: user.id,
+      securityCount: user.securityCount,
     };
 
     const refreshToken = this.jwtService.sign(refreshTokendata, {
