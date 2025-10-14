@@ -10,25 +10,13 @@ export class File extends Base {
   refId: string;
 
   @Field(() => String)
-  fileId: string;
-
-  @Field(() => String)
-  fileType: string;
-
-  @Field(() => String)
   fileName: string;
-
-  @Field(() => String)
-  fileFolder: string;
 
   @Field(() => String)
   filePath: string;
 
   @Field(() => String)
   fileBucket: string;
-
-  @Field(() => String)
-  fileExtension: string;
 
   @Field(() => Boolean, { defaultValue: true })
   isPublic: boolean;
