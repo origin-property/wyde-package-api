@@ -10,6 +10,17 @@ type Auth {
   user: User!
 }
 
+input CreateFileInput {
+  fileExtension: String
+  fileFolder: String
+  fileId: String
+  fileName: String
+  filePath: String
+  fileType: String
+  isPublic: Boolean = true
+  refId: String
+}
+
 input CreatePackageInput {
   """Example field (placeholder)"""
   exampleField: Int!
@@ -23,13 +34,32 @@ input CreateRoleInput {
 """Date custom scalar type (UTC)"""
 scalar Date
 
+type File {
+  createdAt: Date!
+  deletedAt: Date
+  fileBucket: String!
+  fileExtension: String!
+  fileFolder: String!
+  fileId: String!
+  fileName: String!
+  filePath: String!
+  fileType: String!
+  id: ID!
+  isPublic: Boolean!
+  refId: String!
+  updatedAt: Date!
+}
+
 type Mutation {
+  createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Package!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
+  removeFile(id: ID!): Boolean!
   removePackage(id: Int!): Package!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
+  updateFile(updateFileInput: UpdateFileInput!): File!
   updatePackage(updatePackageInput: UpdatePackageInput!): Package!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
@@ -40,6 +70,8 @@ type Package {
 }
 
 type Query {
+  file(id: ID!): File!
+  files: [File!]!
   package(id: Int!): Package!
   packages: [Package!]!
   role(id: ID!): Role!
@@ -59,6 +91,18 @@ type Role {
   id: ID!
   name: String!
   updatedAt: Date!
+}
+
+input UpdateFileInput {
+  fileExtension: String
+  fileFolder: String
+  fileId: String
+  fileName: String
+  filePath: String
+  fileType: String
+  id: ID!
+  isPublic: Boolean = true
+  refId: String
 }
 
 input UpdatePackageInput {
