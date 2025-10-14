@@ -7,8 +7,7 @@ WORKDIR /app
 COPY package.json bun.lock* ./
 
 ENV CI=true
-RUN --mount=type=cache,target=/root/.bun \
-    bun install --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 COPY . .
 
@@ -23,8 +22,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/bun.lock* ./bun.lock
 
 ENV CI=true NODE_ENV=production
-RUN --mount=type=cache,target=/root/.bun \
-    bun install --production --frozen-lockfile --ignore-scripts
+RUN bun install --production --frozen-lockfile --ignore-scripts
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nestjs
