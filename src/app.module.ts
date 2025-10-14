@@ -11,12 +11,16 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MYORIGIN, TypeOrmConfigService } from './config/data-source.service';
 import { PackagesModule } from './packages/packages.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     DataloaderModule,
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      useClass: TypeOrmConfigService,
     }),
     TypeOrmModule.forRootAsync({
       name: MYORIGIN,
@@ -51,6 +55,7 @@ import { PackagesModule } from './packages/packages.module';
     }),
     PackagesModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

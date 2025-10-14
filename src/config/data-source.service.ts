@@ -63,25 +63,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           subscribers: [
             join(__dirname, '../database/subscribers/**/*.subscriber{.ts,.js}'),
           ],
-          // extra: {
-          //   timezone: 'UTC',
-          // },
-          cache: {
-            type: 'redis',
-            duration: 30000, // 30 seconds
-            options: {
-              socket: {
-                host: this.configService.get<string>('REDIS_HOST', 'localhost'),
-                port: this.configService.get<number>('REDIS_PORT', 6379),
-                password: this.configService.get<string>('REDIS_PASSWORD'),
-                username: this.configService.get<string>(
-                  'REDIS_USERNAME',
-                  'default',
-                ),
-              },
-            },
-          },
-          poolSize: 5,
         };
     }
   }

@@ -7,6 +7,11 @@ input CreatePackageInput {
   exampleField: Int!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Mutation {
   createPackage(createPackageInput: CreatePackageInput!): Package!
   removePackage(id: Int!): Package!
@@ -21,10 +26,33 @@ type Package {
 type Query {
   package(id: Int!): Package!
   packages: [Package!]!
+
+  """ข้อมูลผู้ใช้งานตามรหัสผู้ใช้งาน"""
+  user(id: ID!): User!
+
+  """ข้อมูลผู้ใช้งานทั้งหมด"""
+  users: [User!]!
 }
 
 input UpdatePackageInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!
+}
+
+type User {
+  createdAt: DateTime!
+  createdBy: String
+  deletedAt: DateTime
+  deletedBy: String
+  email: String!
+  employeeId: String!
+  firstnameEng: String
+  firstnameThai: String
+  id: ID!
+  lastnameEng: String
+  lastnameThai: String
+  updatedAt: DateTime!
+  updatedBy: String
+  username: String!
 }
