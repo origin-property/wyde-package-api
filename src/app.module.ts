@@ -19,6 +19,7 @@ import { RolesModule } from './roles/roles.module';
 import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     RolesModule,
     UploadModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
