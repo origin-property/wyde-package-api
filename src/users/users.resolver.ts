@@ -12,7 +12,7 @@ import { User } from './entities/user.entity';
 import { UserLoader } from './users.loader';
 import { UsersService } from './users.service';
 
-@Resolver()
+@Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 

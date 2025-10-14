@@ -42,9 +42,9 @@ input UpdatePackageInput {
 
 type User {
   createdAt: DateTime!
-  createdBy: String
+  createdBy: [User!]
   deletedAt: DateTime
-  deletedBy: String
+  deletedBy: [User!]
   email: String!
   employeeId: String!
   firstnameEng: String
@@ -53,6 +53,6 @@ type User {
   lastnameEng: String
   lastnameThai: String
   updatedAt: DateTime!
-  updatedBy: String
+  updatedBy: [User!]
   username: String!
 }
