@@ -5,6 +5,7 @@ import { join } from 'node:path';
 
 import 'dotenv/config';
 
+export const CRM = 'CRM';
 export const MYORIGIN = 'MYORIGIN';
 
 @Injectable()
@@ -43,17 +44,32 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           },
         };
 
+      case CRM:
+        return {
+          ...baseConfig,
+          name: connectionName,
+          type: 'mssql',
+          host: this.configService.get<string>('DB_CRM_HOST'),
+          port: parseInt(this.configService.get<string>('DB_CRM_PORT'), 10),
+          username: this.configService.get<string>('DB_CRM_USERNAME'),
+          password: this.configService.get<string>('DB_CRM_PASSWORD'),
+          database: this.configService.get<string>('DB_CRM_NAME'),
+          entities: [join(__dirname, '../database/crm/**/*{.ts,.js}')],
+          logging: ['error'],
+          options: {
+            encrypt: false,
+            trustServerCertificate: true,
+          },
+        };
+
       default:
         return {
           type: 'postgres',
-          host: this.configService.get<string>('DB_HOMECARE_HOST'),
-          username: this.configService.get<string>('DB_HOMECARE_USERNAME'),
-          password: this.configService.get<string>('DB_HOMECARE_PASSWORD'),
-          database: this.configService.get<string>('DB_HOMECARE_NAME'),
-          port: parseInt(
-            this.configService.get<string>('DB_HOMECARE_PORT'),
-            10,
-          ),
+          host: this.configService.get<string>('DB_WYDE_HOST'),
+          username: this.configService.get<string>('DB_WYDE_USERNAME'),
+          password: this.configService.get<string>('DB_WYDE_PASSWORD'),
+          database: this.configService.get<string>('DB_WYDE_NAME'),
+          port: parseInt(this.configService.get<string>('DB_WYDE_PORT'), 10),
           synchronize: false,
           logging: ['error'],
           entities: [
