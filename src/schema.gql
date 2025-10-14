@@ -2,6 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Auth {
+  accessToken: String!
+  accessTokenExpires: Int!
+  refreshToken: String!
+  refreshTokenExpires: Int!
+  user: User!
+}
+
 input CreatePackageInput {
   """Example field (placeholder)"""
   exampleField: Int!
@@ -14,7 +22,9 @@ scalar DateTime
 
 type Mutation {
   createPackage(createPackageInput: CreatePackageInput!): Package!
+  refreshToken: Auth!
   removePackage(id: Int!): Package!
+  signIn(password: String!, username: String!): Auth!
   updatePackage(updatePackageInput: UpdatePackageInput!): Package!
 }
 
@@ -42,9 +52,9 @@ input UpdatePackageInput {
 
 type User {
   createdAt: DateTime!
-  createdBy: [User!]
+  createdBy: User
   deletedAt: DateTime
-  deletedBy: [User!]
+  deletedBy: User
   email: String!
   employeeId: String!
   firstnameEng: String
@@ -53,6 +63,6 @@ type User {
   lastnameEng: String
   lastnameThai: String
   updatedAt: DateTime!
-  updatedBy: [User!]
+  updatedBy: User
   username: String!
 }

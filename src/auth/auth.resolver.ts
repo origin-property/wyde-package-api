@@ -1,0 +1,26 @@
+import { CurrentUser } from '@/shared/decorators/decorators';
+import { User } from '@/users/entities/user.entity';
+import { UseGuards } from '@nestjs/common';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { AuthService } from './auth.service';
+import { Auth } from './entities/auth.entity';
+import { GqlRefreshAuthGuard } from './guard/gql-refresh-auth.guard';
+
+@Resolver(() => Auth)
+export class AuthResolver {
+  constructor(private readonly authService: AuthService) {}
+
+  @Mutation(() => Auth)
+  async signIn(
+    @Args('username') username: string,
+    @Args('password') password: string,
+  ) {
+    return this.authService.signIn(username, password);
+  }
+
+  @UseGuards(GqlRefreshAuthGuard)
+  @Mutation(() => Auth)
+  async refreshToken(@CurrentUser() user: User) {
+    return this.authService.genTokenPackage(user.id);
+  }
+}

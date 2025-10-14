@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keyBy } from 'lodash';
 import { FindOptionsWhere, In, Repository } from 'typeorm';
+import { CreateUserInput } from './dto/create-user.input';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,19 @@ export class UsersService {
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
   ) {}
+
+  async create(
+    createUserInput: CreateUserInput,
+    userId: string,
+  ): Promise<User> {
+    const user = this.userRepository.create({
+      ...createUserInput,
+      createdBy: userId,
+      updatedBy: userId,
+    });
+
+    return this.userRepository.save(user);
+  }
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find();
