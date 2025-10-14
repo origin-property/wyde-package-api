@@ -11,12 +11,8 @@ type Auth {
 }
 
 input CreateFileInput {
-  fileExtension: String
-  fileFolder: String
-  fileId: String
   fileName: String
   filePath: String
-  fileType: String
   isPublic: Boolean = true
   refId: String
 }
@@ -38,12 +34,8 @@ type File {
   createdAt: Date!
   deletedAt: Date
   fileBucket: String!
-  fileExtension: String!
-  fileFolder: String!
-  fileId: String!
   fileName: String!
   filePath: String!
-  fileType: String!
   id: ID!
   isPublic: Boolean!
   refId: String!
@@ -94,12 +86,8 @@ type Role {
 }
 
 input UpdateFileInput {
-  fileExtension: String
-  fileFolder: String
-  fileId: String
   fileName: String
   filePath: String
-  fileType: String
   id: ID!
   isPublic: Boolean = true
   refId: String
