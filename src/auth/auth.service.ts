@@ -122,16 +122,16 @@ export class AuthService {
     };
 
     const accessExpiresIn = parseInt(
-      this.configService.get<string>('TOKEN_LIFE'),
+      this.configService.getOrThrow<string>('TOKEN_LIFE'),
       10,
     );
     const refreshExpiresIn = parseInt(
-      this.configService.get<string>('REFRESH_TOKEN_LIFE'),
+      this.configService.getOrThrow<string>('REFRESH_TOKEN_LIFE'),
       10,
     );
 
     const accessToken = this.jwtService.sign(tokenData, {
-      secret: this.configService.get<string>('TOKEN_SECRET'),
+      secret: this.configService.getOrThrow<string>('TOKEN_SECRET'),
       expiresIn: accessExpiresIn,
     });
 
@@ -141,7 +141,7 @@ export class AuthService {
     };
 
     const refreshToken = this.jwtService.sign(refreshTokendata, {
-      secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+      secret: this.configService.getOrThrow<string>('REFRESH_TOKEN_SECRET'),
       expiresIn: refreshExpiresIn,
     });
 
