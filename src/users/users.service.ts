@@ -33,7 +33,7 @@ export class UsersService {
   }
 
   async findOne(where: FindOptionsWhere<User>): Promise<User> {
-    return this.userRepository.findOne({ where });
+    return this.userRepository.findOne({ where, relations: ['roles'] });
   }
 
   async getUserWithIds(ids: readonly string[]): Promise<User[]> {

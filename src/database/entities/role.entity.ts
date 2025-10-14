@@ -1,10 +1,16 @@
-import { Column, Entity, ManyToMany, PrimaryColumn, Relation } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  Relation,
+} from 'typeorm';
 import { BaseEntity } from './base';
 import { User } from './user.entity';
 
 @Entity()
 export class Role extends BaseEntity {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ unique: true })
