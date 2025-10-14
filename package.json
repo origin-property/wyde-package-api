@@ -25,7 +25,7 @@
     "db:create": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:create",
     "db:drop": "ts-node ./node_modules/typeorm-extension/dist/cli/index.js db:drop",
     "seed": "ts-node -P tsconfig-seed.json ./node_modules/typeorm-extension/bin/cli.cjs seed:run -d ./data-source.seed.ts",
-    "prepare": "node .husky/install.mjs",
+    "prepare": "if [ \"$CI\" != \"true\" ]; then node .husky/install.mjs; fi",
     "commit": "cz"
   },
   "dependencies": {
