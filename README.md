@@ -97,3 +97,55 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+## Commitizen
+
+```bash
+$ pnpm run commit
+```
+
+## Environment Variables
+
+```bash
+TZ=Asia/Bangkok
+APP_PORT=4000
+
+TOKEN_SECRET=wyde-package
+TOKEN_LIFE=604800
+REFRESH_TOKEN_SECRET=wyde-package-refresh
+REFRESH_TOKEN_LIFE=604800
+
+GOD_PASSWORD=
+
+AD_URL=
+AD_BASE_DN=
+
+DB_WYDE_HOST=
+DB_WYDE_PORT=
+DB_WYDE_USERNAME=
+DB_WYDE_PASSWORD=
+DB_WYDE_NAME=
+
+DB_MYORIGIN_HOST=
+DB_MYORIGIN_PORT=
+DB_MYORIGIN_USERNAME=
+DB_MYORIGIN_PASSWORD=
+DB_MYORIGIN_NAME=
+
+DB_CRM_HOST=
+DB_CRM_NAME=
+DB_CRM_USERNAME=
+DB_CRM_PASSWORD=
+DB_CRM_PORT=
+
+REDIS_HOST=
+REDIS_PORT=
+REDIS_DEFAULT_TTL=
+REDIS_USERNAME=
+REDIS_PASSWORD=
+
+AWS_REGION=
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_S3_BUCKET=
+```

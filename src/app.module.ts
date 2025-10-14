@@ -10,6 +10,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { MYORIGIN, TypeOrmConfigService } from './config/data-source.service';
+import { HealthModule } from './health/health.module';
 import { PackagesModule } from './packages/packages.module';
 import { UsersModule } from './users/users.module';
 
@@ -26,6 +27,10 @@ import { UsersModule } from './users/users.module';
       name: MYORIGIN,
       useClass: TypeOrmConfigService,
     }),
+    // TypeOrmModule.forRootAsync({
+    //   name: CRM,
+    //   useClass: TypeOrmConfigService,
+    // }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       imports: [ConfigModule],
       driver: ApolloDriver,
@@ -53,6 +58,7 @@ import { UsersModule } from './users/users.module';
       }),
       inject: [ConfigService],
     }),
+    HealthModule,
     PackagesModule,
     AuthModule,
     UsersModule,
