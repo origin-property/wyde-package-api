@@ -28,14 +28,18 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           ...baseConfig,
           name: connectionName,
           type: 'mssql',
-          host: this.configService.get<string>('DB_MYORIGIN_HOST'),
+          host: this.configService.getOrThrow<string>('DB_MYORIGIN_HOST'),
           port: parseInt(
-            this.configService.get<string>('DB_MYORIGIN_PORT'),
+            this.configService.getOrThrow<string>('DB_MYORIGIN_PORT'),
             10,
           ),
-          username: this.configService.get<string>('DB_MYORIGIN_USERNAME'),
-          password: this.configService.get<string>('DB_MYORIGIN_PASSWORD'),
-          database: this.configService.get<string>('DB_MYORIGIN_NAME'),
+          username: this.configService.getOrThrow<string>(
+            'DB_MYORIGIN_USERNAME',
+          ),
+          password: this.configService.getOrThrow<string>(
+            'DB_MYORIGIN_PASSWORD',
+          ),
+          database: this.configService.getOrThrow<string>('DB_MYORIGIN_NAME'),
           entities: [join(__dirname, '../database/myorigin/**/*{.ts,.js}')],
           logging: ['error'],
           options: {
@@ -49,11 +53,14 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
           ...baseConfig,
           name: connectionName,
           type: 'mssql',
-          host: this.configService.get<string>('DB_CRM_HOST'),
-          port: parseInt(this.configService.get<string>('DB_CRM_PORT'), 10),
-          username: this.configService.get<string>('DB_CRM_USERNAME'),
-          password: this.configService.get<string>('DB_CRM_PASSWORD'),
-          database: this.configService.get<string>('DB_CRM_NAME'),
+          host: this.configService.getOrThrow<string>('DB_CRM_HOST'),
+          port: parseInt(
+            this.configService.getOrThrow<string>('DB_CRM_PORT'),
+            10,
+          ),
+          username: this.configService.getOrThrow<string>('DB_CRM_USERNAME'),
+          password: this.configService.getOrThrow<string>('DB_CRM_PASSWORD'),
+          database: this.configService.getOrThrow<string>('DB_CRM_NAME'),
           entities: [join(__dirname, '../database/crm/**/*{.ts,.js}')],
           logging: ['error'],
           options: {
@@ -65,11 +72,14 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       default:
         return {
           type: 'postgres',
-          host: this.configService.get<string>('DB_WYDE_HOST'),
-          username: this.configService.get<string>('DB_WYDE_USERNAME'),
-          password: this.configService.get<string>('DB_WYDE_PASSWORD'),
-          database: this.configService.get<string>('DB_WYDE_NAME'),
-          port: parseInt(this.configService.get<string>('DB_WYDE_PORT'), 10),
+          host: this.configService.getOrThrow<string>('DB_WYDE_HOST'),
+          username: this.configService.getOrThrow<string>('DB_WYDE_USERNAME'),
+          password: this.configService.getOrThrow<string>('DB_WYDE_PASSWORD'),
+          database: this.configService.getOrThrow<string>('DB_WYDE_NAME'),
+          port: parseInt(
+            this.configService.getOrThrow<string>('DB_WYDE_PORT'),
+            10,
+          ),
           synchronize: false,
           logging: ['error'],
           entities: [

@@ -15,9 +15,10 @@ import { GqlRolesGuard } from './auth/guard/gql-roles.guard';
 import { MYORIGIN, TypeOrmConfigService } from './config/data-source.service';
 import { HealthModule } from './health/health.module';
 import { PackagesModule } from './packages/packages.module';
-import { DateScalar } from './shared/scalars/date.scalar';
-import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
+import { DateScalar } from './shared/scalars/date.scalar';
+import { UploadModule } from './upload/upload.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -53,10 +54,12 @@ import { RolesModule } from './roles/roles.module';
       useFactory: (configService: ConfigService) => ({
         config: {
           credentials: {
-            accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID'),
-            secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY'),
+            accessKeyId: configService.getOrThrow<string>('AWS_ACCESS_KEY_ID'),
+            secretAccessKey: configService.getOrThrow<string>(
+              'AWS_SECRET_ACCESS_KEY',
+            ),
           },
-          region: configService.get<string>('AWS_REGION'),
+          region: configService.getOrThrow<string>('AWS_REGION'),
           forcePathStyle: true,
           signatureVersion: 'v4',
         },
@@ -68,6 +71,7 @@ import { RolesModule } from './roles/roles.module';
     AuthModule,
     UsersModule,
     RolesModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

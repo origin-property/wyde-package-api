@@ -42,7 +42,7 @@ export class GqlAuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get<string>('TOKEN_SECRET'),
+        secret: this.configService.getOrThrow<string>('TOKEN_SECRET'),
       });
 
       const user = await this.authService.validateJwtPayload(payload);

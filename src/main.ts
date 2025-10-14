@@ -33,7 +33,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe({ forbidUnknownValues: false }));
 
-  const appConfig = configService.get('APP_PORT') || 4000;
+  const appConfig = configService.getOrThrow<string>('APP_PORT') || 4000;
   await app.listen(appConfig);
 }
 bootstrap();
