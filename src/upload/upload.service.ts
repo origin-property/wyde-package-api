@@ -45,10 +45,8 @@ export class UploadService {
       return {
         fileId,
         fileName,
-        fileFolder,
         filePath,
         fileBucket: this.bucketName,
-        fileExtension: file.mimetype.split('/')[1],
         fileUrl,
       };
     } catch (error) {
