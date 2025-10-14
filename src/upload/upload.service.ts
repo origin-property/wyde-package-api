@@ -1,8 +1,4 @@
-import {
-  GetObjectCommand,
-  PutObjectCommand,
-  PutObjectCommandInput,
-} from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -30,17 +26,17 @@ export class UploadService {
   ) {
     const filePath = `${fileFolder}/${fileName}`;
 
-    const command: PutObjectCommandInput = {
-      Bucket: this.bucketName,
-      Key: filePath,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    };
-
     try {
-      await this.s3Client.send(new PutObjectCommand(command));
+      await this.s3Client.send(
+        new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: filePath,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        }),
+      );
 
-      const fileUrl = await this.getUrl(this.bucketName, filePath);
+      const fileUrl = await this.getSignedUrl(this.bucketName, filePath);
 
       return {
         fileId,
@@ -55,7 +51,7 @@ export class UploadService {
     }
   }
 
-  async getUrl(
+  async getSignedUrl(
     bucket: string = this.bucketName,
     name: string,
   ): Promise<string> {
