@@ -2,16 +2,20 @@ import { Roles } from '@/shared/decorators/roles.decorator';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class GqlRolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(
+    private reflector: Reflector,
+    private authService: AuthService,
+  ) {}
 
   matchRoles(roles: string[], userRoles: string[]): boolean {
     return roles.some((role) => userRoles.includes(role));
   }
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride(Roles, [
       context.getHandler(),
       context.getClass(),
@@ -23,8 +27,11 @@ export class GqlRolesGuard implements CanActivate {
 
     const ctx = GqlExecutionContext.create(context);
     const req = ctx.getContext().req;
-    const roles = req.user?.roles?.map((role) => role.name) || [];
+    const roles = await this.authService.getRoles(req.user.id);
 
-    return this.matchRoles(requiredRoles, roles);
+    return this.matchRoles(
+      requiredRoles,
+      roles.map((role) => role.name),
+    );
   }
 }

@@ -1,6 +1,7 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataloaderModule } from '@tracworx/nestjs-dataloader';
@@ -9,10 +10,14 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
+import { GqlRolesGuard } from './auth/guard/gql-roles.guard';
 import { MYORIGIN, TypeOrmConfigService } from './config/data-source.service';
 import { HealthModule } from './health/health.module';
 import { PackagesModule } from './packages/packages.module';
+import { DateScalar } from './shared/scalars/date.scalar';
 import { UsersModule } from './users/users.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -62,8 +67,20 @@ import { UsersModule } from './users/users.module';
     PackagesModule,
     AuthModule,
     UsersModule,
+    RolesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    DateScalar,
+    {
+      provide: APP_GUARD,
+      useClass: GqlAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: GqlRolesGuard,
+    },
+  ],
 })
 export class AppModule {}

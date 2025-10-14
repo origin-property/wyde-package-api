@@ -1,3 +1,4 @@
+import { Roles } from '@/shared/decorators/roles.decorator';
 import {
   Args,
   ID,
@@ -16,6 +17,7 @@ import { UsersService } from './users.service';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
+  @Roles(['admin'])
   @Query(() => [User], { name: 'users', description: 'ข้อมูลผู้ใช้งานทั้งหมด' })
   async findAll() {
     return this.usersService.findAll();

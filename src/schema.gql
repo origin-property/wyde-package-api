@@ -15,17 +15,23 @@ input CreatePackageInput {
   exampleField: Int!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+input CreateRoleInput {
+  description: String
+  name: String
+}
+
+"""Date custom scalar type (UTC)"""
+scalar Date
 
 type Mutation {
   createPackage(createPackageInput: CreatePackageInput!): Package!
+  createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removePackage(id: Int!): Package!
+  removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updatePackage(updatePackageInput: UpdatePackageInput!): Package!
+  updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
 type Package {
@@ -36,6 +42,8 @@ type Package {
 type Query {
   package(id: Int!): Package!
   packages: [Package!]!
+  role(id: ID!): Role!
+  roles: [Role!]!
 
   """ข้อมูลผู้ใช้งานตามรหัสผู้ใช้งาน"""
   user(id: ID!): User!
@@ -44,16 +52,31 @@ type Query {
   users: [User!]!
 }
 
+type Role {
+  createdAt: Date!
+  deletedAt: Date
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+}
+
 input UpdatePackageInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!
 }
 
+input UpdateRoleInput {
+  description: String
+  id: ID!
+  name: String
+}
+
 type User {
-  createdAt: DateTime!
+  createdAt: Date!
   createdBy: User
-  deletedAt: DateTime
+  deletedAt: Date
   deletedBy: User
   email: String!
   employeeId: String!
@@ -62,7 +85,7 @@ type User {
   id: ID!
   lastnameEng: String
   lastnameThai: String
-  updatedAt: DateTime!
+  updatedAt: Date!
   updatedBy: User
   username: String!
 }

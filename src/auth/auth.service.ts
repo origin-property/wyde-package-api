@@ -1,5 +1,6 @@
 import { MYORIGIN } from '@/config/data-source.service';
 import { Employee } from '@/database/myorigin/employee.entity';
+import { RolesService } from '@/roles/roles.service';
 import {
   Injectable,
   Logger,
@@ -21,12 +22,14 @@ import {
 @Injectable()
 export class AuthService {
   constructor(
-    private configService: ConfigService,
-    private usersService: UsersService,
-    private jwtService: JwtService,
-
     @InjectRepository(Employee, MYORIGIN)
     private employeeRepository: Repository<Employee>,
+
+    private configService: ConfigService,
+    private jwtService: JwtService,
+
+    private usersService: UsersService,
+    private rolesService: RolesService,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
@@ -152,5 +155,13 @@ export class AuthService {
       refreshTokenExpires,
       user,
     };
+  }
+
+  async getRoles(userId: string) {
+    const user = await this.usersService.findOne({ id: userId });
+    if (!user) {
+      return [];
+    }
+    return user.roles;
   }
 }
