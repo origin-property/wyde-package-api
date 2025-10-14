@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreatePackageInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Mutation {
+  createPackage(createPackageInput: CreatePackageInput!): Package!
+  removePackage(id: Int!): Package!
+  updatePackage(updatePackageInput: UpdatePackageInput!): Package!
+}
+
+type Package {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Query {
+  package(id: Int!): Package!
+  packages: [Package!]!
+}
+
+input UpdatePackageInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}

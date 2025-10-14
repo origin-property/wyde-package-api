@@ -1,0 +1,88 @@
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
+import { join } from 'node:path';
+
+import 'dotenv/config';
+
+export const MYORIGIN = 'MYORIGIN';
+
+@Injectable()
+export class TypeOrmConfigService implements TypeOrmOptionsFactory {
+  constructor(private configService: ConfigService) {}
+
+  createTypeOrmOptions(connectionName?: string): TypeOrmModuleOptions {
+    const baseConfig: TypeOrmModuleOptions = {
+      synchronize: false,
+      requestTimeout: 300000,
+      pool: {
+        min: 1,
+        max: 1,
+      },
+    };
+
+    switch (connectionName) {
+      case MYORIGIN:
+        return {
+          ...baseConfig,
+          name: connectionName,
+          type: 'mssql',
+          host: this.configService.get<string>('DB_MYORIGIN_HOST'),
+          port: parseInt(
+            this.configService.get<string>('DB_MYORIGIN_PORT'),
+            10,
+          ),
+          username: this.configService.get<string>('DB_MYORIGIN_USERNAME'),
+          password: this.configService.get<string>('DB_MYORIGIN_PASSWORD'),
+          database: this.configService.get<string>('DB_MYORIGIN_NAME'),
+          entities: [join(__dirname, '../database/myorigin/**/*{.ts,.js}')],
+          logging: ['error'],
+          options: {
+            encrypt: false,
+            trustServerCertificate: true,
+          },
+        };
+
+      default:
+        return {
+          type: 'postgres',
+          host: this.configService.get<string>('DB_HOMECARE_HOST'),
+          username: this.configService.get<string>('DB_HOMECARE_USERNAME'),
+          password: this.configService.get<string>('DB_HOMECARE_PASSWORD'),
+          database: this.configService.get<string>('DB_HOMECARE_NAME'),
+          port: parseInt(
+            this.configService.get<string>('DB_HOMECARE_PORT'),
+            10,
+          ),
+          synchronize: false,
+          logging: ['error'],
+          entities: [
+            join(__dirname, '../database/entities/**/*.entity{.ts,.js}'),
+          ],
+          migrations: [join(__dirname, '../database/migrations/**/*{.ts,.js}')],
+          subscribers: [
+            join(__dirname, '../database/subscribers/**/*.subscriber{.ts,.js}'),
+          ],
+          // extra: {
+          //   timezone: 'UTC',
+          // },
+          cache: {
+            type: 'redis',
+            duration: 30000, // 30 seconds
+            options: {
+              socket: {
+                host: this.configService.get<string>('REDIS_HOST', 'localhost'),
+                port: this.configService.get<number>('REDIS_PORT', 6379),
+                password: this.configService.get<string>('REDIS_PASSWORD'),
+                username: this.configService.get<string>(
+                  'REDIS_USERNAME',
+                  'default',
+                ),
+              },
+            },
+          },
+          poolSize: 5,
+        };
+    }
+  }
+}
