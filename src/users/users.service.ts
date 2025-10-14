@@ -1,6 +1,5 @@
-import { Role } from '@/database/entities/role.entity';
 import { User } from '@/database/entities/user.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keyBy } from 'lodash';
 import { FindOptionsWhere, In, Repository } from 'typeorm';
@@ -11,9 +10,9 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Role)
-    private roleRepository: Repository<Role>,
   ) {}
+
+  private readonly logger = new Logger(UsersService.name);
 
   async create(
     createUserInput: CreateUserInput,

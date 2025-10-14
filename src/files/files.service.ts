@@ -1,5 +1,5 @@
 import { File } from '@/database/entities/file.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
 import { groupBy, keyBy } from 'lodash';
@@ -13,6 +13,8 @@ export class FilesService {
     @InjectRepository(File)
     private fileRepository: Repository<File>,
   ) {}
+
+  private readonly logger = new Logger(FilesService.name);
 
   async create(createFileInput: CreateFileInput, userId: string) {
     return this.fileRepository.save({

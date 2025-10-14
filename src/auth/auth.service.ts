@@ -1,6 +1,5 @@
 import { MYORIGIN } from '@/config/data-source.service';
 import { Employee } from '@/database/myorigin/employee.entity';
-import { RolesService } from '@/roles/roles.service';
 import {
   Injectable,
   Logger,
@@ -29,7 +28,6 @@ export class AuthService {
     private jwtService: JwtService,
 
     private usersService: UsersService,
-    private rolesService: RolesService,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);

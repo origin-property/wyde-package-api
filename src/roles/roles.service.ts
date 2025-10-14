@@ -1,5 +1,5 @@
 import { Role } from '@/database/entities/role.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
 import { Repository } from 'typeorm';
@@ -12,6 +12,8 @@ export class RolesService {
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
   ) {}
+
+  private readonly logger = new Logger(RolesService.name);
 
   async create(createRoleInput: CreateRoleInput) {
     return this.roleRepository.save(createRoleInput);
