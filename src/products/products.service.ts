@@ -1,18 +1,18 @@
+import { Category } from '@/database/entities/category.entity';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import dayjs from 'dayjs';
+import { GraphQLError } from 'graphql';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import { ProductOptionValue } from '../database/entities/product-option-value.entity';
+import { ProductOption } from '../database/entities/product-option.entity';
+import { ProductType } from '../database/entities/product-type.entity';
+import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
+import { ProductVariant } from '../database/entities/product-variant.entity';
+import { Product } from '../database/entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
-import { Product } from '../database/entities/product.entity';
-import { ProductOption } from '../database/entities/product-option.entity';
-import { ProductOptionValue } from '../database/entities/product-option-value.entity';
-import { ProductVariant } from '../database/entities/product-variant.entity';
-import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
-import { ProductType } from '../database/entities/product-type.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { GraphQLError } from 'graphql';
-import { Repository, Like, FindOptionsWhere, In } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-import { Category } from '@/database/entities/category.entity';
-import dayjs from 'dayjs';
 import { ProductVariantModel } from './entities/productVariant.entity';
 
 @Injectable()
@@ -103,7 +103,8 @@ export class ProductsService {
         const variant = this.variantRepository.create({
           product: product,
           sku: generatedSku,
-          price: variantInput.price,
+          budgetPrice: variantInput.budgetPrice,
+          sellingPrice: variantInput.sellingPrice,
           stock: variantInput.stock,
           optionValues: relatedOptionValues,
         });
@@ -418,5 +419,13 @@ export class ProductsService {
     const options = await this.optionRepository.findBy({ id: In([...ids]) });
     const map = new Map(options.map((o) => [o.id, o]));
     return ids.map((id) => map.get(id));
+  }
+
+  async getProductVariantById(
+    ids: readonly string[],
+  ): Promise<ProductVariant[]> {
+    const variants = await this.variantRepository.findBy({ id: In(ids) });
+    const keyData = new Map(variants.map((v) => [v.id, v]));
+    return ids.map((id) => keyData.get(id));
   }
 }

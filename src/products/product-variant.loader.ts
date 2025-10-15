@@ -1,3 +1,4 @@
+import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { DataloaderProvider } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { ProductsService } from './products.service';
@@ -12,6 +13,17 @@ export class ProductByVariantIdLoader {
       const result = await this.productService.findByVariantIds(variantIds);
 
       return result;
+    });
+  }
+}
+
+@DataloaderProvider()
+export class ProductVariantLoader {
+  constructor(private readonly productsService: ProductsService) {}
+
+  createDataloader() {
+    return new DataLoader<string, ProductVariant>(async (variantIds) => {
+      return this.productsService.getProductVariantById(variantIds);
     });
   }
 }

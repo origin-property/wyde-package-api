@@ -27,7 +27,10 @@ export class ProductVariant extends BaseEntity {
   sku: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: number;
+  sellingPrice: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  budgetPrice: number;
 
   @Column({ default: 0 })
   stock: number;

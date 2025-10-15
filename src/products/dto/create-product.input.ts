@@ -58,11 +58,6 @@ class CreateOptionValueInput {
   @IsNotEmpty()
   value: string;
 
-  @Field(() => Float, { nullable: true, defaultValue: 0.0 })
-  @IsNumber()
-  @IsOptional()
-  price: number;
-
   @Field({ nullable: true })
   @IsString()
   @IsOptional()
@@ -87,9 +82,18 @@ export class CreateProductOptionInput {
 // DTO สำหรับสินค้าย่อย (SKU)
 @InputType()
 export class CreateProductVariantInput {
-  @Field(() => Float)
+  @Field(() => Float, { nullable: true, defaultValue: 0.0 })
   @IsNumber()
-  price: number;
+  @IsOptional()
+  @Field(() => Float)
+  budgetPrice: number;
+
+  @Field(() => Float, { nullable: true, defaultValue: 0.0 })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Float)
+  @Field(() => Float)
+  sellingPrice: number;
 
   @Field({ defaultValue: 0 })
   @IsNumber()

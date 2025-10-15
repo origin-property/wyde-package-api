@@ -20,12 +20,13 @@ import {
 import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
 import { PackagesModule } from './packages/packages.module';
+import { ProductsModule } from './products/products.module';
 import { ProjectsModule } from './projects/projects.module';
+import { QuotationsModule } from './quotations/quotations.module';
 import { RolesModule } from './roles/roles.module';
 import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
-import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { ProductsModule } from './products/products.module';
     FilesModule,
     ProductsModule,
     ProjectsModule,
+    QuotationsModule,
     PackagesModule,
   ],
   controllers: [AppController],
