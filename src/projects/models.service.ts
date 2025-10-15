@@ -2,7 +2,7 @@ import { CRM } from '@/config/data-source.service';
 import { SysREMProjectModel } from '@/database/crm/SysREMProjectModel.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { keyBy } from 'lodash';
+import { keyBy, uniqBy } from 'lodash';
 import { FindOptionsWhere, IsNull, Repository } from 'typeorm';
 
 @Injectable()
@@ -22,7 +22,9 @@ export class ModelsService {
 
   async getModelWithIds(datas: readonly { id: string; projectId: string }[]) {
     const wheres: FindOptionsWhere<SysREMProjectModel>[] = [];
-    for (const data of datas) {
+    const uniqModelIdsForQuery = uniqBy(datas, ({ id }) => id);
+
+    for (const data of uniqModelIdsForQuery) {
       wheres.push({
         id: data.id,
         projectId: data.projectId,
