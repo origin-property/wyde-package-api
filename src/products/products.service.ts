@@ -331,4 +331,89 @@ export class ProductsService {
       (id) => variants.find((variant) => variant.id === id)?.product ?? null,
     );
   }
+
+  async findTypesByIds(ids: readonly string[]): Promise<ProductType[]> {
+    const types = await this.productTypeRepository.findBy({ id: In([...ids]) });
+    const map = new Map(types.map((t) => [t.id, t]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async findCategoriesByIds(ids: readonly string[]): Promise<Category[]> {
+    const categories = await this.categoryRepository.findBy({
+      id: In([...ids]),
+    });
+    const map = new Map(categories.map((c) => [c.id, c]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async findVariantsByProductIds(
+    productIds: readonly string[],
+  ): Promise<ProductVariant[][]> {
+    const variants = await this.variantRepository.find({
+      where: { productId: In([...productIds]) },
+    });
+    const map = new Map<string, ProductVariant[]>();
+    productIds.forEach((id) => map.set(id, []));
+    variants.forEach((v) => map.get(v.productId).push(v));
+    return productIds.map((id) => map.get(id));
+  }
+
+  async findImagesByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductVariantImage[][]> {
+    const images = await this.imageRepository.find({
+      where: { productVariantId: In([...variantIds]) },
+    });
+    const map = new Map<string, ProductVariantImage[]>();
+    variantIds.forEach((id) => map.set(id, []));
+    images.forEach((img) => map.get(img.productVariantId).push(img));
+    return variantIds.map((id) => map.get(id));
+  }
+
+  async findOptionValuesByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductOptionValue[][]> {
+    const variants = await this.variantRepository.find({
+      where: { id: In([...variantIds]) },
+      relations: { optionValues: true },
+    });
+    const map = new Map(variants.map((v) => [v.id, v.optionValues]));
+    return variantIds.map((id) => map.get(id) || []);
+  }
+
+  async findProductsByIds(ids: readonly string[]): Promise<Product[]> {
+    const products = await this.productRepository.findBy({ id: In([...ids]) });
+    const map = new Map(products.map((p) => [p.id, p]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async findOptionsByProductIds(
+    productIds: readonly string[],
+  ): Promise<ProductOption[][]> {
+    const options = await this.optionRepository.find({
+      where: { productId: In([...productIds]) },
+    });
+    const map = new Map<string, ProductOption[]>();
+    productIds.forEach((id) => map.set(id, []));
+    options.forEach((opt) => map.get(opt.productId).push(opt));
+    return productIds.map((id) => map.get(id));
+  }
+
+  async findOptionValuesByOptionIds(
+    optionIds: readonly string[],
+  ): Promise<ProductOptionValue[][]> {
+    const values = await this.valueRepository.find({
+      where: { productOptionId: In([...optionIds]) },
+    });
+    const map = new Map<string, ProductOptionValue[]>();
+    optionIds.forEach((id) => map.set(id, []));
+    values.forEach((val) => map.get(val.productOptionId).push(val));
+    return optionIds.map((id) => map.get(id));
+  }
+
+  async findOptionsByIds(ids: readonly string[]): Promise<ProductOption[]> {
+    const options = await this.optionRepository.findBy({ id: In([...ids]) });
+    const map = new Map(options.map((o) => [o.id, o]));
+    return ids.map((id) => map.get(id));
+  }
 }
