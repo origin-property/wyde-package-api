@@ -10,6 +10,16 @@ type Auth {
   user: User!
 }
 
+type Category {
+  createdAt: Date!
+  createdBy: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+  updatedBy: String
+}
+
 input CreateFileInput {
   fileName: String
   filePath: String
@@ -33,7 +43,7 @@ input CreateProductInput {
   categoryId: String!
   description: String
   name: String!
-  options: [CreateProductOptionInput!]!
+  options: [CreateProductOptionInput!] = []
 
   """The UUID of the product type"""
   productTypeId: String!
@@ -47,7 +57,7 @@ input CreateProductOptionInput {
 
 input CreateProductVariantInput {
   images: [CreateVariantImageInput!] = []
-  optionValues: [String!]!
+  optionValues: [String!] = []
   price: Float!
   stock: Float! = 0
 }
@@ -80,6 +90,17 @@ type File {
   isPublic: Boolean!
   refId: String!
   updatedAt: Date!
+}
+
+input FindAllProductsInput {
+  """จำนวนรายการต่อหน้า"""
+  limit: Int = 10
+
+  """หน้าปัจจุบัน"""
+  page: Int = 1
+
+  """คำค้นหา"""
+  searchText: String
 }
 
 type Floor {
@@ -128,11 +149,79 @@ type Package {
 }
 
 type Product {
+  category: Category!
+  categoryId: String
   createdAt: Date!
   createdBy: String
   description: String
   id: ID!
   name: String!
+  options: [ProductOption!]!
+  productType: ProductType!
+  productTypeId: String
+  updatedAt: Date!
+  updatedBy: String
+  variants: [ProductVariant!]!
+}
+
+type ProductOption {
+  createdAt: Date!
+  createdBy: String
+  id: ID!
+  name: String!
+  optionValues: [ProductOptionValue!]!
+  product: Product!
+  updatedAt: Date!
+  updatedBy: String
+}
+
+type ProductOptionValue {
+  createdAt: Date!
+  createdBy: String
+  id: ID!
+  image: String
+  price: Float!
+  productOption: ProductOption!
+  updatedAt: Date!
+  updatedBy: String
+  value: String!
+}
+
+type ProductType {
+  createdAt: Date!
+  createdBy: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+  updatedBy: String
+}
+
+type ProductVariant {
+  attributes: [VariantAttribute!]!
+  createdAt: Date!
+  createdBy: String
+  id: ID!
+  images: [ProductVariantImage!]!
+  optionValues: [ProductOptionValue!]!
+  price: Float!
+  product: Product!
+  sku: String!
+  stock: Int!
+  updatedAt: Date!
+  updatedBy: String
+}
+
+type ProductVariantImage {
+  altText: String
+  createdAt: Date!
+  createdBy: String
+  fileCurName: String
+  fileExtension: String
+  filePrevName: String
+  id: ID!
+  isMain: Boolean!
+  sortOrder: Int!
   updatedAt: Date!
   updatedBy: String
 }
@@ -158,7 +247,7 @@ type Query {
   package(id: Int!): Package!
   packages: [Package!]!
   product(id: Int!): Product!
-  products: [Product!]!
+  products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
   role(id: ID!): Role!
@@ -236,4 +325,14 @@ type User {
   updatedAt: Date!
   updatedBy: User
   username: String!
+}
+
+type VariantAttribute {
+  createdAt: Date!
+  createdBy: String
+  id: String!
+  name: String!
+  optionValue: ProductOptionValue!
+  updatedAt: Date!
+  updatedBy: String
 }

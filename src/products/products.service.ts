@@ -9,7 +9,7 @@ import { ProductVariantImage } from '../database/entities/product-variant-image.
 import { ProductType } from '../database/entities/product-type.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, FindOptionsWhere } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Category } from '@/database/entities/category.entity';
 import dayjs from 'dayjs';
@@ -133,37 +133,62 @@ export class ProductsService {
     const month = dayjs().format('MM');
 
     const typePrefix = productType.code.toUpperCase();
-    const datePrefix = `${year}${month}`; // เช่น 2510
-    const skuPrefix = `${typePrefix}-${datePrefix}-`; // เช่น FUR-2510-
+    const datePrefix = `${year}${month}`;
+    const skuPrefix = `${typePrefix}-${datePrefix}-`;
 
-    // 1. ค้นหา SKU ล่าสุดของเดือนนี้
     const lastVariant = await this.variantRepository.findOne({
       where: {
-        sku: Like(`${skuPrefix}%`), // ค้นหา SKU ที่ขึ้นต้นด้วย 'FUR-2510-'
+        sku: Like(`${skuPrefix}%`),
       },
       order: {
-        sku: 'DESC', // เรียงจากมากไปน้อยเพื่อให้เจอตัวล่าสุด
+        sku: 'DESC',
       },
     });
 
     let runningNumber = 1;
     if (lastVariant) {
-      // 2. ถ้าเจอ ให้ดึงเลข running เก่าออกมาแล้ว +1
       const lastRunning = parseInt(lastVariant.sku.split('-')[2], 10);
       runningNumber = lastRunning + 1;
     }
 
-    // 3. แปลงเป็น String 5 หลัก (เช่น 1 -> '00001', 123 -> '00123')
     const nextRunning = runningNumber.toString().padStart(5, '0');
 
-    return `${skuPrefix}${nextRunning}`; // FUR-2510-00001
+    return `${skuPrefix}${nextRunning}`;
   }
 
-  findAll(): Promise<Product[]> {
+  async findAll(searchText?: string, page = 1, limit = 10): Promise<Product[]> {
+    const skip = (page - 1) * limit;
+
+    const wheres: FindOptionsWhere<Product>[] = [];
+
+    if (searchText && searchText.trim() !== '') {
+      const query = `%${searchText.trim()}%`;
+
+      wheres.push(
+        { name: Like(query) },
+        { description: Like(query) },
+        { variants: { sku: Like(query) } },
+        { category: { name: Like(query) } },
+        { productType: { name: Like(query) } },
+      );
+    }
+
     return this.productRepository.find({
+      where: wheres.length > 0 ? wheres : undefined,
+
       relations: {
-        variants: { images: true, optionValues: true },
+        productType: true,
+        category: true,
+        variants: {
+          images: true,
+          optionValues: true,
+        },
       },
+      order: {
+        createdAt: 'DESC', // เรียงจากใหม่ไปเก่าเสมอ
+      },
+      skip: skip, // ข้ามข้อมูลตามหน้า
+      take: limit, // จำกัดจำนวนข้อมูลต่อหน้า
     });
   }
 
