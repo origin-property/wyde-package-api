@@ -64,6 +64,9 @@ type Package {
 type Query {
   file(id: ID!): File!
   files: [File!]!
+
+  """ข้อมูลผู้ใช้งานปัจจุบัน"""
+  me: User!
   package(id: Int!): Package!
   packages: [Package!]!
   role(id: ID!): Role!
