@@ -16,14 +16,11 @@ import { MYORIGIN, TypeOrmConfigService } from './config/data-source.service';
 import { HealthModule } from './health/health.module';
 import { PackagesModule } from './packages/packages.module';
 import { RolesModule } from './roles/roles.module';
-<<<<<<< Updated upstream
 import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
 import { FilesModule } from './files/files.module';
-=======
 import { ProductsModule } from './products/products.module';
->>>>>>> Stashed changes
 
 @Module({
   imports: [
@@ -76,12 +73,9 @@ import { ProductsModule } from './products/products.module';
     AuthModule,
     UsersModule,
     RolesModule,
-<<<<<<< Updated upstream
     UploadModule,
     FilesModule,
-=======
     ProductsModule,
->>>>>>> Stashed changes
   ],
   controllers: [AppController],
   providers: [
