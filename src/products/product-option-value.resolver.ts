@@ -4,6 +4,9 @@ import { ProductOptionValue } from '@/database/entities/product-option-value.ent
 import { ProductOption } from '@/database/entities/product-option.entity';
 import { ProductOptionModel } from './entities/productOption.entity';
 import { ProductOptionValueModel } from './entities/productOptionValue.entity';
+import { Loader } from '@tracworx/nestjs-dataloader';
+import DataLoader from 'dataloader';
+import { OptionByIdLoader } from './dataloaders/option-by-id.loader';
 
 @Resolver(() => ProductOptionValueModel)
 export class ProductOptionValueResolver {
@@ -12,9 +15,8 @@ export class ProductOptionValueResolver {
   @ResolveField('productOption', () => ProductOptionModel)
   getProductOption(
     @Parent() value: ProductOptionValue,
+    @Loader(OptionByIdLoader) loader: DataLoader<string, ProductOption>,
   ): Promise<ProductOption> {
-    return this.dataloadersService.productOptionByIdLoader.load(
-      value.productOptionId,
-    );
+    return loader.load(value.productOptionId);
   }
 }
