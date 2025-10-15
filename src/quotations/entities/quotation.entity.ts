@@ -1,0 +1,29 @@
+import { Base } from '@/shared/@types/base';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+
+@ObjectType()
+export class Quotation extends Base {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Date, { description: 'วันที่ใบเสนอราคา' })
+  date: Date;
+
+  @Field(() => String, { description: 'รหัสใบเสนอราคา' })
+  code: string;
+
+  @Field(() => String, { nullable: true, description: 'ชื่อลูกค้า' })
+  customerFirstName: string;
+
+  @Field(() => String, { nullable: true, description: 'นามสกุลลูกค้า' })
+  customerLastName: string;
+
+  @Field(() => String, { nullable: true, description: 'หมายเลขโทรศัพท์ลูกค้า' })
+  customerPhone: string;
+
+  @Field(() => String, { nullable: true, description: 'อีเมลลูกค้า' })
+  customerEmail: string;
+
+  @Field(() => String, { nullable: true, description: 'ที่อยู่ลูกค้า' })
+  customerAddress: string;
+}

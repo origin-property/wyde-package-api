@@ -26,6 +26,7 @@ import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
+import { QuotationsModule } from './quotations/quotations.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { ProductsModule } from './products/products.module';
     FilesModule,
     ProductsModule,
     ProjectsModule,
+    QuotationsModule,
   ],
   controllers: [AppController],
   providers: [

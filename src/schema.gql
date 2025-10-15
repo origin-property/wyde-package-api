@@ -52,6 +52,49 @@ input CreateProductVariantInput {
   stock: Float! = 0
 }
 
+input CreateQuotationInput {
+  """รหัสใบเสนอราคา"""
+  code: String
+
+  """ที่อยู่ลูกค้า"""
+  customerAddress: String
+
+  """อีเมลลูกค้า"""
+  customerEmail: String
+
+  """ชื่อลูกค้า"""
+  customerFirstName: String
+
+  """นามสกุลลูกค้า"""
+  customerLastName: String
+
+  """หมายเลขโทรศัพท์ลูกค้า"""
+  customerPhone: String
+
+  """วันที่ใบเสนอราคา"""
+  date: Date
+
+  """รายการสินค้า"""
+  items: [CreateQuotationItemInput!]!
+}
+
+input CreateQuotationItemInput {
+  """รหัสสินค้า"""
+  productId: String
+
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
+  """จำนวนสินค้า"""
+  quantity: Int = 0
+
+  """ราคารวม"""
+  totalPrice: Float = 0
+
+  """ราคา/หน่วย"""
+  unitPrice: Float = 0
+}
+
 input CreateRoleInput {
   description: String
   name: String
@@ -111,14 +154,20 @@ type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Package!
   createProduct(createProductInput: CreateProductInput!): Product!
+  createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
+  createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
   removePackage(id: Int!): Package!
+  removeQuotation(id: ID!): Quotation!
+  removeQuotationItem(id: ID!): Boolean!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
   updatePackage(updatePackageInput: UpdatePackageInput!): Package!
+  updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
+  updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
@@ -161,6 +210,10 @@ type Query {
   products: [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
+  quotation(id: ID!): Quotation!
+  quotationItem(id: ID!): QuotationItem!
+  quotationItems: [QuotationItem!]!
+  quotations: [Quotation!]!
   role(id: ID!): Role!
   roles: [Role!]!
   tower(id: ID!): Tower!
@@ -173,6 +226,66 @@ type Query {
 
   """ข้อมูลผู้ใช้งานทั้งหมด"""
   users: [User!]!
+}
+
+type Quotation {
+  """รหัสใบเสนอราคา"""
+  code: String!
+  createdAt: Date!
+  createdBy: User
+
+  """ที่อยู่ลูกค้า"""
+  customerAddress: String
+
+  """อีเมลลูกค้า"""
+  customerEmail: String
+
+  """ชื่อลูกค้า"""
+  customerFirstName: String
+
+  """นามสกุลลูกค้า"""
+  customerLastName: String
+
+  """หมายเลขโทรศัพท์ลูกค้า"""
+  customerPhone: String
+
+  """วันที่ใบเสนอราคา"""
+  date: Date!
+  deletedAt: Date
+  deletedBy: User
+  id: ID!
+  items: [QuotationItem!]!
+  updatedAt: Date!
+  updatedBy: User
+}
+
+type QuotationItem {
+  createdAt: Date!
+  createdBy: User
+  deletedAt: Date
+  deletedBy: User
+  id: ID!
+
+  """รหัสสินค้า"""
+  productId: String
+
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
+  """จำนวนสินค้า"""
+  quantity: Int!
+  quotation: Quotation!
+
+  """รหัสใบเสนอราคา"""
+  quotationId: String
+
+  """ราคารวม"""
+  totalPrice: Float!
+
+  """ราคา/หน่วย"""
+  unitPrice: Float!
+  updatedAt: Date!
+  updatedBy: User
 }
 
 type Role {
@@ -213,6 +326,52 @@ input UpdatePackageInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!
+}
+
+input UpdateQuotationInput {
+  """รหัสใบเสนอราคา"""
+  code: String
+
+  """ที่อยู่ลูกค้า"""
+  customerAddress: String
+
+  """อีเมลลูกค้า"""
+  customerEmail: String
+
+  """ชื่อลูกค้า"""
+  customerFirstName: String
+
+  """นามสกุลลูกค้า"""
+  customerLastName: String
+
+  """หมายเลขโทรศัพท์ลูกค้า"""
+  customerPhone: String
+
+  """วันที่ใบเสนอราคา"""
+  date: Date
+  id: ID!
+
+  """รายการสินค้า"""
+  items: [CreateQuotationItemInput!]
+}
+
+input UpdateQuotationItemInput {
+  id: ID!
+
+  """รหัสสินค้า"""
+  productId: String
+
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
+  """จำนวนสินค้า"""
+  quantity: Int = 0
+
+  """ราคารวม"""
+  totalPrice: Float = 0
+
+  """ราคา/หน่วย"""
+  unitPrice: Float = 0
 }
 
 input UpdateRoleInput {
