@@ -29,7 +29,6 @@ input CreateFileInput {
 
 input CreateOptionValueInput {
   image: String
-  price: Float = 0
   value: String!
 }
 
@@ -61,9 +60,10 @@ input CreateProductOptionInput {
 }
 
 input CreateProductVariantInput {
+  budgetPrice: Float
   images: [CreateVariantImageInput!] = []
   optionValues: [String!] = []
-  price: Float!
+  sellingPrice: Float
   stock: Float! = 0
 }
 
@@ -282,13 +282,14 @@ type ProductType {
 
 type ProductVariant {
   attributes: [VariantAttribute!]!
+  budgetPrice: Float!
   createdAt: Date!
   createdBy: String
   id: ID!
   images: [ProductVariantImage!]!
   optionValues: [ProductOptionValue!]!
-  price: Float!
   product: Product!
+  sellingPrice: Float!
   sku: String!
   stock: Int!
   updatedAt: Date!
