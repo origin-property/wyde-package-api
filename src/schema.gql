@@ -82,6 +82,14 @@ type File {
   updatedAt: Date!
 }
 
+type Floor {
+  id: Int!
+  nameEn: String
+  nameTh: String
+  projectId: String
+  towerId: Int
+}
+
 type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Package!
@@ -112,15 +120,34 @@ type Product {
   updatedBy: String
 }
 
+type Project {
+  id: ID!
+  nameEn: String!
+  nameTh: String!
+  towers: [Tower!]!
+  units: [Unit!]!
+}
+
 type Query {
   file(id: ID!): File!
   files: [File!]!
+  floor(id: ID!): Floor!
+  floors(towerId: Int!): [Floor!]!
+
+  """ข้อมูลผู้ใช้งานปัจจุบัน"""
+  me: User!
   package(id: Int!): Package!
   packages: [Package!]!
   product(id: Int!): Product!
   products: [Product!]!
+  project(id: ID!): Project!
+  projects: [Project!]!
   role(id: ID!): Role!
   roles: [Role!]!
+  tower(id: ID!): Tower!
+  towers(projectId: ID!): [Tower!]!
+  unit(id: ID!): Unit!
+  units(projectId: ID!): [Unit!]!
 
   """ข้อมูลผู้ใช้งานตามรหัสผู้ใช้งาน"""
   user(id: ID!): User!
@@ -136,6 +163,21 @@ type Role {
   id: ID!
   name: String!
   updatedAt: Date!
+}
+
+type Tower {
+  floors: [Floor!]!
+  id: Int!
+  nameEn: String
+  nameTh: String
+  projectId: String
+}
+
+type Unit {
+  houseNumber: String
+  id: ID!
+  projectId: String!
+  unitNumber: String!
 }
 
 input UpdateFileInput {
