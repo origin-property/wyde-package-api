@@ -6,10 +6,12 @@ import {
   Int,
   ResolveField,
   Parent,
+  ID,
 } from '@nestjs/graphql';
 import { ProductsService } from './products.service';
 import { ProductModel } from './entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
+import { UpdateProductInput } from './dto/update-product.input';
 import { FindAllProductsInput } from './dto/find-all-products.input';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { DataloadersService } from './dataloaders/dataloaders.service';
@@ -32,6 +34,29 @@ export class ProductsResolver {
     user: any,
   ) {
     return this.productsService.create(createProductInput, user.id);
+  }
+
+  @Mutation(() => ProductModel)
+  updateProduct(
+    @Args('updateProductInput') updateProductInput: UpdateProductInput,
+    @CurrentUser() user: any,
+  ) {
+    return this.productsService.update(updateProductInput, user.id);
+  }
+
+  @Mutation(() => ProductModel)
+  removeProduct(
+    @Args('id', { type: () => ID }) id: string,
+    @CurrentUser() user: any,
+  ) {
+    return this.productsService.remove(id, user.id);
+  }
+
+  @Query(() => ProductModel, { name: 'productByVariantId' })
+  getProductByVariantId(
+    @Args('variantId', { type: () => ID }) variantId: string,
+  ) {
+    return this.productsService.findByVariantId(variantId);
   }
 
   @Query(() => [ProductModel], { name: 'products' })
