@@ -4,17 +4,18 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  Relation,
 } from 'typeorm';
 import { BaseEntity } from './base';
 import { ProductVariant } from './product-variant.entity';
 
-@Entity({ name: 'product_variant_images' })
+@Entity({ name: 'product_variant_image' })
 export class ProductVariantImage extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'product_variant_id' })
-  productVariantId: number;
+  productVariantId: string;
 
   @Column({ name: 'file_cur_name', length: 255, nullable: true })
   fileCurName: string;
@@ -34,8 +35,13 @@ export class ProductVariantImage extends BaseEntity {
   @Column({ name: 'sort_order', default: 0 })
   sortOrder: number;
 
-  // --- Relationships ---
   @ManyToOne(() => ProductVariant, (variant) => variant.images)
   @JoinColumn({ name: 'product_variant_id' })
-  variant: ProductVariant;
+  variant: Relation<ProductVariant>;
+
+  @Column({ name: 'file_path' })
+  filePath: string;
+
+  @Column({ name: 'file_bucket' })
+  fileBucket: string;
 }

@@ -8,6 +8,7 @@ import {
   IsOptional,
   IsString,
   ValidateNested,
+  IsUUID,
 } from 'class-validator';
 
 // DTO สำหรับรูปภาพ (เป็นส่วนหนึ่งของ Variant)
@@ -27,6 +28,11 @@ class CreateVariantImageInput {
   @IsString()
   @IsNotEmpty()
   fileExtension: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  filePath: string;
 
   @Field({ nullable: true })
   @IsString()
@@ -81,11 +87,6 @@ class CreateProductOptionInput {
 // DTO สำหรับสินค้าย่อย (SKU)
 @InputType()
 class CreateProductVariantInput {
-  @Field()
-  @IsString()
-  @IsNotEmpty()
-  sku: string;
-
   @Field(() => Float)
   @IsNumber()
   price: number;
@@ -134,4 +135,14 @@ export class CreateProductInput {
   @ValidateNested({ each: true })
   @Type(() => CreateProductVariantInput)
   variants: CreateProductVariantInput[];
+
+  @Field(() => String, { description: 'The UUID of the product type' })
+  @IsUUID('4')
+  @IsNotEmpty()
+  productTypeId: string;
+
+  @Field(() => String, { description: 'The UUID of the product category' })
+  @IsUUID('4')
+  @IsNotEmpty()
+  categoryId: string;
 }

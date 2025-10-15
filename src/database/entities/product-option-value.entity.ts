@@ -4,17 +4,18 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  Relation,
 } from 'typeorm';
 import { BaseEntity } from './base';
 import { ProductOption } from './product-option.entity';
 
-@Entity({ name: 'product_option_values' })
+@Entity({ name: 'product_option_value' })
 export class ProductOptionValue extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ name: 'product_option_id' })
-  productOptionId: number;
+  productOptionId: string;
 
   @Column({ length: 100 })
   value: string;
@@ -33,5 +34,5 @@ export class ProductOptionValue extends BaseEntity {
   // --- Relationships ---
   @ManyToOne(() => ProductOption, (option) => option.optionValues)
   @JoinColumn({ name: 'product_option_id' })
-  productOption: ProductOption;
+  productOption: Relation<ProductOption>;
 }

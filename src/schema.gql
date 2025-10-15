@@ -10,18 +10,17 @@ type Auth {
   user: User!
 }
 
-<<<<<<< Updated upstream
 input CreateFileInput {
   fileName: String
   filePath: String
   isPublic: Boolean = true
   refId: String
-=======
+}
+
 input CreateOptionValueInput {
   image: String
   price: Float = 0
   value: String!
->>>>>>> Stashed changes
 }
 
 input CreatePackageInput {
@@ -30,9 +29,14 @@ input CreatePackageInput {
 }
 
 input CreateProductInput {
+  """The UUID of the product category"""
+  categoryId: String!
   description: String
   name: String!
   options: [CreateProductOptionInput!]!
+
+  """The UUID of the product type"""
+  productTypeId: String!
   variants: [CreateProductVariantInput!]!
 }
 
@@ -45,7 +49,6 @@ input CreateProductVariantInput {
   images: [CreateVariantImageInput!] = []
   optionValues: [String!]!
   price: Float!
-  sku: String!
   stock: Float! = 0
 }
 
@@ -58,6 +61,7 @@ input CreateVariantImageInput {
   altText: String
   fileCurName: String!
   fileExtension: String!
+  filePath: String!
   filePrevName: String
   isMain: Boolean! = false
   sortOrder: Float! = 0
@@ -99,8 +103,13 @@ type Package {
 }
 
 type Product {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  createdAt: Date!
+  createdBy: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+  updatedBy: String
 }
 
 type Query {
