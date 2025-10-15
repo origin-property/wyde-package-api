@@ -18,7 +18,7 @@ export class UnitsService {
         { projectId, isDelete: false },
         { projectId, isDelete: IsNull() },
       ],
-      select: ['id', 'unitNumber', 'houseNumber', 'projectId'],
+      select: ['id', 'unitNumber', 'houseNumber', 'projectId', 'modelId'],
     });
   }
 
@@ -32,7 +32,7 @@ export class UnitsService {
         { projectId: In(ids), isDelete: false },
         { projectId: In(ids), isDelete: IsNull() },
       ],
-      select: ['id', 'unitNumber', 'houseNumber', 'projectId'],
+      select: ['id', 'unitNumber', 'houseNumber', 'projectId', 'modelId'],
     });
     const key = groupBy(units, (unit) => unit.projectId);
     return ids.map((id) => key[id] || []);
@@ -41,7 +41,7 @@ export class UnitsService {
   async getUnitWithIds(ids: readonly string[]) {
     const units = await this.unitsRepository.find({
       where: { id: In(ids) },
-      select: ['id', 'unitNumber', 'houseNumber', 'projectId'],
+      select: ['id', 'unitNumber', 'houseNumber', 'projectId', 'modelId'],
     });
     const key = keyBy(units, (unit) => unit.id);
     return ids.map((id) => key[id]);
