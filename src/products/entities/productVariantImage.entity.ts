@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { BaseModel } from './baseModel.entity';
 // import { ProductVariantModel } from './productVariant.entity';
 
@@ -21,6 +21,12 @@ export class ProductVariantImageModel extends BaseModel {
 
   @Field(() => Int)
   sortOrder: number;
+
+  @Field(() => String)
+  filePath: string;
+
+  @Field(() => String)
+  fileBucket: string;
 
   // @Field(() => ProductVariantModel)
   // variant: ProductVariantModel;

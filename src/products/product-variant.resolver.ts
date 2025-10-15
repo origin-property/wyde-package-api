@@ -1,19 +1,19 @@
-import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
-import { ProductVariant } from '@/database/entities/product-variant.entity';
-import { ProductVariantImage } from '@/database/entities/product-variant-image.entity';
 import { ProductOptionValue } from '@/database/entities/product-option-value.entity';
 import { ProductOption } from '@/database/entities/product-option.entity';
-import { ProductVariantModel } from './entities/productVariant.entity';
-import { ProductModel } from './entities/product.entity';
-import { ProductVariantImageModel } from './entities/productVariantImage.entity';
-import { ProductOptionValueModel } from './entities/productOptionValue.entity';
-import { VariantAttributeModel } from './entities/variant-attribute.entity';
+import { ProductVariantImage } from '@/database/entities/product-variant-image.entity';
+import { ProductVariant } from '@/database/entities/product-variant.entity';
+import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { ProductByIdLoader } from './dataloaders/product-by-id.loader';
 import { ImagesByVariantLoader } from './dataloaders/images-by-variant.loader';
-import { OptionValuesByVariantLoader } from './dataloaders/option-values-by-variant.loader';
 import { OptionByIdLoader } from './dataloaders/option-by-id.loader';
+import { OptionValuesByVariantLoader } from './dataloaders/option-values-by-variant.loader';
+import { ProductByIdLoader } from './dataloaders/product-by-id.loader';
+import { ProductModel } from './entities/product.entity';
+import { ProductOptionValueModel } from './entities/productOptionValue.entity';
+import { ProductVariantModel } from './entities/productVariant.entity';
+import { ProductVariantImageModel } from './entities/productVariantImage.entity';
+import { VariantAttributeModel } from './entities/variant-attribute.entity';
 
 @Resolver(() => ProductVariantModel)
 export class ProductVariantResolver {
