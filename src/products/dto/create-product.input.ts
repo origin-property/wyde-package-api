@@ -71,7 +71,7 @@ class CreateOptionValueInput {
 
 // DTO สำหรับตัวเลือก (เช่น "สี", "ขนาด")
 @InputType()
-class CreateProductOptionInput {
+export class CreateProductOptionInput {
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -86,7 +86,7 @@ class CreateProductOptionInput {
 
 // DTO สำหรับสินค้าย่อย (SKU)
 @InputType()
-class CreateProductVariantInput {
+export class CreateProductVariantInput {
   @Field(() => Float)
   @IsNumber()
   price: number;

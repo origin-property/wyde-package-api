@@ -141,9 +141,11 @@ type Mutation {
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
   removePackage(id: String!): Package!
+  removeProduct(id: ID!): Product!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
@@ -269,6 +271,7 @@ type Query {
   package(id: String!): Package!
   packagesByUnit(unitId: String!): [Package!]!
   product(id: Int!): Product!
+  productByVariantId(variantId: ID!): Product!
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
@@ -320,10 +323,33 @@ input UpdateFileInput {
   refId: String
 }
 
+input UpdateProductInput {
+  categoryId: String
+  createOptions: [CreateProductOptionInput!]
+  createVariants: [CreateProductVariantInput!]
+  deleteOptionIds: [ID!]
+  deleteVariantIds: [ID!]
+  description: String
+  id: ID!
+  name: String
+  productTypeId: String
+  updateVariants: [UpdateProductVariantInput!]
+}
+
+input UpdateProductVariantInput {
+  data: UpdateVariantDataInput!
+  id: ID!
+}
+
 input UpdateRoleInput {
   description: String
   id: ID!
   name: String
+}
+
+input UpdateVariantDataInput {
+  price: Float
+  stock: Float
 }
 
 type User {
