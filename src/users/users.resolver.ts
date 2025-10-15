@@ -1,3 +1,4 @@
+import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import {
   Args,
@@ -21,6 +22,11 @@ export class UsersResolver {
   @Query(() => [User], { name: 'users', description: 'ข้อมูลผู้ใช้งานทั้งหมด' })
   async findAll() {
     return this.usersService.findAll();
+  }
+
+  @Query(() => User, { name: 'me', description: 'ข้อมูลผู้ใช้งานปัจจุบัน' })
+  async me(@CurrentUser() user: User) {
+    return user;
   }
 
   @Query(() => User, {
