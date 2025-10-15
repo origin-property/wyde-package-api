@@ -143,6 +143,7 @@ type File {
   fileBucket: String!
   fileName: String!
   filePath: String!
+  fileUrl: String!
   id: ID!
   isPublic: Boolean!
   refId: String
@@ -313,11 +314,16 @@ type ProductVariantImage {
   altText: String
   createdAt: Date!
   createdBy: String
+  fileBucket: String!
   fileCurName: String
   fileExtension: String
+  filePath: String!
   filePrevName: String
+  fileUrl: String!
   id: ID!
   isMain: Boolean!
+  productVariantImage(id: ID!): ProductVariantImage!
+  productVariantImages(productVariantId: String!): [ProductVariantImage!]!
   sortOrder: Int!
   updatedAt: Date!
   updatedBy: String
@@ -390,6 +396,9 @@ type Quotation {
   date: Date!
   deletedAt: Date
   deletedBy: User
+
+  """ลายเซ็นลูกค้า"""
+  file: File
   id: ID!
   items: [QuotationItem!]!
   project: Project!

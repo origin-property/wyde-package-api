@@ -20,6 +20,8 @@ import { ProductTypeLoader } from './dataloaders/product-type.loader';
 import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
 import { ProductOptionValueResolver } from './product-option-value.resolver';
 import { ProductOptionResolver } from './product-option.resolver';
+import { ProductVariantImagesResolver } from './product-variant-images.resolver';
+import { ProductVariantImagesService } from './product-variant-images.service';
 import {
   ProductByVariantIdLoader,
   ProductVariantLoader,
@@ -59,6 +61,8 @@ import { ProductsService } from './products.service';
     OptionsByProductLoader,
     ProductByVariantIdLoader,
     ProductVariantLoader,
+    ProductVariantImagesResolver,
+    ProductVariantImagesService,
   ],
   exports: [ProductsService],
 })

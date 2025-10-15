@@ -1,3 +1,5 @@
+import { File } from '@/files/entities/file.entity';
+import { FileLoader } from '@/files/files.loader';
 import { Project } from '@/projects/entities/project.entity';
 import { Unit } from '@/projects/entities/unit.entity';
 import { ProjectLoader } from '@/projects/projects.loader';
@@ -89,6 +91,14 @@ export class QuotationsResolver {
     @Loader(UnitLoader) loader: DataLoader<string, Unit>,
   ) {
     return loader.load(unitId);
+  }
+
+  @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
+  async file(
+    @Parent() { id }: Quotation,
+    @Loader(FileLoader) loader: DataLoader<string, File>,
+  ) {
+    return loader.load(id);
   }
 
   @ResolveField(() => User, { nullable: true })
