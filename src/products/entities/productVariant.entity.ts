@@ -7,7 +7,10 @@ export class ProductVariantModel extends BaseModel {
   sku: string;
 
   @Field(() => Float)
-  price: number;
+  budgetPrice: number;
+
+  @Field(() => Float)
+  sellingPrice: number;
 
   @Field(() => Int)
   stock: number;
