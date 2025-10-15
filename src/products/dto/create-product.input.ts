@@ -1,0 +1,137 @@
+import { InputType, Field, Float } from '@nestjs/graphql';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+
+// DTO สำหรับรูปภาพ (เป็นส่วนหนึ่งของ Variant)
+@InputType()
+class CreateVariantImageInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  fileCurName: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  filePrevName?: string;
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  fileExtension: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  altText?: string;
+
+  @Field({ defaultValue: false })
+  @IsBoolean()
+  @IsOptional()
+  isMain: boolean;
+
+  @Field({ defaultValue: 0 })
+  @IsNumber()
+  @IsOptional()
+  sortOrder: number;
+}
+
+// DTO สำหรับค่าของตัวเลือก (เช่น "สีแดง", "ขนาด M")
+@InputType()
+class CreateOptionValueInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  value: string;
+
+  @Field(() => Float, { nullable: true, defaultValue: 0.0 })
+  @IsNumber()
+  @IsOptional()
+  price: number;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  image?: string;
+}
+
+// DTO สำหรับตัวเลือก (เช่น "สี", "ขนาด")
+@InputType()
+class CreateProductOptionInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @Field(() => [CreateOptionValueInput])
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOptionValueInput)
+  values: CreateOptionValueInput[];
+}
+
+// DTO สำหรับสินค้าย่อย (SKU)
+@InputType()
+class CreateProductVariantInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  sku: string;
+
+  @Field(() => Float)
+  @IsNumber()
+  price: number;
+
+  @Field({ defaultValue: 0 })
+  @IsNumber()
+  @IsOptional()
+  stock: number;
+
+  // รับเป็น Array ของชื่อ value เช่น ["สีแดง", "ขนาด M"]
+  // Service จะนำชื่อเหล่านี้ไปหา ID อีกครั้ง
+  @Field(() => [String])
+  @IsArray()
+  @IsString({ each: true })
+  optionValues: string[];
+
+  @Field(() => [CreateVariantImageInput], { nullable: true, defaultValue: [] })
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreateVariantImageInput)
+  images: CreateVariantImageInput[];
+}
+
+// DTO หลักสำหรับ Mutation `createProduct`
+@InputType()
+export class CreateProductInput {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @IsOptional()
+  description?: string;
+
+  @Field(() => [CreateProductOptionInput])
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductOptionInput)
+  options: CreateProductOptionInput[];
+
+  @Field(() => [CreateProductVariantInput])
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductVariantInput)
+  variants: CreateProductVariantInput[];
+}

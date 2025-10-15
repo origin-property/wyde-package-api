@@ -10,11 +10,18 @@ type Auth {
   user: User!
 }
 
+<<<<<<< Updated upstream
 input CreateFileInput {
   fileName: String
   filePath: String
   isPublic: Boolean = true
   refId: String
+=======
+input CreateOptionValueInput {
+  image: String
+  price: Float = 0
+  value: String!
+>>>>>>> Stashed changes
 }
 
 input CreatePackageInput {
@@ -22,9 +29,38 @@ input CreatePackageInput {
   exampleField: Int!
 }
 
+input CreateProductInput {
+  description: String
+  name: String!
+  options: [CreateProductOptionInput!]!
+  variants: [CreateProductVariantInput!]!
+}
+
+input CreateProductOptionInput {
+  name: String!
+  values: [CreateOptionValueInput!]!
+}
+
+input CreateProductVariantInput {
+  images: [CreateVariantImageInput!] = []
+  optionValues: [String!]!
+  price: Float!
+  sku: String!
+  stock: Float! = 0
+}
+
 input CreateRoleInput {
   description: String
   name: String
+}
+
+input CreateVariantImageInput {
+  altText: String
+  fileCurName: String!
+  fileExtension: String!
+  filePrevName: String
+  isMain: Boolean! = false
+  sortOrder: Float! = 0
 }
 
 """Date custom scalar type (UTC)"""
@@ -45,6 +81,7 @@ type File {
 type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Package!
+  createProduct(createProductInput: CreateProductInput!): Product!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
@@ -61,11 +98,18 @@ type Package {
   exampleField: Int!
 }
 
+type Product {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   file(id: ID!): File!
   files: [File!]!
   package(id: Int!): Package!
   packages: [Package!]!
+  product(id: Int!): Product!
+  products: [Product!]!
   role(id: ID!): Role!
   roles: [Role!]!
 

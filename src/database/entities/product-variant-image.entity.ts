@@ -1,0 +1,41 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { BaseEntity } from './base';
+import { ProductVariant } from './product-variant.entity';
+
+@Entity({ name: 'product_variant_images' })
+export class ProductVariantImage extends BaseEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ name: 'product_variant_id' })
+  productVariantId: number;
+
+  @Column({ name: 'file_cur_name', length: 255, nullable: true })
+  fileCurName: string;
+
+  @Column({ name: 'file_prev_name', length: 255, nullable: true })
+  filePrevName: string;
+
+  @Column({ name: 'file_extension', length: 10, nullable: true })
+  fileExtension: string;
+
+  @Column({ name: 'alt_text', length: 255, nullable: true })
+  altText: string;
+
+  @Column({ name: 'is_main', default: false })
+  isMain: boolean;
+
+  @Column({ name: 'sort_order', default: 0 })
+  sortOrder: number;
+
+  // --- Relationships ---
+  @ManyToOne(() => ProductVariant, (variant) => variant.images)
+  @JoinColumn({ name: 'product_variant_id' })
+  variant: ProductVariant;
+}
