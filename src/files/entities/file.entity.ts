@@ -6,7 +6,7 @@ export class File extends Base {
   @Field(() => ID)
   id: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   refId: string;
 
   @Field(() => String)

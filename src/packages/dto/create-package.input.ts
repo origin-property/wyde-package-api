@@ -19,6 +19,9 @@ export class PackageItemInput {
 
   @Field()
   specialPrice: number;
+
+  @Field()
+  packageSeq: number;
 }
 
 @InputType()

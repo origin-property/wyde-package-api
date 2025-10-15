@@ -23,6 +23,7 @@ import { OptionsByProductLoader } from './dataloaders/options-by-product.loader'
 import { ProductByIdLoader } from './dataloaders/product-by-id.loader';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataloaderModule } from '@tracworx/nestjs-dataloader';
+import { ProductByVariantIdLoader } from './product-variant.loader';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { DataloaderModule } from '@tracworx/nestjs-dataloader';
     OptionValuesByVariantLoader,
     ProductByIdLoader,
     OptionsByProductLoader,
+    ProductByVariantIdLoader,
   ],
 })
 export class ProductsModule {}
