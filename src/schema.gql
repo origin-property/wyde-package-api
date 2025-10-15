@@ -146,7 +146,7 @@ type File {
   fileUrl: String!
   id: ID!
   isPublic: Boolean!
-  refId: String!
+  refId: String
   updatedAt: Date!
 }
 
@@ -188,14 +188,14 @@ type ModelType {
 
 type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
-  createPackage(createPackageInput: CreatePackageInput!): Package!
+  createPackage(input: CreatePackageInput!): Package!
   createProduct(createProductInput: CreateProductInput!): Product!
   createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
   createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
-  removePackage(id: String!): Package!
+  removePackage(id: String!): Boolean!
   removeProduct(id: ID!): Product!
   removeQuotation(id: ID!): Quotation!
   removeQuotationItem(id: ID!): Boolean!
@@ -213,6 +213,7 @@ type Package {
   id: String!
   images: [File!]!
   isActive: Boolean!
+  items: [PackageItem!]!
   name: String!
   project: Project!
   projectId: String!
@@ -220,7 +221,19 @@ type Package {
   unitId: String!
 }
 
+type PackageItem {
+  id: String!
+  packageSeq: Float!
+  product: ProductVariant!
+  productVariantId: String!
+  quantity: Float!
+  seq: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
 input PackageItemInput {
+  packageSeq: Float!
   productVariantId: String!
   quantity: Float!
   specialPrice: Float!

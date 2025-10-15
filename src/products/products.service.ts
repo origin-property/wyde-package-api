@@ -13,6 +13,7 @@ import { ProductVariant } from '../database/entities/product-variant.entity';
 import { Product } from '../database/entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
+import { ProductVariantModel } from './entities/productVariant.entity';
 
 @Injectable()
 export class ProductsService {
@@ -318,7 +319,9 @@ export class ProductsService {
     return product;
   }
 
-  async findByVariantIds(variantIds: readonly string[]): Promise<Product[]> {
+  async findByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductVariantModel[]> {
     // 1. ค้นหา Variant จาก ID ที่ได้รับมา
     //    พร้อมกับโหลดข้อมูล Product ที่เป็นแม่ของมันมาด้วย (relations: { product: true })
     const variants = await this.variantRepository.find({
@@ -328,8 +331,8 @@ export class ProductsService {
       },
     });
 
-    return variantIds.map(
-      (id) => variants.find((variant) => variant.id === id)?.product ?? null,
+    return variantIds.map((id) =>
+      variants.find((variant) => variant.id === id),
     );
   }
 

@@ -41,6 +41,12 @@ export class PackageItem extends BaseEntity {
   @Column({ name: 'special_price' })
   specialPrice: number;
 
+  @Column({ name: 'seq' })
+  seq: number;
+
+  @Column({ name: 'package_seq' })
+  packageSeq: number;
+
   @Column({
     name: 'type',
     type: 'enum',
