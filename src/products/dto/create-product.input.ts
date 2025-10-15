@@ -71,7 +71,7 @@ class CreateOptionValueInput {
 
 // DTO สำหรับตัวเลือก (เช่น "สี", "ขนาด")
 @InputType()
-class CreateProductOptionInput {
+export class CreateProductOptionInput {
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -86,7 +86,7 @@ class CreateProductOptionInput {
 
 // DTO สำหรับสินค้าย่อย (SKU)
 @InputType()
-class CreateProductVariantInput {
+export class CreateProductVariantInput {
   @Field(() => Float)
   @IsNumber()
   price: number;
@@ -98,9 +98,10 @@ class CreateProductVariantInput {
 
   // รับเป็น Array ของชื่อ value เช่น ["สีแดง", "ขนาด M"]
   // Service จะนำชื่อเหล่านี้ไปหา ID อีกครั้ง
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true, defaultValue: [] })
   @IsArray()
   @IsString({ each: true })
+  @IsOptional()
   optionValues: string[];
 
   @Field(() => [CreateVariantImageInput], { nullable: true, defaultValue: [] })
@@ -124,10 +125,11 @@ export class CreateProductInput {
   @IsOptional()
   description?: string;
 
-  @Field(() => [CreateProductOptionInput])
+  @Field(() => [CreateProductOptionInput], { nullable: true, defaultValue: [] }) // 1. อนุญาตให้เป็น null
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateProductOptionInput)
+  @IsOptional() // 2. ไม่บังคับให้มี key นี้
   options: CreateProductOptionInput[];
 
   @Field(() => [CreateProductVariantInput])

@@ -10,6 +10,16 @@ type Auth {
   user: User!
 }
 
+type Category {
+  createdAt: Date!
+  createdBy: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+  updatedBy: String
+}
+
 input CreateFileInput {
   fileName: String
   filePath: String
@@ -24,8 +34,13 @@ input CreateOptionValueInput {
 }
 
 input CreatePackageInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  description: String
+  images: [CreateFileInput!]!
+  isActive: Boolean!
+  items: [PackageItemInput!]!
+  name: String!
+  projectId: String!
+  unitId: String!
 }
 
 input CreateProductInput {
@@ -33,7 +48,7 @@ input CreateProductInput {
   categoryId: String!
   description: String
   name: String!
-  options: [CreateProductOptionInput!]!
+  options: [CreateProductOptionInput!] = []
 
   """The UUID of the product type"""
   productTypeId: String!
@@ -47,7 +62,7 @@ input CreateProductOptionInput {
 
 input CreateProductVariantInput {
   images: [CreateVariantImageInput!] = []
-  optionValues: [String!]!
+  optionValues: [String!] = []
   price: Float!
   stock: Float! = 0
 }
@@ -125,6 +140,17 @@ type File {
   updatedAt: Date!
 }
 
+input FindAllProductsInput {
+  """จำนวนรายการต่อหน้า"""
+  limit: Int = 10
+
+  """หน้าปัจจุบัน"""
+  page: Int = 1
+
+  """คำค้นหา"""
+  searchText: String
+}
+
 type Floor {
   id: Int!
   nameEn: String
@@ -159,29 +185,117 @@ type Mutation {
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
-  removePackage(id: Int!): Package!
+  removePackage(id: String!): Package!
+  removeProduct(id: ID!): Product!
   removeQuotation(id: ID!): Quotation!
   removeQuotationItem(id: ID!): Boolean!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
-  updatePackage(updatePackageInput: UpdatePackageInput!): Package!
+  updateProduct(updateProductInput: UpdateProductInput!): Product!
   updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
   updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
 type Package {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  description: String
+  id: String!
+  images: [File!]!
+  isActive: Boolean!
+  name: String!
+  project: Project!
+  projectId: String!
+  unit: Unit!
+  unitId: String!
+}
+
+input PackageItemInput {
+  productVariantId: String!
+  quantity: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
+enum PackageItemType {
+  DEFAULT
+  EQUIVALENT
 }
 
 type Product {
+  category: Category!
+  categoryId: String
   createdAt: Date!
   createdBy: String
   description: String
   id: ID!
   name: String!
+  options: [ProductOption!]!
+  productType: ProductType!
+  productTypeId: String
+  updatedAt: Date!
+  updatedBy: String
+  variants: [ProductVariant!]!
+}
+
+type ProductOption {
+  createdAt: Date!
+  createdBy: String
+  id: ID!
+  name: String!
+  optionValues: [ProductOptionValue!]!
+  product: Product!
+  updatedAt: Date!
+  updatedBy: String
+}
+
+type ProductOptionValue {
+  createdAt: Date!
+  createdBy: String
+  id: ID!
+  image: String
+  price: Float!
+  productOption: ProductOption!
+  updatedAt: Date!
+  updatedBy: String
+  value: String!
+}
+
+type ProductType {
+  createdAt: Date!
+  createdBy: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+  updatedBy: String
+}
+
+type ProductVariant {
+  attributes: [VariantAttribute!]!
+  createdAt: Date!
+  createdBy: String
+  id: ID!
+  images: [ProductVariantImage!]!
+  optionValues: [ProductOptionValue!]!
+  price: Float!
+  product: Product!
+  sku: String!
+  stock: Int!
+  updatedAt: Date!
+  updatedBy: String
+}
+
+type ProductVariantImage {
+  altText: String
+  createdAt: Date!
+  createdBy: String
+  fileCurName: String
+  fileExtension: String
+  filePrevName: String
+  id: ID!
+  isMain: Boolean!
+  sortOrder: Int!
   updatedAt: Date!
   updatedBy: String
 }
@@ -204,10 +318,10 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
-  package(id: Int!): Package!
-  packages: [Package!]!
+  package(id: String!): Package!
+  packagesByUnit(unitId: String!): [Package!]!
   product(id: Int!): Product!
-  products: [Product!]!
+  products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
   quotation(id: ID!): Quotation!
@@ -322,10 +436,22 @@ input UpdateFileInput {
   refId: String
 }
 
-input UpdatePackageInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input UpdateProductInput {
+  categoryId: String
+  createOptions: [CreateProductOptionInput!]
+  createVariants: [CreateProductVariantInput!]
+  deleteOptionIds: [ID!]
+  deleteVariantIds: [ID!]
+  description: String
+  id: ID!
+  name: String
+  productTypeId: String
+  updateVariants: [UpdateProductVariantInput!]
+}
+
+input UpdateProductVariantInput {
+  data: UpdateVariantDataInput!
+  id: ID!
 }
 
 input UpdateQuotationInput {
@@ -380,6 +506,11 @@ input UpdateRoleInput {
   name: String
 }
 
+input UpdateVariantDataInput {
+  price: Float
+  stock: Float
+}
+
 type User {
   createdAt: Date!
   createdBy: User
@@ -392,7 +523,18 @@ type User {
   id: ID!
   lastnameEng: String
   lastnameThai: String
+  roles: [Role!]!
   updatedAt: Date!
   updatedBy: User
   username: String!
+}
+
+type VariantAttribute {
+  createdAt: Date!
+  createdBy: String
+  id: String!
+  name: String!
+  optionValue: ProductOptionValue!
+  updatedAt: Date!
+  updatedBy: String
 }
