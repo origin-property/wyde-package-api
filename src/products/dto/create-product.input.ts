@@ -61,7 +61,15 @@ class CreateOptionValueInput {
   @Field(() => Float, { nullable: true, defaultValue: 0.0 })
   @IsNumber()
   @IsOptional()
-  price: number;
+  @Field(() => Float)
+  budgetPrice: number;
+
+  @Field(() => Float, { nullable: true, defaultValue: 0.0 })
+  @IsNumber()
+  @IsOptional()
+  @Field(() => Float)
+  @Field(() => Float)
+  sellingPrice: number;
 
   @Field({ nullable: true })
   @IsString()
