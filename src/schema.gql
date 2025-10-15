@@ -111,6 +111,23 @@ type Floor {
   towerId: Int
 }
 
+type Model {
+  id: String!
+  modelType: ModelType!
+  modelTypeId: String
+  nameEn: String
+  nameTh: String
+  projectId: String
+  shortName: String
+}
+
+type ModelType {
+  code: String
+  id: String!
+  nameEn: String
+  nameTh: String
+}
+
 type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Package!
@@ -225,6 +242,8 @@ type Query {
 
   """ข้อมูลผู้ใช้งานปัจจุบัน"""
   me: User!
+  model(id: ID!): Model!
+  models(projectId: ID!): [Model!]!
   package(id: Int!): Package!
   packages: [Package!]!
   product(id: Int!): Product!
@@ -265,6 +284,8 @@ type Tower {
 type Unit {
   houseNumber: String
   id: ID!
+  model: Model!
+  modelId: String
   projectId: String!
   unitNumber: String!
 }

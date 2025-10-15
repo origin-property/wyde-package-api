@@ -13,4 +13,7 @@ export class Unit {
 
   @Field(() => String)
   projectId: string;
+
+  @Field(() => String, { nullable: true })
+  modelId: string;
 }

@@ -13,6 +13,7 @@ import { BaseEntity } from './base';
 import { Product } from './product.entity';
 import { ProductOptionValue } from './product-option-value.entity';
 import { ProductVariantImage } from './product-variant-image.entity';
+import { PackageItem } from './package-item.entity';
 
 @Entity({ name: 'product_variant' })
 export class ProductVariant extends BaseEntity {
@@ -50,4 +51,7 @@ export class ProductVariant extends BaseEntity {
     },
   })
   optionValues: Relation<ProductOptionValue[]>;
+
+  @OneToMany(() => PackageItem, (item) => item.productVariant)
+  packages: Relation<PackageItem[]>;
 }
