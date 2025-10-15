@@ -1,0 +1,16 @@
+import { ObjectType, Field } from '@nestjs/graphql';
+// import { ProductOptionValueModel } from './productOptionValue.entity';
+import { ProductModel } from './product.entity';
+import { BaseModel } from './baseModel.entity';
+
+@ObjectType('ProductOption')
+export class ProductOptionModel extends BaseModel {
+  @Field()
+  name: string;
+
+  @Field(() => ProductModel)
+  product: ProductModel;
+
+  // @Field(() => [ProductOptionValueModel])
+  // optionValues: ProductOptionValueModel[];
+}

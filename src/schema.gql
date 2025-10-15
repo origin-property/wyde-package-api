@@ -17,14 +17,54 @@ input CreateFileInput {
   refId: String
 }
 
+input CreateOptionValueInput {
+  image: String
+  price: Float = 0
+  value: String!
+}
+
 input CreatePackageInput {
   """Example field (placeholder)"""
   exampleField: Int!
 }
 
+input CreateProductInput {
+  """The UUID of the product category"""
+  categoryId: String!
+  description: String
+  name: String!
+  options: [CreateProductOptionInput!]!
+
+  """The UUID of the product type"""
+  productTypeId: String!
+  variants: [CreateProductVariantInput!]!
+}
+
+input CreateProductOptionInput {
+  name: String!
+  values: [CreateOptionValueInput!]!
+}
+
+input CreateProductVariantInput {
+  images: [CreateVariantImageInput!] = []
+  optionValues: [String!]!
+  price: Float!
+  stock: Float! = 0
+}
+
 input CreateRoleInput {
   description: String
   name: String
+}
+
+input CreateVariantImageInput {
+  altText: String
+  fileCurName: String!
+  fileExtension: String!
+  filePath: String!
+  filePrevName: String
+  isMain: Boolean! = false
+  sortOrder: Float! = 0
 }
 
 """Date custom scalar type (UTC)"""
@@ -53,6 +93,7 @@ type Floor {
 type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Package!
+  createProduct(createProductInput: CreateProductInput!): Product!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
@@ -67,6 +108,16 @@ type Mutation {
 type Package {
   """Example field (placeholder)"""
   exampleField: Int!
+}
+
+type Product {
+  createdAt: Date!
+  createdBy: String
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: Date!
+  updatedBy: String
 }
 
 type Project {
@@ -87,6 +138,8 @@ type Query {
   me: User!
   package(id: Int!): Package!
   packages: [Package!]!
+  product(id: Int!): Product!
+  products: [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
   role(id: ID!): Role!

@@ -12,7 +12,11 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
 import { GqlRolesGuard } from './auth/guard/gql-roles.guard';
-import { CRM, MYORIGIN, TypeOrmConfigService } from './config/data-source.service';
+import {
+  CRM,
+  MYORIGIN,
+  TypeOrmConfigService,
+} from './config/data-source.service';
 import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
 import { PackagesModule } from './packages/packages.module';
@@ -21,6 +25,7 @@ import { RolesModule } from './roles/roles.module';
 import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -75,6 +80,7 @@ import { UsersModule } from './users/users.module';
     RolesModule,
     UploadModule,
     FilesModule,
+    ProductsModule,
     ProjectsModule,
   ],
   controllers: [AppController],
@@ -91,4 +97,4 @@ import { UsersModule } from './users/users.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
