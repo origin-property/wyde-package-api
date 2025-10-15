@@ -91,6 +91,15 @@ input CreateQuotationInput {
 
   """รายการสินค้า"""
   items: [CreateQuotationItemInput!]!
+
+  """รหัสโครงการ"""
+  projectId: String
+
+  """รหัสยูนิต"""
+  unitId: String
+
+  """หมายเลขยูนิต"""
+  unitNumber: String
 }
 
 input CreateQuotationItemInput {
@@ -369,6 +378,17 @@ type Quotation {
   deletedBy: User
   id: ID!
   items: [QuotationItem!]!
+  project: Project!
+
+  """รหัสโครงการ"""
+  projectId: String!
+  unit: Unit!
+
+  """รหัสยูนิต"""
+  unitId: String!
+
+  """หมายเลขยูนิต"""
+  unitNumber: String!
   updatedAt: Date!
   updatedBy: User
 }
@@ -479,6 +499,15 @@ input UpdateQuotationInput {
 
   """รายการสินค้า"""
   items: [CreateQuotationItemInput!]
+
+  """รหัสโครงการ"""
+  projectId: String
+
+  """รหัสยูนิต"""
+  unitId: String
+
+  """หมายเลขยูนิต"""
+  unitNumber: String
 }
 
 input UpdateQuotationItemInput {

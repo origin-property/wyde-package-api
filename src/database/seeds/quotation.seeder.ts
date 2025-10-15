@@ -23,6 +23,9 @@ export default class QuotationSeeder implements Seeder {
         code,
         createdBy: userId,
         updatedBy: userId,
+        projectId: 'PRK04',
+        unitId: 'PRK04AA1007',
+        unitNumber: 'A1007',
         items: [
           {
             productVariantId: '0142c806-61c9-460d-938f-c7b537a11f3d',

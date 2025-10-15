@@ -1,3 +1,7 @@
+import { Project } from '@/projects/entities/project.entity';
+import { Unit } from '@/projects/entities/unit.entity';
+import { ProjectLoader } from '@/projects/projects.loader';
+import { UnitLoader } from '@/projects/units.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { User } from '@/users/entities/user.entity';
@@ -69,6 +73,22 @@ export class QuotationsResolver {
     @Loader(QuotationItemsLoader) loader: DataLoader<string, QuotationItem[]>,
   ) {
     return loader.load(id);
+  }
+
+  @ResolveField(() => Project)
+  async project(
+    @Parent() { projectId }: Quotation,
+    @Loader(ProjectLoader) loader: DataLoader<string, Project>,
+  ) {
+    return loader.load(projectId);
+  }
+
+  @ResolveField(() => Unit)
+  async unit(
+    @Parent() { unitId }: Quotation,
+    @Loader(UnitLoader) loader: DataLoader<string, Unit>,
+  ) {
+    return loader.load(unitId);
   }
 
   @ResolveField(() => User, { nullable: true })

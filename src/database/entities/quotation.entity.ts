@@ -9,26 +9,56 @@ export class Quotation extends BaseEntity {
   })
   id: string;
 
-  @Column({ type: 'timestamptz', default: () => 'now()' })
+  @Column({
+    type: 'timestamptz',
+    default: () => 'now()',
+    comment: 'วันที่ใบเสนอราคา',
+  })
   date: Date;
 
-  @Column({ unique: true })
+  @Column({ unique: true, comment: 'รหัสใบเสนอราคา' })
   code: string;
 
-  @Column({ name: 'customer_first_name', nullable: true })
+  @Column({
+    name: 'customer_first_name',
+    nullable: true,
+    comment: 'ชื่อลูกค้า',
+  })
   customerFirstName: string;
 
-  @Column({ name: 'customer_last_name', nullable: true })
+  @Column({
+    name: 'customer_last_name',
+    nullable: true,
+    comment: 'นามสกุลลูกค้า',
+  })
   customerLastName: string;
 
-  @Column({ name: 'customer_phone', nullable: true })
+  @Column({
+    name: 'customer_phone',
+    nullable: true,
+    comment: 'หมายเลขโทรศัพท์ลูกค้า',
+  })
   customerPhone: string;
 
-  @Column({ name: 'customer_email', nullable: true })
+  @Column({ name: 'customer_email', nullable: true, comment: 'อีเมลลูกค้า' })
   customerEmail: string;
 
-  @Column({ name: 'customer_address', type: 'text', nullable: true })
+  @Column({
+    name: 'customer_address',
+    type: 'text',
+    nullable: true,
+    comment: 'ที่อยู่ลูกค้า',
+  })
   customerAddress: string;
+
+  @Column({ name: 'project_id', comment: 'รหัสโครงการ' })
+  projectId: string;
+
+  @Column({ name: 'unit_id', comment: 'รหัสยูนิต' })
+  unitId: string;
+
+  @Column({ name: 'unit_number', comment: 'หมายเลขยูนิต' })
+  unitNumber: string;
 
   @OneToMany(() => QuotationItem, (item) => item.quotation, {
     cascade: true,

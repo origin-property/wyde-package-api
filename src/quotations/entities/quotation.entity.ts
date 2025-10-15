@@ -26,4 +26,13 @@ export class Quotation extends Base {
 
   @Field(() => String, { nullable: true, description: 'ที่อยู่ลูกค้า' })
   customerAddress: string;
+
+  @Field(() => String, { description: 'รหัสโครงการ' })
+  projectId: string;
+
+  @Field(() => String, { description: 'รหัสยูนิต' })
+  unitId: string;
+
+  @Field(() => String, { description: 'หมายเลขยูนิต' })
+  unitNumber: string;
 }
