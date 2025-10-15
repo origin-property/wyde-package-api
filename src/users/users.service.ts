@@ -32,7 +32,12 @@ export class UsersService {
   }
 
   async findOne(where: FindOptionsWhere<User>): Promise<User> {
-    return this.userRepository.findOne({ where, relations: ['roles'] });
+    const user = await this.userRepository.findOne({
+      where,
+      relations: ['roles'],
+    });
+
+    return user;
   }
 
   async getUserWithIds(ids: readonly string[]): Promise<User[]> {

@@ -1,3 +1,4 @@
+import { Role } from '@/roles/entities/role.entity';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import {
@@ -26,7 +27,7 @@ export class UsersResolver {
 
   @Query(() => User, { name: 'me', description: 'ข้อมูลผู้ใช้งานปัจจุบัน' })
   async me(@CurrentUser() user: User) {
-    return user;
+    return this.usersService.findOne({ id: user.id });
   }
 
   @Query(() => User, {
@@ -59,5 +60,15 @@ export class UsersResolver {
     @Loader(UserLoader) loader: DataLoader<string, User>,
   ) {
     return deletedBy ? loader.load(deletedBy) : null;
+  }
+
+  @ResolveField(() => [Role])
+  async roles(@Parent() user: User) {
+    if (user.roles) {
+      return user.roles;
+    }
+
+    const userWithRoles = await this.usersService.findOne({ id: user.id });
+    return userWithRoles.roles || [];
   }
 }

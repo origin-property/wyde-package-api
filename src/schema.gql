@@ -348,6 +348,7 @@ type User {
   id: ID!
   lastnameEng: String
   lastnameThai: String
+  roles: [Role!]!
   updatedAt: Date!
   updatedBy: User
   username: String!
