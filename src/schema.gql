@@ -400,15 +400,23 @@ type QuotationItem {
   deletedBy: User
   id: ID!
 
+  """สินค้า"""
+  product: Product
+
   """รหัสสินค้า"""
   productId: String
+
+  """รายการสินค้า"""
+  productVariant: ProductVariant!
 
   """รหัสรายการสินค้า"""
   productVariantId: String
 
   """จำนวนสินค้า"""
   quantity: Int!
-  quotation: Quotation!
+
+  """ใบเสนอราคา"""
+  quotation: Quotation
 
   """รหัสใบเสนอราคา"""
   quotationId: String

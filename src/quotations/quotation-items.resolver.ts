@@ -1,3 +1,7 @@
+import { ProductByIdLoader } from '@/products/dataloaders/product-by-id.loader';
+import { ProductModel } from '@/products/entities/product.entity';
+import { ProductVariantModel } from '@/products/entities/productVariant.entity';
+import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
 import { UserLoader } from '@/users/users.loader';
@@ -59,12 +63,31 @@ export class QuotationItemsResolver {
     return this.quotationItemsService.remove(id, user.id);
   }
 
-  @ResolveField(() => Quotation)
+  @ResolveField(() => Quotation, { nullable: true, description: 'ใบเสนอราคา' })
   async quotation(
     @Parent() { quotationId }: QuotationItem,
     @Loader(QuotationLoader) loader: DataLoader<string, Quotation>,
   ) {
     return loader.load(quotationId);
+  }
+
+  @ResolveField(() => ProductModel, { nullable: true, description: 'สินค้า' })
+  async product(
+    @Parent() { productId }: QuotationItem,
+    @Loader(ProductByIdLoader) loader: DataLoader<string, ProductModel>,
+  ) {
+    return productId ? loader.load(productId) : null;
+  }
+
+  @ResolveField(() => ProductVariantModel, {
+    description: 'รายการสินค้า',
+  })
+  async productVariant(
+    @Parent() { productVariantId }: QuotationItem,
+    @Loader(ProductVariantLoader)
+    loader: DataLoader<string, ProductVariantModel>,
+  ) {
+    return loader.load(productVariantId);
   }
 
   @ResolveField(() => User, { nullable: true })
