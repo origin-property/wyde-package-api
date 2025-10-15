@@ -6,19 +6,27 @@ import { groupBy, keyBy } from 'lodash';
 import { In, Repository } from 'typeorm';
 import { CreateFileInput } from './dto/create-file.input';
 import { UpdateFileInput } from './dto/update-file.input';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FilesService {
+  private readonly bucketName: string;
+
   constructor(
     @InjectRepository(File)
     private fileRepository: Repository<File>,
-  ) {}
+
+    private readonly configService: ConfigService,
+  ) {
+    this.bucketName = this.configService.getOrThrow<string>('AWS_S3_BUCKET');
+  }
 
   private readonly logger = new Logger(FilesService.name);
 
   async create(createFileInput: CreateFileInput, userId: string) {
     return this.fileRepository.save({
       ...createFileInput,
+      fileBucket: this.bucketName,
       createdBy: userId,
       updatedBy: userId,
     });

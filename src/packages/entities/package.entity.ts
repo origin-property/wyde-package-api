@@ -38,4 +38,10 @@ export class PackageItem {
 
   @Field(() => PackageItemType)
   type: PackageItemType;
+
+  @Field(() => Number)
+  seq: number;
+
+  @Field(() => Number)
+  packageSeq: number;
 }
