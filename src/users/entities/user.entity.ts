@@ -1,3 +1,4 @@
+import { Role } from '@/roles/entities/role.entity';
 import { Base } from '@/shared/@types/base';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
@@ -26,4 +27,7 @@ export class User extends Base {
 
   @Field(() => String, { nullable: true })
   lastnameEng: string;
+
+  @Field(() => [Role])
+  roles: Role[];
 }
