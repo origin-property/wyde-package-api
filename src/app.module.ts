@@ -82,6 +82,7 @@ import { ProductsModule } from './products/products.module';
     FilesModule,
     ProductsModule,
     ProjectsModule,
+    PackagesModule,
   ],
   controllers: [AppController],
   providers: [

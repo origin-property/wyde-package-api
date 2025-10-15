@@ -11,6 +11,11 @@ import { BaseEntity } from './base';
 import { ProductVariant } from './product-variant.entity';
 import { Package } from './package.entity';
 
+export enum PackageItemType {
+  DEFAULT = 'DEFAULT',
+  EQUIVALENT = 'EQUIVALENT',
+}
+
 @Entity({ name: 'package_item' })
 export class PackageItem extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -35,4 +40,12 @@ export class PackageItem extends BaseEntity {
 
   @Column({ name: 'special_price' })
   specialPrice: number;
+
+  @Column({
+    name: 'type',
+    type: 'enum',
+    enum: PackageItemType,
+    default: PackageItemType.DEFAULT,
+  })
+  type: PackageItemType;
 }
