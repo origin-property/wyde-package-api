@@ -19,6 +19,9 @@ import { ProjectLoader } from '@/projects/projects.loader';
 import { Unit } from '@/projects/entities/unit.entity';
 import { UnitLoader } from '@/projects/units.loader';
 import { Product } from '@/database/entities/product.entity';
+import { ProductByVariantIdLoader } from '@/products/product-variant.loader';
+import { File } from '@/files/entities/file.entity';
+import { FilesLoader } from '@/files/files.loader';
 
 @Resolver(() => Package)
 export class PackagesResolver {
@@ -62,18 +65,26 @@ export class PackagesResolver {
   ) {
     return unitLoader.load(unitId);
   }
+
+  @ResolveField(() => [File])
+  async images(
+    @Parent() { id }: Package,
+    @Loader(FilesLoader) fileLoader: DataLoader<string, File[]>,
+  ) {
+    return fileLoader.load(id);
+  }
 }
 
-// @Resolver(() => PackageItem)
-// export class PackageItemsResolver {
-//   // constructor(private readonly packageItemsService: PackageItemsService) {}
+@Resolver(() => PackageItem)
+export class PackageItemsResolver {
+  // constructor(private readonly packageItemsService: PackageItemsService) {}
 
-//   @ResolveField(() => Product)
-//   async product(
-//     @Parent() { productVariantId }: PackageItem,
-//     @Loader(ProductByVariantLoader)
-//     productByVariantLoader: DataLoader<string, Product>,
-//   ) {
-//     return productByVariantLoader.load(productVariantId);
-//   }
-// }
+  @ResolveField(() => Product)
+  async product(
+    @Parent() { productVariantId }: PackageItem,
+    @Loader(ProductByVariantIdLoader)
+    productByVariantLoader: DataLoader<string, Product>,
+  ) {
+    return productByVariantLoader.load(productVariantId);
+  }
+}

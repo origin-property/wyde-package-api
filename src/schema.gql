@@ -152,6 +152,7 @@ type Mutation {
 type Package {
   description: String
   id: String!
+  images: [File!]!
   isActive: Boolean!
   name: String!
   project: Project!
@@ -271,7 +272,6 @@ type Query {
   package(id: String!): Package!
   packagesByUnit(unitId: String!): [Package!]!
   product(id: Int!): Product!
-  productByVariantId(variantId: ID!): Product!
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!

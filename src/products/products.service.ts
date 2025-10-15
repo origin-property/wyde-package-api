@@ -317,30 +317,18 @@ export class ProductsService {
     return product;
   }
 
-  async findByVariantId(variantId: string): Promise<Product> {
+  async findByVariantIds(variantIds: readonly string[]): Promise<Product[]> {
     // 1. ค้นหา Variant จาก ID ที่ได้รับมา
     //    พร้อมกับโหลดข้อมูล Product ที่เป็นแม่ของมันมาด้วย (relations: { product: true })
-    const variant = await this.variantRepository.findOne({
-      where: { id: variantId },
+    const variants = await this.variantRepository.find({
+      where: { id: In(variantIds) },
       relations: {
         product: true, // <-- สำคัญมาก: บอกให้ TypeORM ดึง Product มาด้วย
       },
     });
 
-    // 2. ตรวจสอบว่าเจอ Variant หรือไม่
-    if (!variant) {
-      throw new GraphQLError(`Variant with ID "${variantId}" not found`);
-    }
-
-    // 3. ตรวจสอบว่า Variant ที่เจอมี Product ผูกอยู่หรือไม่ (ควรจะมีเสมอ)
-    if (!variant.product) {
-      throw new GraphQLError(
-        `Product not found for Variant with ID "${variantId}"`,
-      );
-    }
-
-    // 4. คืนค่า Product ที่เป็นแม่กลับไป
-    //    เราจะเรียก findOne อีกครั้งเพื่อให้ได้ relations ทั้งหมดของ Product กลับไป
-    return this.findOne(variant.product.id);
+    return variantIds.map(
+      (id) => variants.find((variant) => variant.id === id)?.product ?? null,
+    );
   }
 }

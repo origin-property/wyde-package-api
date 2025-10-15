@@ -52,13 +52,6 @@ export class ProductsResolver {
     return this.productsService.remove(id, user.id);
   }
 
-  @Query(() => ProductModel, { name: 'productByVariantId' })
-  getProductByVariantId(
-    @Args('variantId', { type: () => ID }) variantId: string,
-  ) {
-    return this.productsService.findByVariantId(variantId);
-  }
-
   @Query(() => [ProductModel], { name: 'products' })
   findAll(
     @Args('findAllProductsInput') findAllProductsInput: FindAllProductsInput,
