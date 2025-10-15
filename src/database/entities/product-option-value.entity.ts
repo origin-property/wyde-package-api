@@ -31,7 +31,6 @@ export class ProductOptionValue extends BaseEntity {
   @Column({ length: 255, nullable: true })
   image: string;
 
-  // --- Relationships ---
   @ManyToOne(() => ProductOption, (option) => option.optionValues)
   @JoinColumn({ name: 'product_option_id' })
   productOption: Relation<ProductOption>;

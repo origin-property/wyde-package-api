@@ -8,6 +8,10 @@ import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { ProductVariantImage } from '@/database/entities/product-variant-image.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
 import { Category } from '@/database/entities/category.entity';
+import { DataloadersService } from './dataloaders/dataloaders.service';
+import { ProductVariantResolver } from './product-variant.resolver';
+import { ProductOptionValueResolver } from './product-option-value.resolver';
+import { ProductOptionResolver } from './product-option.resolver';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -23,6 +27,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       Category,
     ]),
   ],
-  providers: [ProductsResolver, ProductsService],
+  providers: [
+    ProductsResolver,
+    ProductsService,
+    DataloadersService,
+    ProductVariantResolver,
+    ProductOptionValueResolver,
+    ProductOptionResolver,
+  ],
 })
 export class ProductsModule {}
