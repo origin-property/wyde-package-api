@@ -14,18 +14,25 @@ import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { FindAllProductsInput } from './dto/find-all-products.input';
 import { CurrentUser } from '@/shared/decorators/decorators';
-import { DataloadersService } from './dataloaders/dataloaders.service';
 import { ProductTypeModel } from './entities/product-type.entity';
 import { CategoryModel } from './entities/category.entity';
 import { ProductVariantModel } from './entities/productVariant.entity';
 import { ProductOptionModel } from './entities/productOption.entity';
+import { Loader } from '@tracworx/nestjs-dataloader';
+import DataLoader from 'dataloader';
+import { Product } from '@/database/entities/product.entity';
+import { ProductOption } from '@/database/entities/product-option.entity';
+import { Category } from '@/database/entities/category.entity';
+import { ProductType } from '@/database/entities/product-type.entity';
+import { ProductVariant } from '@/database/entities/product-variant.entity';
+import { ProductTypeLoader } from './dataloaders/product-type.loader';
+import { CategoryLoader } from './dataloaders/category.loader';
+import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
+import { OptionsByProductLoader } from './dataloaders/options-by-product.loader';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
-  constructor(
-    private readonly productsService: ProductsService,
-    private readonly dataloadersService: DataloadersService,
-  ) {}
+  constructor(private readonly productsService: ProductsService) {}
 
   @Mutation(() => ProductModel)
   createProduct(
@@ -74,24 +81,35 @@ export class ProductsResolver {
   }
 
   @ResolveField('productType', () => ProductTypeModel)
-  getProductType(@Parent() product: ProductModel) {
-    return this.dataloadersService.productTypeLoader.load(
-      product.productTypeId,
-    );
+  getProductType(
+    @Parent() product: Product,
+    @Loader(ProductTypeLoader) loader: DataLoader<string, ProductType>,
+  ) {
+    return loader.load(product.productTypeId);
   }
 
   @ResolveField('category', () => CategoryModel)
-  getCategory(@Parent() product: ProductModel) {
-    return this.dataloadersService.categoryLoader.load(product.categoryId);
+  getCategory(
+    @Parent() product: Product,
+    @Loader(CategoryLoader) loader: DataLoader<string, Category>,
+  ) {
+    return loader.load(product.categoryId);
   }
 
   @ResolveField('variants', () => [ProductVariantModel])
-  getVariants(@Parent() product: ProductModel) {
-    return this.dataloadersService.variantsByProductIdLoader.load(product.id);
+  getVariants(
+    @Parent() product: Product,
+    @Loader(VariantsByProductLoader)
+    loader: DataLoader<string, ProductVariant[]>,
+  ) {
+    return loader.load(product.id);
   }
 
   @ResolveField('options', () => [ProductOptionModel])
-  getOptions(@Parent() product: ProductModel) {
-    return this.dataloadersService.optionsByProductIdLoader.load(product.id);
+  getOptions(
+    @Parent() product: Product,
+    @Loader(OptionsByProductLoader) loader: DataLoader<string, ProductOption[]>,
+  ) {
+    return loader.load(product.id);
   }
 }
