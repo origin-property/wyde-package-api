@@ -34,8 +34,13 @@ input CreateOptionValueInput {
 }
 
 input CreatePackageInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  description: String
+  images: [CreateFileInput!]!
+  isActive: Boolean!
+  items: [PackageItemInput!]!
+  name: String!
+  projectId: String!
+  unitId: String!
 }
 
 input CreateProductInput {
@@ -135,19 +140,37 @@ type Mutation {
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
-  removePackage(id: Int!): Package!
+  removePackage(id: String!): Package!
   removeProduct(id: ID!): Product!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
-  updatePackage(updatePackageInput: UpdatePackageInput!): Package!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
 type Package {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  description: String
+  id: String!
+  images: [File!]!
+  isActive: Boolean!
+  name: String!
+  project: Project!
+  projectId: String!
+  unit: Unit!
+  unitId: String!
+}
+
+input PackageItemInput {
+  productVariantId: String!
+  quantity: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
+enum PackageItemType {
+  DEFAULT
+  EQUIVALENT
 }
 
 type Product {
@@ -246,10 +269,9 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
-  package(id: Int!): Package!
-  packages: [Package!]!
+  package(id: String!): Package!
+  packagesByUnit(unitId: String!): [Package!]!
   product(id: Int!): Product!
-  productByVariantId(variantId: ID!): Product!
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
@@ -299,12 +321,6 @@ input UpdateFileInput {
   id: ID!
   isPublic: Boolean = true
   refId: String
-}
-
-input UpdatePackageInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }
 
 input UpdateProductInput {
