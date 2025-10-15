@@ -13,17 +13,20 @@ export class Package extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 255 })
+  @Column({ name: 'name', length: 255 })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ name: 'description', type: 'text', nullable: true })
   description: string;
 
-  @Column()
+  @Column({ name: 'project_id' })
   projectId: string;
 
-  @Column()
+  @Column({ name: 'unit_id' })
   unitId: string;
+
+  @Column({ name: 'is_ctive', default: true })
+  isActive: boolean;
 
   @OneToMany(() => PackageItem, (item) => item.package)
   items: Relation<PackageItem[]>;
