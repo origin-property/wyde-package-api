@@ -102,7 +102,8 @@ export class ProductsService {
         const variant = this.variantRepository.create({
           product: product,
           sku: generatedSku,
-          price: variantInput.price,
+          budgetPrice: variantInput.budgetPrice,
+          sellingPrice: variantInput.sellingPrice,
           stock: variantInput.stock,
           optionValues: relatedOptionValues,
         });
