@@ -29,6 +29,12 @@ import {
 import { ProductVariantResolver } from './product-variant.resolver';
 import { ProductsResolver } from './products.resolver';
 import { ProductsService } from './products.service';
+import { CategoryService } from './category.service';
+import { ProductTypesService } from './product-types.service';
+import { ProductTypesResolver } from './product-types.resolver';
+import { CategoryResolver } from './category.resolver';
+import { CategoriesByProductTypeLoader } from './dataloaders/categories-by-product-type.loader';
+import { ProductTypeByIdLoader } from './dataloaders/product-type-by-id.loader';
 
 @Module({
   imports: [
@@ -63,6 +69,12 @@ import { ProductsService } from './products.service';
     ProductVariantLoader,
     ProductVariantImagesResolver,
     ProductVariantImagesService,
+    CategoryService,
+    ProductTypesService,
+    ProductTypesResolver,
+    CategoryResolver,
+    CategoriesByProductTypeLoader,
+    ProductTypeByIdLoader,
   ],
   exports: [ProductsService],
 })
