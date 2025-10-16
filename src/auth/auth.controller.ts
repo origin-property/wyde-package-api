@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RefreshAuthGuard } from './guard/refreash-auth.guard';
+import { GqlRefreshAuthGuard } from './guard/gql-refresh-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +26,7 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(RefreshAuthGuard)
+  @UseGuards(GqlRefreshAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh-token')
   async refreshToken(@CurrentUser() user: User) {
