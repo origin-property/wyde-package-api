@@ -9,10 +9,15 @@ import { Package as PackageEntity } from '@/database/entities/package.entity';
 import { FilesModule } from '@/files/files.module';
 import { PackageItemLoader } from './package.loader';
 import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
+import { PackageUnitLoaderFactory } from './PackageUnitLoader.factory';
+import { UnitsService } from '../projects/units.service';
+import { CRM } from '../config/data-source.service';
+import { SysMasterUnits } from '../database/crm/SysMasterUnits.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([PackageEntity, PackageItemEntity]),
+    TypeOrmModule.forFeature([SysMasterUnits], CRM),
     FilesModule,
   ],
   providers: [
@@ -20,6 +25,8 @@ import { PackageItem as PackageItemEntity } from '@/database/entities/package-it
     PackageItemsResolver,
     PackagesService,
     PackageItemLoader,
+    UnitsService,
+    PackageUnitLoaderFactory,
   ],
   exports: [PackagesService],
 })

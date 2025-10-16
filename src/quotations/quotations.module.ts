@@ -8,9 +8,16 @@ import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
 import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
+import { SysMasterUnits } from '../database/crm/SysMasterUnits.entity';
+import { CRM } from '../config/data-source.service';
+import { QuotationUnitLoaderFactory } from './QuotationUnitLoader.factory';
+import { UnitsService } from '../projects/units.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Quotation, QuotationItem])],
+  imports: [
+    TypeOrmModule.forFeature([Quotation, QuotationItem]),
+    TypeOrmModule.forFeature([SysMasterUnits], CRM),
+  ],
   providers: [
     QuotationsResolver,
     QuotationsService,
@@ -18,6 +25,8 @@ import { QuotationsService } from './quotations.service';
     QuotationItemsResolver,
     QuotationItemsService,
     QuotationItemsLoader,
+    QuotationUnitLoaderFactory,
+    UnitsService,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

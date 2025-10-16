@@ -27,9 +27,11 @@ import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
 import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
+import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
 
 @Module({
   imports: [
+    DataloaderModule2.forRoot(),
     DataloaderModule,
     ConfigModule.forRoot({
       isGlobal: true,

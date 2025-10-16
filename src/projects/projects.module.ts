@@ -20,12 +20,12 @@ import { ModelsService } from './models.service';
 import { ProjectLoader } from './projects.loader';
 import { ProjectsResolver } from './projects.resolver';
 import { ProjectsService } from './projects.service';
-import { TowersLoader } from './towers.loader';
 import { TowersResolver } from './towers.resolver';
 import { TowersService } from './towers.service';
-import { UnitLoader, UnitsLoader } from './units.loader';
 import { UnitsResolver } from './units.resolver';
 import { UnitsService } from './units.service';
+import { ProjectTowerLoaderFactory } from './ProjectTowerLoader.factory';
+import { ProjectUnitLoaderFactory } from './ProjectUnitLoader.factory';
 
 @Module({
   imports: [
@@ -49,9 +49,6 @@ import { UnitsService } from './units.service';
     ProjectLoader,
     UnitsResolver,
     UnitsService,
-    UnitsLoader,
-    UnitLoader,
-    TowersLoader,
     TowersResolver,
     TowersService,
     FloorsLoader,
@@ -63,6 +60,8 @@ import { UnitsService } from './units.service';
     ModelTypeLoader,
     ModelTypesService,
     ModelFileUrlLoader,
+    ProjectTowerLoaderFactory,
+    ProjectUnitLoaderFactory,
   ],
   exports: [
     ProjectsService,

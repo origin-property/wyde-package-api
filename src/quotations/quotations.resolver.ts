@@ -3,7 +3,6 @@ import { FileLoader } from '@/files/files.loader';
 import { Project } from '@/projects/entities/project.entity';
 import { Unit } from '@/projects/entities/unit.entity';
 import { ProjectLoader } from '@/projects/projects.loader';
-import { UnitLoader } from '@/projects/units.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
@@ -28,6 +27,11 @@ import { QuotationPaginate } from './entities/quotation-paginate.entity';
 import { Quotation } from './entities/quotation.entity';
 import { QuotationItemsLoader } from './quotation-items.loader';
 import { QuotationsService } from './quotations.service';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import {
+  QuotationUnitLoader,
+  QuotationUnitLoaderFactory,
+} from './QuotationUnitLoader.factory';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {
@@ -100,9 +104,10 @@ export class QuotationsResolver {
   @ResolveField(() => Unit)
   async unit(
     @Parent() { unitId }: Quotation,
-    @Loader(UnitLoader) loader: DataLoader<string, Unit>,
+    @Loader2(QuotationUnitLoaderFactory) units: QuotationUnitLoader,
   ) {
-    return loader.load(unitId);
+    const result = await units.load(unitId);
+    return result?.values?.[0];
   }
 
   @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
