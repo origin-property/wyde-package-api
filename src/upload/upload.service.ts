@@ -24,7 +24,8 @@ export class UploadService {
     fileId: string,
     fileName: string,
   ) {
-    const filePath = `${fileFolder}/${fileName}`;
+    const extension = fileName.split('.').pop();
+    const filePath = `${fileFolder}/${fileId}.${extension}`;
 
     try {
       await this.s3Client.send(
