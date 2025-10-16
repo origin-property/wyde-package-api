@@ -21,8 +21,6 @@ export class JwtRefreshStrategy extends PassportStrategy(
   }
 
   async validate(payload: { id: string }) {
-    console.log('Validating refresh token payload:', payload);
-
     const user = await this.authService.validateRefreshTokenPayload(payload);
 
     if (!user) {
