@@ -16,8 +16,15 @@ type Category {
   description: String
   id: ID!
   name: String!
+  productType: ProductType!
   updatedAt: Date!
   updatedBy: String
+}
+
+input CreateCategoryInput {
+  description: String
+  name: String!
+  productTypeId: ID!
 }
 
 input CreateFileInput {
@@ -189,6 +196,7 @@ type ModelType {
 }
 
 type Mutation {
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(input: CreatePackageInput!): Package!
   createProduct(createProductInput: CreateProductInput!): Product!
@@ -287,6 +295,7 @@ type ProductOptionValue {
 }
 
 type ProductType {
+  categories: [Category!]!
   createdAt: Date!
   createdBy: String
   description: String
@@ -340,6 +349,8 @@ type Project {
 }
 
 type Query {
+  category(id: ID!): Category!
+  categorys(productTypeId: ID): [Category!]!
   file(id: ID!): File!
   files: [File!]!
   floor(id: ID!): Floor!
@@ -352,6 +363,8 @@ type Query {
   package(id: String!): Package!
   packagesByUnit(unitId: String!): [Package!]!
   product(id: Int!): Product!
+  productType(id: ID!): ProductType!
+  productTypes: [ProductType!]!
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
