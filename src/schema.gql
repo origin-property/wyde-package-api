@@ -68,9 +68,6 @@ input CreateProductVariantInput {
 }
 
 input CreateQuotationInput {
-  """รหัสใบเสนอราคา"""
-  code: String
-
   """ที่อยู่ลูกค้า"""
   customerAddress: String
 
@@ -86,14 +83,14 @@ input CreateQuotationInput {
   """หมายเลขโทรศัพท์ลูกค้า"""
   customerPhone: String
 
-  """วันที่ใบเสนอราคา"""
-  date: Date
-
   """รายการสินค้า"""
   items: [CreateQuotationItemInput!]!
 
   """รหัสโครงการ"""
   projectId: String
+
+  """สถานะใบเสนอราคา"""
+  status: QuotationStatus = PENDING
 
   """รหัสยูนิต"""
   unitId: String
@@ -169,6 +166,37 @@ type Floor {
   towerId: Int
 }
 
+type IPaginateLinks {
+  """ลิงค์หน้าแรก"""
+  first: String
+
+  """ลิงค์หน้าสุดท้าย"""
+  last: String
+
+  """ลิงค์หน้าถัดไป"""
+  next: String
+
+  """ลิงค์หน้าก่อนหน้า"""
+  previous: String
+}
+
+type IPaginateMeta {
+  """หน้าปัจจุบัน"""
+  currentPage: Float!
+
+  """จำนวนรายการที่มีอยู่ในหน้านี้"""
+  itemCount: Float!
+
+  """จำนวนรายการที่แสดงในหน้านี้"""
+  itemsPerPage: Float!
+
+  """จำนวนรายการทั้งหมด"""
+  totalItems: Float
+
+  """จำนวนหน้าทั้งหมด"""
+  totalPages: Float
+}
+
 type Model {
   """รูปภาพรูปแบบ"""
   fileUrl: String
@@ -207,6 +235,7 @@ type Mutation {
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
   updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
+  updateQuotationStatus(id: ID!, status: QuotationStatus!): Quotation!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
@@ -358,7 +387,13 @@ type Query {
   quotation(id: ID!): Quotation!
   quotationItem(id: ID!): QuotationItem!
   quotationItems: [QuotationItem!]!
-  quotations: [Quotation!]!
+  quotations(
+    limit: Int! = 10
+    page: Int! = 1
+
+    """ค้นหา"""
+    searchText: String
+  ): QuotationPaginate!
   role(id: ID!): Role!
   roles: [Role!]!
   tower(id: ID!): Tower!
@@ -407,6 +442,9 @@ type Quotation {
 
   """รหัสโครงการ"""
   projectId: String!
+
+  """สถานะใบเสนอราคา"""
+  status: QuotationStatus!
   unit: Unit!
 
   """รหัสยูนิต"""
@@ -453,6 +491,28 @@ type QuotationItem {
   unitPrice: Float!
   updatedAt: Date!
   updatedBy: User
+}
+
+type QuotationPaginate {
+  items: [Quotation!]!
+
+  """ลิงค์หน้า"""
+  links: IPaginateLinks
+
+  """ข้อมูลการจัดการหน้า"""
+  meta: IPaginateMeta
+}
+
+"""สถานะใบเสนอราคา"""
+enum QuotationStatus {
+  """ยกเลิก"""
+  CANCELLED
+
+  """ชำระเงินแล้ว"""
+  PAID
+
+  """รอการยืนยัน"""
+  PENDING
 }
 
 type Role {
@@ -508,9 +568,6 @@ input UpdateProductVariantInput {
 }
 
 input UpdateQuotationInput {
-  """รหัสใบเสนอราคา"""
-  code: String
-
   """ที่อยู่ลูกค้า"""
   customerAddress: String
 
@@ -525,9 +582,6 @@ input UpdateQuotationInput {
 
   """หมายเลขโทรศัพท์ลูกค้า"""
   customerPhone: String
-
-  """วันที่ใบเสนอราคา"""
-  date: Date
   id: ID!
 
   """รายการสินค้า"""
@@ -535,6 +589,9 @@ input UpdateQuotationInput {
 
   """รหัสโครงการ"""
   projectId: String
+
+  """สถานะใบเสนอราคา"""
+  status: QuotationStatus = PENDING
 
   """รหัสยูนิต"""
   unitId: String

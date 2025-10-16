@@ -6,6 +6,7 @@ import { ProjectLoader } from '@/projects/projects.loader';
 import { UnitLoader } from '@/projects/units.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
+import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { User } from '@/users/entities/user.entity';
 import { UserLoader } from '@/users/users.loader';
 import {
@@ -20,8 +21,10 @@ import {
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { CreateQuotationInput } from './dto/create-quotation.input';
+import { SearchQuotationArgs } from './dto/search-quotation.agrs';
 import { UpdateQuotationInput } from './dto/update-quotation.input';
 import { QuotationItem } from './entities/quotation-item.entity';
+import { QuotationPaginate } from './entities/quotation-paginate.entity';
 import { Quotation } from './entities/quotation.entity';
 import { QuotationItemsLoader } from './quotation-items.loader';
 import { QuotationsService } from './quotations.service';
@@ -38,9 +41,9 @@ export class QuotationsResolver {
     return this.quotationsService.create(createQuotationInput, user.id);
   }
 
-  @Query(() => [Quotation], { name: 'quotations' })
-  async findAll() {
-    return this.quotationsService.findAll();
+  @Query(() => QuotationPaginate, { name: 'quotations' })
+  async findAll(@Args() searchQuotationArgs: SearchQuotationArgs) {
+    return this.quotationsService.searchWithPaginate(searchQuotationArgs);
   }
 
   @Query(() => Quotation, { name: 'quotation' })
@@ -58,6 +61,15 @@ export class QuotationsResolver {
       updateQuotationInput,
       user.id,
     );
+  }
+
+  @Mutation(() => Quotation)
+  async updateQuotationStatus(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('status', { type: () => QuotationStatus }) status: QuotationStatus,
+    @CurrentUser() user: User,
+  ) {
+    return this.quotationsService.updateStatus(id, status, user.id);
   }
 
   @Roles(['admin'])

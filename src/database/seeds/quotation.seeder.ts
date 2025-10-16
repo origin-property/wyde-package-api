@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
+import { QuotationStatus } from '../../shared/enums/quotation.enum';
 import { Quotation } from '../entities/quotation.entity';
 
 export default class QuotationSeeder implements Seeder {
@@ -46,6 +47,7 @@ export default class QuotationSeeder implements Seeder {
         customerPhone,
         customerEmail,
         customerAddress,
+        status: QuotationStatus.PENDING,
         date: dayjs().toDate(),
         code,
         createdBy: userId,
