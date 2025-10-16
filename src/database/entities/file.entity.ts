@@ -7,7 +7,7 @@ export class File extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'ref_id', type: 'uuid' })
+  @Column({ name: 'ref_id' })
   refId: string;
 
   @Column({ name: 'file_name' })
@@ -21,4 +21,7 @@ export class File extends BaseEntity {
 
   @Column({ name: 'is_public', type: 'boolean' })
   isPublic: boolean;
+
+  @Column({ name: 'project_id', length: 15, nullable: true })
+  projectId: string;
 }

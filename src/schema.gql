@@ -170,6 +170,8 @@ type Floor {
 }
 
 type Model {
+  """รูปภาพรูปแบบ"""
+  fileUrl: String
   id: String!
   modelType: ModelType!
   modelTypeId: String

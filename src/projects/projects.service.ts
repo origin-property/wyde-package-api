@@ -5,11 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { keyBy } from 'lodash';
 import { In, IsNull, Repository } from 'typeorm';
 
-type A10Date = {
-  projectId: string;
-  a10Date: string;
-};
-
 @Injectable()
 export class ProjectsService {
   constructor(

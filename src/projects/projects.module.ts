@@ -6,6 +6,7 @@ import { SysREMMasterModelType } from '@/database/crm/SysREMMasterModelType.enti
 import { SysREMProjectModel } from '@/database/crm/SysREMProjectModel.entity';
 import { SysREMTower } from '@/database/crm/SysREMTower.entity';
 import { VwCSv2 } from '@/database/crm/VwCSv2.entity';
+import { File } from '@/database/entities/file.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FloorsLoader } from './floors.loader';
@@ -13,7 +14,7 @@ import { FloorsResolver } from './floors.resolver';
 import { FloorsService } from './floors.service';
 import { ModelTypeLoader } from './model-types.loader';
 import { ModelTypesService } from './model-types.serice';
-import { ModelLoader } from './models.loader';
+import { ModelFileUrlLoader, ModelLoader } from './models.loader';
 import { ModelsResolver } from './models.resolver';
 import { ModelsService } from './models.service';
 import { ProjectLoader } from './projects.loader';
@@ -40,6 +41,7 @@ import { UnitsService } from './units.service';
       ],
       CRM,
     ),
+    TypeOrmModule.forFeature([File]),
   ],
   providers: [
     ProjectsResolver,
@@ -60,6 +62,7 @@ import { UnitsService } from './units.service';
     ModelLoader,
     ModelTypeLoader,
     ModelTypesService,
+    ModelFileUrlLoader,
   ],
   exports: [
     ProjectsService,

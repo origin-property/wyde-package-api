@@ -11,6 +11,7 @@ import DataLoader from 'dataloader';
 import { ModelType } from './entities/model-type.entity';
 import { Model } from './entities/model.entity';
 import { ModelTypeLoader } from './model-types.loader';
+import { ModelFileUrlLoader } from './models.loader';
 import { ModelsService } from './models.service';
 
 @Resolver(() => Model)
@@ -33,5 +34,14 @@ export class ModelsResolver {
     @Loader(ModelTypeLoader) modelTypeLoader: DataLoader<string, ModelType>,
   ) {
     return modelTypeId ? modelTypeLoader.load(modelTypeId) : null;
+  }
+
+  @ResolveField(() => String, { nullable: true, description: 'รูปภาพรูปแบบ' })
+  async fileUrl(
+    @Parent() { id, projectId }: Model,
+    @Loader(ModelFileUrlLoader)
+    modelFileUrlLoader: DataLoader<{ id: string; projectId: string }, string>,
+  ) {
+    return modelFileUrlLoader.load({ id, projectId });
   }
 }
