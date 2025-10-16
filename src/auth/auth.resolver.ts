@@ -5,11 +5,13 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
 import { GqlRefreshAuthGuard } from './guard/gql-refresh-auth.guard';
+import { Public } from '../shared/decorators/public.decorator';
 
 @Resolver(() => Auth)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Mutation(() => Auth)
   async signIn(
     @Args('username') username: string,

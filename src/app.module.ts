@@ -10,7 +10,6 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
 import { GqlRolesGuard } from './auth/guard/gql-roles.guard';
 import {
   CRM,
@@ -27,6 +26,7 @@ import { RolesModule } from './roles/roles.module';
 import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
+import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
 
 @Module({
   imports: [
