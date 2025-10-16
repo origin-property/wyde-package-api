@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { CreatePackageInput } from './dto/create-package.input';
 
 import { Package as PackageEntity } from '@/database/entities/package.entity';
+import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
 import { FilesService } from '@/files/files.service';
 
 @Injectable()
@@ -12,6 +13,10 @@ export class PackagesService {
   constructor(
     @InjectRepository(PackageEntity)
     private readonly packageRepository: Repository<PackageEntity>,
+
+    @InjectRepository(PackageItemEntity)
+    private readonly packageItemRepository: Repository<PackageItemEntity>,
+
     private readonly filesService: FilesService,
   ) {}
   async create(
@@ -21,7 +26,7 @@ export class PackagesService {
     const { name, description, projectId, unitId, isActive, images, items } =
       createPackageInput;
 
-    const pkg = this.packageRepository.create({
+    const pkg = await this.packageRepository.save({
       name,
       description,
       projectId,
@@ -29,8 +34,9 @@ export class PackagesService {
       createdBy: userId,
       updatedBy: userId,
       isActive,
-      items: items.map((item) => ({
+      items: items.map((item, idx) => ({
         ...item,
+        seq: idx + 1,
         createdBy: userId,
         updatedBy: userId,
       })),
@@ -42,7 +48,7 @@ export class PackagesService {
       ),
     );
 
-    return this.packageRepository.save(pkg);
+    return pkg;
   }
 
   async findAllByUnitId(unitId: string): Promise<PackageEntity[]> {
@@ -60,5 +66,15 @@ export class PackagesService {
   async remove(id: string): Promise<boolean> {
     const result = await this.packageRepository.softDelete(id);
     return !!result.affected;
+  }
+
+  async getPackageItemByPackageId(
+    ids: readonly string[],
+  ): Promise<PackageItemEntity[][]> {
+    const items = await this.packageItemRepository.find({
+      where: { packageId: In(ids) },
+    });
+
+    return ids.map((id) => items.filter((item) => item.packageId === id));
   }
 }

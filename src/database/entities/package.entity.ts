@@ -28,6 +28,6 @@ export class Package extends BaseEntity {
   @Column({ name: 'is_ctive', default: true })
   isActive: boolean;
 
-  @OneToMany(() => PackageItem, (item) => item.package)
+  @OneToMany(() => PackageItem, (item) => item.package, { cascade: true })
   items: Relation<PackageItem[]>;
 }

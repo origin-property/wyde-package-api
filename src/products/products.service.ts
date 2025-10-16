@@ -1,18 +1,19 @@
+import { Category } from '@/database/entities/category.entity';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import dayjs from 'dayjs';
+import { GraphQLError } from 'graphql';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import { ProductOptionValue } from '../database/entities/product-option-value.entity';
+import { ProductOption } from '../database/entities/product-option.entity';
+import { ProductType } from '../database/entities/product-type.entity';
+import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
+import { ProductVariant } from '../database/entities/product-variant.entity';
+import { Product } from '../database/entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
-import { Product } from '../database/entities/product.entity';
-import { ProductOption } from '../database/entities/product-option.entity';
-import { ProductOptionValue } from '../database/entities/product-option-value.entity';
-import { ProductVariant } from '../database/entities/product-variant.entity';
-import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
-import { ProductType } from '../database/entities/product-type.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { GraphQLError } from 'graphql';
-import { Repository, Like, FindOptionsWhere, In } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-import { Category } from '@/database/entities/category.entity';
-import dayjs from 'dayjs';
+import { ProductVariantModel } from './entities/productVariant.entity';
 
 @Injectable()
 export class ProductsService {
@@ -102,7 +103,8 @@ export class ProductsService {
         const variant = this.variantRepository.create({
           product: product,
           sku: generatedSku,
-          price: variantInput.price,
+          budgetPrice: variantInput.budgetPrice,
+          sellingPrice: variantInput.sellingPrice,
           stock: variantInput.stock,
           optionValues: relatedOptionValues,
         });
@@ -317,7 +319,9 @@ export class ProductsService {
     return product;
   }
 
-  async findByVariantIds(variantIds: readonly string[]): Promise<Product[]> {
+  async findByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductVariantModel[]> {
     // 1. ค้นหา Variant จาก ID ที่ได้รับมา
     //    พร้อมกับโหลดข้อมูล Product ที่เป็นแม่ของมันมาด้วย (relations: { product: true })
     const variants = await this.variantRepository.find({
@@ -327,8 +331,101 @@ export class ProductsService {
       },
     });
 
-    return variantIds.map(
-      (id) => variants.find((variant) => variant.id === id)?.product ?? null,
+    return variantIds.map((id) =>
+      variants.find((variant) => variant.id === id),
     );
+  }
+
+  async findTypesByIds(ids: readonly string[]): Promise<ProductType[]> {
+    const types = await this.productTypeRepository.findBy({ id: In([...ids]) });
+    const map = new Map(types.map((t) => [t.id, t]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async findCategoriesByIds(ids: readonly string[]): Promise<Category[]> {
+    const categories = await this.categoryRepository.findBy({
+      id: In([...ids]),
+    });
+    const map = new Map(categories.map((c) => [c.id, c]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async findVariantsByProductIds(
+    productIds: readonly string[],
+  ): Promise<ProductVariant[][]> {
+    const variants = await this.variantRepository.find({
+      where: { productId: In([...productIds]) },
+    });
+    const map = new Map<string, ProductVariant[]>();
+    productIds.forEach((id) => map.set(id, []));
+    variants.forEach((v) => map.get(v.productId).push(v));
+    return productIds.map((id) => map.get(id));
+  }
+
+  async findImagesByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductVariantImage[][]> {
+    const images = await this.imageRepository.find({
+      where: { productVariantId: In([...variantIds]) },
+    });
+    const map = new Map<string, ProductVariantImage[]>();
+    variantIds.forEach((id) => map.set(id, []));
+    images.forEach((img) => map.get(img.productVariantId).push(img));
+    return variantIds.map((id) => map.get(id));
+  }
+
+  async findOptionValuesByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductOptionValue[][]> {
+    const variants = await this.variantRepository.find({
+      where: { id: In([...variantIds]) },
+      relations: { optionValues: true },
+    });
+    const map = new Map(variants.map((v) => [v.id, v.optionValues]));
+    return variantIds.map((id) => map.get(id) || []);
+  }
+
+  async findProductsByIds(ids: readonly string[]): Promise<Product[]> {
+    const products = await this.productRepository.findBy({ id: In([...ids]) });
+    const map = new Map(products.map((p) => [p.id, p]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async findOptionsByProductIds(
+    productIds: readonly string[],
+  ): Promise<ProductOption[][]> {
+    const options = await this.optionRepository.find({
+      where: { productId: In([...productIds]) },
+    });
+    const map = new Map<string, ProductOption[]>();
+    productIds.forEach((id) => map.set(id, []));
+    options.forEach((opt) => map.get(opt.productId).push(opt));
+    return productIds.map((id) => map.get(id));
+  }
+
+  async findOptionValuesByOptionIds(
+    optionIds: readonly string[],
+  ): Promise<ProductOptionValue[][]> {
+    const values = await this.valueRepository.find({
+      where: { productOptionId: In([...optionIds]) },
+    });
+    const map = new Map<string, ProductOptionValue[]>();
+    optionIds.forEach((id) => map.set(id, []));
+    values.forEach((val) => map.get(val.productOptionId).push(val));
+    return optionIds.map((id) => map.get(id));
+  }
+
+  async findOptionsByIds(ids: readonly string[]): Promise<ProductOption[]> {
+    const options = await this.optionRepository.findBy({ id: In([...ids]) });
+    const map = new Map(options.map((o) => [o.id, o]));
+    return ids.map((id) => map.get(id));
+  }
+
+  async getProductVariantById(
+    ids: readonly string[],
+  ): Promise<ProductVariant[]> {
+    const variants = await this.variantRepository.findBy({ id: In(ids) });
+    const keyData = new Map(variants.map((v) => [v.id, v]));
+    return ids.map((id) => keyData.get(id));
   }
 }

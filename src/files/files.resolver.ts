@@ -1,6 +1,15 @@
 import { CurrentUser } from '@/shared/decorators/decorators';
+import { UploadService } from '@/upload/upload.service';
 import { User } from '@/users/entities/user.entity';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { CreateFileInput } from './dto/create-file.input';
 import { UpdateFileInput } from './dto/update-file.input';
 import { File } from './entities/file.entity';
@@ -8,7 +17,10 @@ import { FilesService } from './files.service';
 
 @Resolver(() => File)
 export class FilesResolver {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    private readonly filesService: FilesService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @Mutation(() => File)
   async createFile(
@@ -46,5 +58,10 @@ export class FilesResolver {
     @CurrentUser() user: User,
   ) {
     return this.filesService.remove(id, user.id);
+  }
+
+  @ResolveField(() => String, { name: 'fileUrl' })
+  async url(@Parent() { filePath, fileBucket }: File) {
+    return this.uploadService.getSignedUrl(fileBucket, filePath);
   }
 }
