@@ -1,10 +1,17 @@
 import { Base } from '@/shared/@types/base';
+import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Quotation extends Base {
   @Field(() => ID)
   id: string;
+
+  @Field(() => QuotationStatus, {
+    defaultValue: QuotationStatus.PENDING,
+    description: 'สถานะใบเสนอราคา',
+  })
+  status: QuotationStatus;
 
   @Field(() => Date, { description: 'วันที่ใบเสนอราคา' })
   date: Date;
