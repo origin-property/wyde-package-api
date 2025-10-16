@@ -4,7 +4,11 @@ import { CreateQuotationItemInput } from './create-quotation-item.input';
 
 @InputType()
 export class CreateQuotationInput extends PartialType(
-  OmitType(Quotation, ['id', 'createdAt', 'updatedAt', 'deletedAt'], InputType),
+  OmitType(
+    Quotation,
+    ['id', 'date', 'code', 'createdAt', 'updatedAt', 'deletedAt'],
+    InputType,
+  ),
 ) {
   @Field(() => [CreateQuotationItemInput], { description: 'รายการสินค้า' })
   items: CreateQuotationItemInput[];

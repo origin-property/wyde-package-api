@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
+import { QuotationStatus } from '../../shared/enums/quotation.enum';
 import { BaseEntity } from './base';
 import { QuotationItem } from './quotation-item.entity';
 
@@ -8,6 +9,13 @@ export class Quotation extends BaseEntity {
     default: () => 'uuidv7()',
   })
   id: string;
+
+  @Column({
+    type: 'enum',
+    enum: QuotationStatus,
+    default: QuotationStatus.PENDING,
+  })
+  status: QuotationStatus;
 
   @Column({
     type: 'timestamptz',
