@@ -11,6 +11,7 @@ import { AuthController } from './auth.controller';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 
 @Module({
   imports: [
@@ -31,7 +32,13 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, AuthResolver, AuthResolver, JwtStrategy],
+  providers: [
+    AuthService,
+    AuthResolver,
+    AuthResolver,
+    JwtStrategy,
+    JwtRefreshStrategy,
+  ],
   exports: [AuthService, JwtModule],
   controllers: [AuthController],
 })

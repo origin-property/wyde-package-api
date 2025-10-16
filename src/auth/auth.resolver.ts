@@ -20,6 +20,7 @@ export class AuthResolver {
     return this.authService.signIn(username, password);
   }
 
+  @Public()
   @UseGuards(GqlRefreshAuthGuard)
   @Mutation(() => Auth)
   async refreshToken(@CurrentUser() user: User) {
