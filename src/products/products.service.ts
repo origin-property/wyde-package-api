@@ -32,11 +32,8 @@ export class ProductsService {
     private productTypeRepository: Repository<ProductType>,
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-
     private configService: ConfigService,
   ) {}
-
-  private bucketName = this.configService.get('AWS_S3_BUCKET');
 
   async create(
     createProductInput: CreateProductInput,
@@ -115,7 +112,7 @@ export class ProductsService {
             const image = this.imageRepository.create({
               variant: variant,
               ...imageInput,
-              fileBucket: this.bucketName,
+              fileBucket: this.configService.get('AWS_S3_BUCKET'),
             });
             await this.imageRepository.save(image);
           }

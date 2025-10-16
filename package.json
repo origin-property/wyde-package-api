@@ -44,6 +44,7 @@
     "@nestjs/platform-express": "^11.1.6",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
+    "@strv/nestjs-dataloader": "^0.3.2",
     "@tracworx/nestjs-dataloader": "^1.2.1",
     "axios": "^1.12.2",
     "class-transformer": "^0.5.1",
