@@ -9,7 +9,6 @@ import { VwCSv2 } from '@/database/crm/VwCSv2.entity';
 import { File } from '@/database/entities/file.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FloorsLoader } from './floors.loader';
 import { FloorsResolver } from './floors.resolver';
 import { FloorsService } from './floors.service';
 import { ModelTypeLoader } from './model-types.loader';
@@ -26,6 +25,7 @@ import { UnitsResolver } from './units.resolver';
 import { UnitsService } from './units.service';
 import { ProjectTowerLoaderFactory } from './ProjectTowerLoader.factory';
 import { ProjectUnitLoaderFactory } from './ProjectUnitLoader.factory';
+import { TowerFloorLoaderFactory } from './TowerFloorLoader.factory';
 
 @Module({
   imports: [
@@ -51,7 +51,6 @@ import { ProjectUnitLoaderFactory } from './ProjectUnitLoader.factory';
     UnitsService,
     TowersResolver,
     TowersService,
-    FloorsLoader,
     FloorsResolver,
     FloorsService,
     ModelsService,
@@ -62,6 +61,7 @@ import { ProjectUnitLoaderFactory } from './ProjectUnitLoader.factory';
     ModelFileUrlLoader,
     ProjectTowerLoaderFactory,
     ProjectUnitLoaderFactory,
+    TowerFloorLoaderFactory,
   ],
   exports: [
     ProjectsService,

@@ -6,12 +6,14 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
 import { Floor } from './entities/floor.entity';
 import { Tower } from './entities/tower.entity';
-import { FloorsLoader } from './floors.loader';
 import { TowersService } from './towers.service';
+import { Loader } from '@strv/nestjs-dataloader';
+import {
+  TowerFloorLoader,
+  TowerFloorLoaderFactory,
+} from './TowerFloorLoader.factory';
 
 @Resolver(() => Tower)
 export class TowersResolver {
@@ -29,9 +31,10 @@ export class TowersResolver {
 
   @ResolveField(() => [Floor], { name: 'floors' })
   async floors(
-    @Parent() tower: Tower,
-    @Loader(FloorsLoader) floorsLoader: DataLoader<number, Floor>,
+    @Parent() { id }: Tower,
+    @Loader(TowerFloorLoaderFactory) towers: TowerFloorLoader,
   ) {
-    return floorsLoader.load(tower.id);
+    const result = await towers.load(id);
+    return result?.values ?? [];
   }
 }

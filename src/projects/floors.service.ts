@@ -21,21 +21,13 @@ export class FloorsService {
   }
 
   async getFloorsWithIds(ids: readonly number[]) {
-    const floors = await this.floorsRepository.find({
+    return this.floorsRepository.find({
       where: [
         { towerId: In(ids), isDelete: false },
         { towerId: In(ids), isDelete: IsNull() },
       ],
       select: ['id', 'towerId', 'projectId', 'nameTh', 'nameEn'],
       order: { nameTh: 'ASC' },
-    });
-    const groupData = groupBy(floors, (floor) => floor.towerId);
-    return ids.map((id) => {
-      const floors = groupData[id];
-      if (!floors) return [];
-      return floors.sort((a, b) =>
-        a.nameTh.localeCompare(b.nameTh, 'en', { numeric: true }),
-      );
     });
   }
 }
