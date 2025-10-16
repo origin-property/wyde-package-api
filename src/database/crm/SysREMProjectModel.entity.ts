@@ -153,10 +153,10 @@ export class SysREMProjectModel {
   })
   shortName: string;
 
-  @OneToMany(() => SysMasterUnits, unit => unit.model)
+  @OneToMany(() => SysMasterUnits, (unit) => unit.model)
   units: Relation<SysMasterUnits[]>;
 
-  @ManyToOne(() => SysREMMasterModelType, modelType => modelType.models, {
+  @ManyToOne(() => SysREMMasterModelType, (modelType) => modelType.models, {
     createForeignKeyConstraints: false,
   })
   @JoinColumn({ name: 'ModelTypeID' })

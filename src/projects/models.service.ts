@@ -1,16 +1,29 @@
 import { CRM } from '@/config/data-source.service';
 import { SysREMProjectModel } from '@/database/crm/SysREMProjectModel.entity';
+import { File } from '@/database/entities/file.entity';
+import { UploadService } from '@/upload/upload.service';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { keyBy, uniqBy } from 'lodash';
-import { FindOptionsWhere, IsNull, Repository } from 'typeorm';
+import { uniqBy } from 'lodash';
+import { IsNull, Repository } from 'typeorm';
 
 @Injectable()
 export class ModelsService {
+  private readonly bucketName: string;
+
   constructor(
     @InjectRepository(SysREMProjectModel, CRM)
     private readonly modelsRepository: Repository<SysREMProjectModel>,
-  ) {}
+
+    @InjectRepository(File)
+    private readonly filesRepository: Repository<File>,
+
+    private readonly uploadService: UploadService,
+    private readonly configService: ConfigService,
+  ) {
+    this.bucketName = this.configService.getOrThrow<string>('AWS_S3_BUCKET');
+  }
 
   async findAll(projectId: string) {
     return this.modelsRepository.find({ where: { projectId } });
@@ -21,26 +34,42 @@ export class ModelsService {
   }
 
   async getModelWithIds(datas: readonly { id: string; projectId: string }[]) {
-    const wheres: FindOptionsWhere<SysREMProjectModel>[] = [];
-    const uniqModelIdsForQuery = uniqBy(datas, ({ id }) => id);
-
-    for (const data of uniqModelIdsForQuery) {
-      wheres.push({
-        id: data.id,
-        projectId: data.projectId,
-        isDelete: IsNull(),
-      });
-
-      wheres.push({
-        id: data.id,
-        projectId: data.projectId,
-        isDelete: false,
-      });
-    }
     const models = await this.modelsRepository.find({
+      where: [{ isDelete: false }, { isDelete: IsNull() }],
+    });
+
+    return datas.map((data) => {
+      const model = models.find(
+        (model) =>
+          model.id.includes(data.id) &&
+          model.projectId.includes(data.projectId),
+      );
+
+      return model;
+    });
+  }
+
+  async getModelFileUrl(datas: readonly { id: string; projectId: string }[]) {
+    const wheres = uniqBy(datas, ({ projectId }) => projectId).map((data) => ({
+      projectId: data.projectId,
+    }));
+
+    const files = await this.filesRepository.find({
       where: wheres,
     });
-    const key = keyBy(models, (model) => `${model.projectId}-${model.id}`);
-    return datas.map((data) => key[`${data.projectId}-${data.id}`]);
+
+    const urls = await Promise.all(
+      datas.map(async (data) => {
+        const file = files.find(
+          (file) => file.projectId === data.projectId && file.refId === data.id,
+        );
+
+        return file
+          ? this.uploadService.getSignedUrl(file.fileBucket, file.filePath)
+          : this.uploadService.getSignedUrl(this.bucketName, 'model/model.png');
+      }),
+    );
+
+    return urls;
   }
 }

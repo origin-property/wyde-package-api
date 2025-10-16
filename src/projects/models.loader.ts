@@ -13,3 +13,14 @@ export class ModelLoader {
     );
   }
 }
+
+@DataloaderProvider()
+export class ModelFileUrlLoader {
+  constructor(private readonly modelsService: ModelsService) {}
+
+  createDataloader() {
+    return new DataLoader<{ id: string; projectId: string }, string>(
+      async (ids) => this.modelsService.getModelFileUrl(ids),
+    );
+  }
+}
