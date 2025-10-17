@@ -39,16 +39,6 @@ input CreateOptionValueInput {
   value: String!
 }
 
-input CreatePackageInput {
-  description: String
-  images: [CreateFileInput!]!
-  isActive: Boolean!
-  items: [PackageItemInput!]!
-  name: String!
-  projectId: String!
-  unitId: String!
-}
-
 input CreateProductInput {
   """The UUID of the product category"""
   categoryId: String!
@@ -235,14 +225,12 @@ type ModelType {
 type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createFile(createFileInput: CreateFileInput!): File!
-  createPackage(input: CreatePackageInput!): Package!
   createProduct(createProductInput: CreateProductInput!): Product!
   createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
   createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
-  removePackage(id: String!): Boolean!
   removeProduct(id: ID!): Product!
   removeQuotation(id: ID!): Quotation!
   removeQuotationItem(id: ID!): Boolean!
@@ -254,43 +242,6 @@ type Mutation {
   updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
   updateQuotationStatus(id: ID!, status: QuotationStatus!): Quotation!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
-}
-
-type Package {
-  description: String
-  id: String!
-  images: [File!]!
-  isActive: Boolean!
-  items: [PackageItem!]!
-  name: String!
-  project: Project!
-  projectId: String!
-  unit: Unit!
-  unitId: String!
-}
-
-type PackageItem {
-  id: String!
-  packageSeq: Float!
-  product: ProductVariant!
-  productVariantId: String!
-  quantity: Float!
-  seq: Float!
-  specialPrice: Float!
-  type: PackageItemType!
-}
-
-input PackageItemInput {
-  packageSeq: Float!
-  productVariantId: String!
-  quantity: Float!
-  specialPrice: Float!
-  type: PackageItemType!
-}
-
-enum PackageItemType {
-  DEFAULT
-  EQUIVALENT
 }
 
 type Product {
@@ -398,8 +349,6 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
-  package(id: String!): Package!
-  packagesByUnit(unitId: String!): [Package!]!
   product(id: Int!): Product!
   productType(id: ID!): ProductType!
   productTypes: [ProductType!]!

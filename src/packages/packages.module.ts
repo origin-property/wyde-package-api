@@ -1,5 +1,4 @@
 import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
-import { Package as PackageEntity } from '@/database/entities/package.entity';
 import { FilesModule } from '@/files/files.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -10,10 +9,16 @@ import { PackageProjectLoaderFactory } from './PackageProjectLoader.factory';
 import { PackageItemsResolver, PackagesResolver } from './packages.resolver';
 import { PackagesService } from './packages.service';
 import { PackageUnitLoaderFactory } from './PackageUnitLoader.factory';
+import { Product as ProductEntity } from '@/database/entities/product.entity';
+import { ProductVariant } from '@/database/entities/product-variant.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PackageEntity, PackageItemEntity]),
+    TypeOrmModule.forFeature([
+      ProductEntity,
+      PackageItemEntity,
+      ProductVariant,
+    ]),
     FilesModule,
     ProjectsModule,
   ],

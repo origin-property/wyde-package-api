@@ -45,7 +45,7 @@ export class Product extends BaseEntity {
 
   @ManyToOne(() => ProductType, (type) => type.products)
   @JoinColumn({ name: 'product_type_id' })
-  productType: ProductType;
+  productType: Relation<ProductType>;
 
   @Column({ name: 'category_id', nullable: true })
   categoryId: string;

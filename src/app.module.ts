@@ -18,7 +18,7 @@ import {
 } from './config/data-source.service';
 import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
-import { PackagesModule } from './packages/packages.module';
+// import { PackagesModule } from './packages/packages.module';
 import { ProductsModule } from './products/products.module';
 import { ProjectsModule } from './projects/projects.module';
 import { QuotationsModule } from './quotations/quotations.module';
@@ -77,7 +77,6 @@ import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
       inject: [ConfigService],
     }),
     HealthModule,
-    PackagesModule,
     AuthModule,
     UsersModule,
     RolesModule,
@@ -86,7 +85,6 @@ import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
     ProductsModule,
     ProjectsModule,
     QuotationsModule,
-    PackagesModule,
   ],
   controllers: [AppController],
   providers: [

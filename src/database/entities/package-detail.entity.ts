@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToOne, Relation } from 'typeorm';
 import { BaseEntity } from './base';
 import { Product } from './product.entity';
 
@@ -16,5 +16,5 @@ export class PackageDetail {
   @OneToOne(() => Product, (product) => product.packageDetail, {
     onDelete: 'CASCADE',
   })
-  product: Product;
+  product: Relation<Product>;
 }

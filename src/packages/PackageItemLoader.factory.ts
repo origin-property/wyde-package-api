@@ -22,7 +22,7 @@ class PackageItemLoaderFactory extends DataloaderFactory<
 
   async load(ids: PackageId[], context: ExecutionContext) {
     const results: PackageItem[] =
-      await this.packagesService.getPackageItemByPackageId(ids);
+      await this.packagesService.getPackageItemByProductId(ids);
     return this.aggregateBy(results, (project) => project.id);
   }
 
