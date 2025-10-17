@@ -9,8 +9,10 @@ import {
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { Model } from './entities/model.entity';
+import { Project } from './entities/project.entity';
 import { Unit } from './entities/unit.entity';
 import { ModelLoader } from './models.loader';
+import { ProjectLoader } from './projects.loader';
 import { UnitsService } from './units.service';
 
 @Resolver(() => Unit)
@@ -34,5 +36,14 @@ export class UnitsResolver {
     loader: DataLoader<{ id: string; projectId: string }, Model>,
   ) {
     return modelId ? loader.load({ id: modelId, projectId }) : null;
+  }
+
+  @ResolveField(() => Project, { name: 'project' })
+  async project(
+    @Parent() { projectId }: Unit,
+    @Loader(ProjectLoader)
+    loader: DataLoader<string, Project>,
+  ) {
+    return loader.load(projectId);
   }
 }
