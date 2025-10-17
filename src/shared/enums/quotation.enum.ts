@@ -21,3 +21,21 @@ registerEnumType(QuotationStatus, {
     },
   },
 });
+
+export enum QuotationProductType {
+  PRODUCT = 'PRODUCT',
+  PACKAGE = 'PACKAGE',
+}
+
+registerEnumType(QuotationProductType, {
+  name: 'QuotationProductType',
+  description: 'ประเภทสินค้า',
+  valuesMap: {
+    PRODUCT: {
+      description: 'สินค้า',
+    },
+    PACKAGE: {
+      description: 'ชุดสินค้า',
+    },
+  },
+});

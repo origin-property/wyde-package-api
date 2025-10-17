@@ -107,14 +107,20 @@ input CreateQuotationInput {
 }
 
 input CreateQuotationItemInput {
-  """รหัสสินค้า"""
-  productId: String
+  """รหัสชุดสินค้า"""
+  packageId: String
 
   """รหัสรายการสินค้า"""
-  productVariantId: String
+  productId: String
+
+  """ประเภทสินค้า"""
+  productType: QuotationProductType = PRODUCT
 
   """จำนวนสินค้า"""
   quantity: Int = 0
+
+  """ราคาพิเศษ"""
+  specialPrice: Float
 
   """ราคารวม"""
   totalPrice: Float = 0
@@ -476,17 +482,20 @@ type QuotationItem {
   deletedBy: User
   id: ID!
 
-  """สินค้า"""
-  product: Product
+  """รายการชุดสินค้า"""
+  package: PackageItem
 
-  """รหัสสินค้า"""
-  productId: String
+  """รหัสชุดสินค้า"""
+  packageId: String
 
   """รายการสินค้า"""
-  productVariant: ProductVariant!
+  product: ProductVariant
 
   """รหัสรายการสินค้า"""
-  productVariantId: String
+  productId: String
+
+  """ประเภทสินค้า"""
+  productType: QuotationProductType!
 
   """จำนวนสินค้า"""
   quantity: Int!
@@ -496,6 +505,9 @@ type QuotationItem {
 
   """รหัสใบเสนอราคา"""
   quotationId: String
+
+  """ราคาพิเศษ"""
+  specialPrice: Float
 
   """ราคารวม"""
   totalPrice: Float!
@@ -514,6 +526,15 @@ type QuotationPaginate {
 
   """ข้อมูลการจัดการหน้า"""
   meta: IPaginateMeta
+}
+
+"""ประเภทสินค้า"""
+enum QuotationProductType {
+  """ชุดสินค้า"""
+  PACKAGE
+
+  """สินค้า"""
+  PRODUCT
 }
 
 """สถานะใบเสนอราคา"""
@@ -617,14 +638,20 @@ input UpdateQuotationInput {
 input UpdateQuotationItemInput {
   id: ID!
 
-  """รหัสสินค้า"""
-  productId: String
+  """รหัสชุดสินค้า"""
+  packageId: String
 
   """รหัสรายการสินค้า"""
-  productVariantId: String
+  productId: String
+
+  """ประเภทสินค้า"""
+  productType: QuotationProductType = PRODUCT
 
   """จำนวนสินค้า"""
   quantity: Int = 0
+
+  """ราคาพิเศษ"""
+  specialPrice: Float
 
   """ราคารวม"""
   totalPrice: Float = 0
