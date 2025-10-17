@@ -1,4 +1,3 @@
-import { PackageItem } from '@/products/entities/package.entity';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
@@ -12,6 +11,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { CreateQuotationItemInput } from './dto/create-quotation-item.input';
@@ -20,7 +20,6 @@ import { QuotationItem } from './entities/quotation-item.entity';
 import { Quotation } from './entities/quotation.entity';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
-import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import {
   QuotationUserLoader,
   QuotationUserLoaderFactory,

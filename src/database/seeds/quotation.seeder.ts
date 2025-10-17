@@ -1,10 +1,8 @@
 import dayjs from 'dayjs';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
-import {
-  QuotationProductType,
-  QuotationStatus,
-} from '../../shared/enums/quotation.enum';
+import { QuotationStatus } from '../../shared/enums/quotation.enum';
+import { ProductItemType } from '../entities/product.entity';
 import { Quotation } from '../entities/quotation.entity';
 
 export default class QuotationSeeder implements Seeder {
@@ -28,7 +26,7 @@ export default class QuotationSeeder implements Seeder {
         length: Math.floor(Math.random() * 10) + 1,
       }).map(() => {
         const productId = '0142c806-61c9-460d-938f-c7b537a11f3d';
-        const productType = QuotationProductType.PRODUCT;
+        const productType = ProductItemType.PRODUCT;
         const quantity = Math.floor(Math.random() * 10) + 1;
         const unitPrice = Math.floor(Math.random() * 1000) + 1;
         const totalPrice = quantity * unitPrice;

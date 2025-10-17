@@ -1,7 +1,9 @@
+import { File } from '@/database/entities/file.entity';
 import { Quotation } from '@/database/entities/quotation.entity';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { GraphQLError } from 'graphql';
 import { keyBy } from 'lodash';
@@ -12,6 +14,7 @@ import {
 } from 'nestjs-typeorm-paginate';
 import {
   Between,
+  DataSource,
   FindManyOptions,
   FindOptionsWhere,
   In,
@@ -27,6 +30,13 @@ export class QuotationsService {
   constructor(
     @InjectRepository(Quotation)
     private quotationRepository: Repository<Quotation>,
+    @InjectRepository(File)
+    private fileRepository: Repository<File>,
+
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
+
+    private readonly configService: ConfigService,
   ) {}
 
   async generateCode() {
@@ -50,19 +60,45 @@ export class QuotationsService {
   }
 
   async create(createQuotationInput: CreateQuotationInput, userId: string) {
-    const code = await this.generateCode();
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    return this.quotationRepository.save({
-      ...createQuotationInput,
-      code,
-      createdBy: userId,
-      updatedBy: userId,
-      items: createQuotationInput.items.map((item) => ({
-        ...item,
-        createdBy: userId,
-        updatedBy: userId,
-      })),
-    });
+    try {
+      const code = await this.generateCode();
+
+      const quotation = await queryRunner.manager
+        .getRepository(Quotation)
+        .save({
+          ...createQuotationInput,
+          code,
+          createdBy: userId,
+          updatedBy: userId,
+          items: createQuotationInput.items.map((item) => ({
+            ...item,
+            createdBy: userId,
+            updatedBy: userId,
+          })),
+        });
+
+      if (createQuotationInput.signatureFile) {
+        await queryRunner.manager.getRepository(File).save({
+          ...createQuotationInput.signatureFile,
+          fileBucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET'),
+          refId: quotation.id,
+          createdBy: userId,
+          updatedBy: userId,
+        });
+      }
+
+      await queryRunner.commitTransaction();
+      return quotation;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async searchWithPaginate(args: SearchQuotationArgs) {

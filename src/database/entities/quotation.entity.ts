@@ -68,6 +68,44 @@ export class Quotation extends BaseEntity {
   @Column({ name: 'unit_number', comment: 'หมายเลขยูนิต' })
   unitNumber: string;
 
+  @Column({
+    type: 'varchar',
+    name: 'special_code',
+    nullable: true,
+    array: true,
+    comment: 'รหัสส่วนลดพิเศษ',
+  })
+  specialCode: string[];
+
+  @Column({
+    name: 'special_discount',
+    nullable: true,
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+    comment: 'ส่วนลดพิเศษ',
+  })
+  specialDiscount: number;
+
+  @Column({
+    type: 'varchar',
+    name: 'vocher_code',
+    nullable: true,
+    array: true,
+    comment: 'รหัสส่วนลดพิเศษ',
+  })
+  vocherCode: string[];
+
+  @Column({
+    name: 'vocher_discount',
+    nullable: true,
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+    comment: 'ส่วนลดพิเศษ',
+  })
+  vocherDiscount: number;
+
   @OneToMany(() => QuotationItem, (item) => item.quotation, {
     cascade: true,
   })

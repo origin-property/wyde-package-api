@@ -1,12 +1,11 @@
 import { File } from '@/database/entities/file.entity';
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
-import { groupBy, keyBy } from 'lodash';
 import { In, Repository } from 'typeorm';
 import { CreateFileInput } from './dto/create-file.input';
 import { UpdateFileInput } from './dto/update-file.input';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FilesService {
@@ -77,10 +76,10 @@ export class FilesService {
   }
 
   async getFileWithIds(ids: readonly string[]): Promise<File[]> {
-    return this.fileRepository.find({ where: { id: In(ids) } });
+    return this.fileRepository.find({ where: { refId: In(ids) } });
   }
 
   async getFilesWithIds(ids: readonly string[]): Promise<File[]> {
-    return this.fileRepository.find({ where: { id: In(ids) } });
+    return this.fileRepository.find({ where: { refId: In(ids) } });
   }
 }
