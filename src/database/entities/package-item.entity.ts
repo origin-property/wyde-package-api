@@ -9,7 +9,7 @@ import {
 
 import { BaseEntity } from './base';
 import { ProductVariant } from './product-variant.entity';
-import { Package } from './package.entity';
+import { Product } from './product.entity';
 
 export enum PackageItemType {
   DEFAULT = 'DEFAULT',
@@ -21,19 +21,19 @@ export class PackageItem extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ name: 'product_id' })
+  productId: string;
+
+  @ManyToOne(() => Product, (product) => product.packageItems)
+  @JoinColumn({ name: 'product_id' })
+  product: Relation<Product>;
+
   @Column({ name: 'product_variant_id' })
   productVariantId: string;
 
   @ManyToOne(() => ProductVariant, (variant) => variant.packages)
   @JoinColumn({ name: 'product_variant_id' })
   productVariant: Relation<ProductVariant>;
-
-  @Column({ name: 'package_id' })
-  packageId: string;
-
-  @ManyToOne(() => Package, (pkg) => pkg.items)
-  @JoinColumn({ name: 'package_id' })
-  package: Relation<Package>;
 
   @Column({ name: 'quantity' })
   quantity: number;
