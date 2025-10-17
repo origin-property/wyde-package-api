@@ -1,5 +1,4 @@
 import { File } from '@/files/entities/file.entity';
-import { FileLoader } from '@/files/files.loader';
 import { Project } from '@/projects/entities/project.entity';
 import { Unit } from '@/projects/entities/unit.entity';
 import { CurrentUser } from '@/shared/decorators/decorators';
@@ -33,6 +32,10 @@ import {
 } from './QuotationUnitLoader.factory';
 import { PackageProjectLoaderFactory } from '../packages/PackageProjectLoader.factory';
 import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
+import {
+  QuotationFileLoader,
+  QuotationFileLoaderFactory,
+} from './QuotationFileLoader.factory';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {
@@ -115,9 +118,10 @@ export class QuotationsResolver {
   @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
   async file(
     @Parent() { id }: Quotation,
-    @Loader(FileLoader) loader: DataLoader<string, File>,
+    @Loader2(QuotationFileLoaderFactory) units: QuotationFileLoader,
   ) {
-    return loader.load(id);
+    const result = await units.load(id);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })

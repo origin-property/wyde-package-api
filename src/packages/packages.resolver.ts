@@ -18,8 +18,6 @@ import { Loader } from '@tracworx/nestjs-dataloader';
 import { Unit } from '@/projects/entities/unit.entity';
 import { ProductByVariantIdLoader } from '@/products/product-variant.loader';
 import { File } from '@/files/entities/file.entity';
-import { FilesLoader } from '@/files/files.loader';
-import { PackageItemLoader } from './package.loader';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import {
   PackageUnitLoader,
@@ -30,6 +28,14 @@ import {
   PackageProjectLoader,
   PackageProjectLoaderFactory,
 } from './PackageProjectLoader.factory';
+import {
+  PackageItemLoader,
+  PackageItemLoaderFactory,
+} from './PackageItemLoader.factory';
+import {
+  PackageImageLoader,
+  PackageImageLoaderFactory,
+} from './PackageImageLoader.factory';
 
 @Resolver(() => Package)
 export class PackagesResolver {
@@ -83,17 +89,19 @@ export class PackagesResolver {
   @ResolveField(() => [File])
   async images(
     @Parent() { id }: Package,
-    @Loader(FilesLoader) fileLoader: DataLoader<string, File[]>,
-  ): Promise<File[]> {
-    return fileLoader.load(id);
+    @Loader2(PackageImageLoaderFactory) loader: PackageImageLoader,
+  ) {
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField(() => [PackageItem])
   async items(
     @Parent() { id }: Package,
-    @Loader(PackageItemLoader) itemLoader: DataLoader<string, PackageItem[]>,
+    @Loader2(PackageItemLoaderFactory) loader: PackageItemLoader,
   ) {
-    return itemLoader.load(id);
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 }
 

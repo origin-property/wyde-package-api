@@ -11,11 +11,14 @@ import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
 import { QuotationUnitLoaderFactory } from './QuotationUnitLoader.factory';
 import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory';
+import { QuotationFileLoaderFactory } from './QuotationFileLoader.factory';
+import { FilesModule } from '../files/files.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Quotation, QuotationItem]),
     ProjectsModule,
+    FilesModule,
   ],
   providers: [
     QuotationsResolver,
@@ -26,6 +29,7 @@ import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory'
     QuotationItemsLoader,
     QuotationUnitLoaderFactory,
     QuotationProjectLoaderFactory,
+    QuotationFileLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

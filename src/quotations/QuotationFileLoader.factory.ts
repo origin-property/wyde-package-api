@@ -1,0 +1,32 @@
+import { Injectable, type ExecutionContext } from '@nestjs/common';
+import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
+import { File } from '../files/entities/file.entity';
+import { FilesService } from '../files/files.service';
+
+type QuotationId = string;
+type QuotationFileInfo = { id: QuotationId; values: File };
+type QuotationFileLoader = LoaderFrom<QuotationFileLoaderFactory>;
+
+@Injectable()
+class QuotationFileLoaderFactory extends DataloaderFactory<
+  QuotationId,
+  QuotationFileInfo
+> {
+  constructor(private readonly fileService: FilesService) {
+    super();
+  }
+
+  async load(ids: QuotationId[], context: ExecutionContext) {
+    const results: File[] = await this.fileService.getFileWithIds(ids);
+
+    return ids.map((id, index) => {
+      return { id, values: results[index] };
+    });
+  }
+
+  id(entity: QuotationFileInfo) {
+    return entity.id;
+  }
+}
+
+export { QuotationFileLoader, QuotationFileLoaderFactory };

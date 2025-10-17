@@ -4,11 +4,12 @@ import { FilesModule } from '@/files/files.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsModule } from '../projects/projects.module';
-import { PackageItemLoader } from './package.loader';
+import { PackageImageLoaderFactory } from './PackageImageLoader.factory';
+import { PackageItemLoaderFactory } from './PackageItemLoader.factory';
+import { PackageProjectLoaderFactory } from './PackageProjectLoader.factory';
 import { PackageItemsResolver, PackagesResolver } from './packages.resolver';
 import { PackagesService } from './packages.service';
 import { PackageUnitLoaderFactory } from './PackageUnitLoader.factory';
-import { PackageProjectLoaderFactory } from './PackageProjectLoader.factory';
 
 @Module({
   imports: [
@@ -20,9 +21,10 @@ import { PackageProjectLoaderFactory } from './PackageProjectLoader.factory';
     PackagesResolver,
     PackageItemsResolver,
     PackagesService,
-    PackageItemLoader,
     PackageUnitLoaderFactory,
     PackageProjectLoaderFactory,
+    PackageItemLoaderFactory,
+    PackageImageLoaderFactory,
   ],
   exports: [PackagesService],
 })
