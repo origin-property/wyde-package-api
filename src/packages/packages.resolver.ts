@@ -15,7 +15,6 @@ import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
 import { Project } from '@/projects/entities/project.entity';
 import { Loader } from '@tracworx/nestjs-dataloader';
-import { ProjectLoader } from '@/projects/projects.loader';
 import { Unit } from '@/projects/entities/unit.entity';
 import { ProductByVariantIdLoader } from '@/products/product-variant.loader';
 import { File } from '@/files/entities/file.entity';
@@ -27,6 +26,10 @@ import {
   PackageUnitLoaderFactory,
 } from './PackageUnitLoader.factory';
 import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import {
+  PackageProjectLoader,
+  PackageProjectLoaderFactory,
+} from './PackageProjectLoader.factory';
 
 @Resolver(() => Package)
 export class PackagesResolver {
@@ -62,9 +65,10 @@ export class PackagesResolver {
   @ResolveField(() => Project)
   async project(
     @Parent() { projectId }: Package,
-    @Loader(ProjectLoader) projectLoader: DataLoader<string, Project>,
-  ): Promise<Project> {
-    return projectLoader.load(projectId);
+    @Loader2(PackageProjectLoaderFactory) projectLoader: PackageProjectLoader,
+  ) {
+    const result = await projectLoader.load(projectId);
+    return result?.values?.[0];
   }
 
   @ResolveField(() => Unit)

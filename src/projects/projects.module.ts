@@ -16,7 +16,6 @@ import { ModelTypesService } from './model-types.serice';
 import { ModelFileUrlLoader, ModelLoader } from './models.loader';
 import { ModelsResolver } from './models.resolver';
 import { ModelsService } from './models.service';
-import { ProjectLoader } from './projects.loader';
 import { ProjectsResolver } from './projects.resolver';
 import { ProjectsService } from './projects.service';
 import { TowersResolver } from './towers.resolver';
@@ -46,7 +45,6 @@ import { TowerFloorLoaderFactory } from './TowerFloorLoader.factory';
   providers: [
     ProjectsResolver,
     ProjectsService,
-    ProjectLoader,
     UnitsResolver,
     UnitsService,
     TowersResolver,

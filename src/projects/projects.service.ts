@@ -32,15 +32,13 @@ export class ProjectsService {
     return this.projectsRepository.findOne({ where: { id } });
   }
 
-  async getProjectWithIds(ids: readonly string[]) {
-    const projects = await this.projectsRepository.find({
+  async getProjectWithIds(ids: string[]) {
+    return this.projectsRepository.find({
       where: [
         { id: In(ids), isDelete: false, type: 'C' },
         { id: In(ids), isDelete: IsNull(), type: 'C' },
       ],
       select: ['id', 'nameTh', 'nameEn'],
     });
-    const key = keyBy(projects, (project) => project.id);
-    return ids.map((id) => key[id]);
   }
 }

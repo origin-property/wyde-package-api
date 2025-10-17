@@ -2,7 +2,6 @@ import { File } from '@/files/entities/file.entity';
 import { FileLoader } from '@/files/files.loader';
 import { Project } from '@/projects/entities/project.entity';
 import { Unit } from '@/projects/entities/unit.entity';
-import { ProjectLoader } from '@/projects/projects.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
@@ -32,6 +31,8 @@ import {
   QuotationUnitLoader,
   QuotationUnitLoaderFactory,
 } from './QuotationUnitLoader.factory';
+import { PackageProjectLoaderFactory } from '../packages/PackageProjectLoader.factory';
+import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {
@@ -96,9 +97,10 @@ export class QuotationsResolver {
   @ResolveField(() => Project)
   async project(
     @Parent() { projectId }: Quotation,
-    @Loader(ProjectLoader) loader: DataLoader<string, Project>,
+    @Loader2(PackageProjectLoaderFactory) projectLoader: QuotationProjectLoader,
   ) {
-    return loader.load(projectId);
+    const result = await projectLoader.load(projectId);
+    return result?.values?.[0];
   }
 
   @ResolveField(() => Unit)
