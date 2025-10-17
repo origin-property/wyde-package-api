@@ -1,5 +1,5 @@
-import { ProductByIdLoader } from '@/products/dataloaders/product-by-id.loader';
-import { ProductModel } from '@/products/entities/product.entity';
+import { PackageItem } from '@/packages/entities/package.entity';
+import { PackageItemLoader } from '@/packages/package.loader';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
@@ -71,23 +71,27 @@ export class QuotationItemsResolver {
     return loader.load(quotationId);
   }
 
-  @ResolveField(() => ProductModel, { nullable: true, description: 'สินค้า' })
+  @ResolveField(() => ProductVariantModel, {
+    nullable: true,
+    description: 'รายการสินค้า',
+  })
   async product(
     @Parent() { productId }: QuotationItem,
-    @Loader(ProductByIdLoader) loader: DataLoader<string, ProductModel>,
+    @Loader(ProductVariantLoader)
+    loader: DataLoader<string, ProductVariantModel>,
   ) {
     return productId ? loader.load(productId) : null;
   }
 
-  @ResolveField(() => ProductVariantModel, {
-    description: 'รายการสินค้า',
+  @ResolveField(() => PackageItem, {
+    nullable: true,
+    description: 'รายการชุดสินค้า',
   })
-  async productVariant(
-    @Parent() { productVariantId }: QuotationItem,
-    @Loader(ProductVariantLoader)
-    loader: DataLoader<string, ProductVariantModel>,
+  async package(
+    @Parent() { packageId }: QuotationItem,
+    @Loader(PackageItemLoader) loader: DataLoader<string, PackageItem>,
   ) {
-    return loader.load(productVariantId);
+    return packageId ? loader.load(packageId) : null;
   }
 
   @ResolveField(() => User, { nullable: true })

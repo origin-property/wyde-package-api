@@ -57,6 +57,11 @@ export class QuotationsService {
       code,
       createdBy: userId,
       updatedBy: userId,
+      items: createQuotationInput.items.map((item) => ({
+        ...item,
+        createdBy: userId,
+        updatedBy: userId,
+      })),
     });
   }
 
