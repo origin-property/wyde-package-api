@@ -158,7 +158,12 @@ export class ProductsService {
     return `${skuPrefix}${nextRunning}`;
   }
 
-  async findAll(searchText?: string, page = 1, limit = 10): Promise<Product[]> {
+  async findAll(
+    searchText?: string,
+    categoryIds?: string[],
+    page = 1,
+    limit = 10,
+  ): Promise<Product[]> {
     const skip = (page - 1) * limit;
 
     const wheres: FindOptionsWhere<Product>[] = [];
@@ -173,6 +178,10 @@ export class ProductsService {
         { category: { name: Like(query) } },
         { productType: { name: Like(query) } },
       );
+    }
+
+    if (categoryIds?.length > 0) {
+      wheres.push({ category: { id: In(categoryIds) } });
     }
 
     return this.productRepository.find({

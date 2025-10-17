@@ -22,7 +22,7 @@ import { CurrentUser } from '@/shared/decorators/decorators';
 export class CategoryResolver {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Query(() => [CategoryModel], { name: 'categorys' })
+  @Query(() => [CategoryModel], { name: 'categories' })
   findAll(
     @Args('productTypeId', { type: () => ID, nullable: true })
     productTypeId?: string,
