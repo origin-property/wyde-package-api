@@ -161,6 +161,9 @@ type File {
 }
 
 input FindAllProductsInput {
+  """รหัสหมวดหมู่สินค้า"""
+  categoryIds: [String]
+
   """จำนวนรายการต่อหน้า"""
   limit: Int = 10
 
@@ -384,8 +387,8 @@ type Project {
 }
 
 type Query {
+  categories(productTypeId: ID): [Category!]!
   category(id: ID!): Category!
-  categorys(productTypeId: ID): [Category!]!
   file(id: ID!): File!
   files: [File!]!
   floor(id: ID!): Floor!

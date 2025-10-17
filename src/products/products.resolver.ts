@@ -63,9 +63,9 @@ export class ProductsResolver {
   findAll(
     @Args('findAllProductsInput') findAllProductsInput: FindAllProductsInput,
   ) {
-    const { searchText, page, limit } = findAllProductsInput;
+    const { searchText, categoryIds, page, limit } = findAllProductsInput;
 
-    return this.productsService.findAll(searchText, page, limit);
+    return this.productsService.findAll(searchText, categoryIds, page, limit);
   }
 
   @Query(() => ProductModel, { name: 'product' })
