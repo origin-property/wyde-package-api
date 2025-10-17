@@ -4,19 +4,19 @@ import { BaseModel } from './baseModel.entity';
 
 @ObjectType('ProductVariantImage')
 export class ProductVariantImageModel extends BaseModel {
-  @Field({ nullable: true })
+  @Field(() => String)
   fileCurName: string;
 
-  @Field({ nullable: true })
+  @Field(() => String)
   filePrevName: string;
 
-  @Field({ nullable: true })
+  @Field(() => String)
   fileExtension: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   altText: string;
 
-  @Field()
+  @Field(() => Boolean)
   isMain: boolean;
 
   @Field(() => Int)

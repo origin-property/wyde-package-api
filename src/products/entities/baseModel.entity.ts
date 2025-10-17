@@ -5,15 +5,15 @@ export class BaseModel {
   @Field(() => ID)
   id: string;
 
-  @Field()
+  @Field(() => String)
   createdAt: Date;
 
-  @Field()
+  @Field(() => String)
   updatedAt: Date;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   createdBy?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   updatedBy?: string;
 }

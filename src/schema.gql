@@ -11,13 +11,13 @@ type Auth {
 }
 
 type Category {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   description: String
   id: ID!
   name: String!
   productType: ProductType!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
@@ -247,85 +247,87 @@ type Mutation {
 type Product {
   category: Category!
   categoryId: String
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   description: String
   id: ID!
+  isActive: Boolean!
   name: String!
   options: [ProductOption!]!
   productType: ProductType!
   productTypeId: String
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
   variants: [ProductVariant!]!
 }
 
 type ProductOption {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   id: ID!
   name: String!
   optionValues: [ProductOptionValue!]!
   product: Product!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
 type ProductOptionValue {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   id: ID!
   image: String
   price: Float!
   productOption: ProductOption!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
   value: String!
 }
 
 type ProductType {
   categories: [Category!]!
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   description: String
   id: ID!
   name: String!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
 type ProductVariant {
   attributes: [VariantAttribute!]!
   budgetPrice: Float!
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   id: ID!
   images: [ProductVariantImage!]!
+  isActive: Boolean!
   optionValues: [ProductOptionValue!]!
   product: Product!
   sellingPrice: Float!
   sku: String!
   stock: Int!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
 type ProductVariantImage {
   altText: String
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   fileBucket: String!
-  fileCurName: String
-  fileExtension: String
+  fileCurName: String!
+  fileExtension: String!
   filePath: String!
-  filePrevName: String
+  filePrevName: String!
   fileUrl: String!
   id: ID!
   isMain: Boolean!
   productVariantImage(id: ID!): ProductVariantImage!
   productVariantImages(productVariantId: String!): [ProductVariantImage!]!
   sortOrder: Int!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
@@ -639,11 +641,11 @@ type User {
 }
 
 type VariantAttribute {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
-  id: String!
-  name: String!
+  id: ID!
+  name: String
   optionValue: ProductOptionValue!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }

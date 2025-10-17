@@ -3,15 +3,18 @@ import { BaseModel } from './baseModel.entity';
 
 @ObjectType('Product')
 export class ProductModel extends BaseModel {
-  @Field()
+  @Field(() => String)
   name: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   productTypeId: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   categoryId: string;
+
+  @Field(() => Boolean)
+  isActive: boolean;
 }

@@ -35,6 +35,11 @@ export class ProductVariant extends BaseEntity {
   @Column({ default: 0 })
   stock: number;
 
+  @Column({
+    default: true,
+  })
+  isActive: boolean;
+
   @ManyToOne(() => Product, (product) => product.variants)
   @JoinColumn({ name: 'product_id' })
   product: Relation<Product>;

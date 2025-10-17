@@ -1,10 +1,11 @@
+import { QueryRunner } from 'typeorm';
 import { Category } from '@/database/entities/category.entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { GraphQLError } from 'graphql';
-import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository, DataSource } from 'typeorm';
 import { ProductOptionValue } from '../database/entities/product-option-value.entity';
 import { ProductOption } from '../database/entities/product-option.entity';
 import { ProductType } from '../database/entities/product-type.entity';
@@ -33,100 +34,139 @@ export class ProductsService {
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
     private configService: ConfigService,
+
+    @InjectDataSource()
+    private dataSource: DataSource,
   ) {}
 
   async create(
     createProductInput: CreateProductInput,
     userId: string,
   ): Promise<Product> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    const bucketName = this.configService.get('AWS_S3_BUCKET');
     try {
+      const {
+        productTypeId,
+        categoryId,
+        name,
+        description,
+        options: optionsInput,
+        variants: variantsInput,
+      } = createProductInput;
+
+      // 1. ตรวจสอบข้อมูลหลัก
       const [productType, category] = await Promise.all([
-        this.productTypeRepository.findOneBy({
-          id: createProductInput.productTypeId,
-        }),
-        this.categoryRepository.findOneBy({
-          id: createProductInput.categoryId,
-        }),
+        queryRunner.manager.findOneBy(ProductType, { id: productTypeId }),
+        queryRunner.manager.findOneBy(Category, { id: categoryId }),
       ]);
 
       if (!productType) throw new GraphQLError('Product Type ID is invalid.');
       if (!category) throw new GraphQLError('Category ID is invalid.');
 
-      // 1. สร้าง Product หลัก
-      const product = this.productRepository.create({
-        name: createProductInput.name,
-        description: createProductInput.description,
-        productType: productType,
-        category: category,
-        createdBy: userId,
-        updatedBy: userId,
-      });
-      await this.productRepository.save(product);
+      // 2. สร้างและ SAVE Product (แม่) ก่อนเสมอ
+      const product = await queryRunner.manager.save(
+        queryRunner.manager.create(Product, {
+          name,
+          description,
+          productType,
+          category,
+          isActive: true,
+          createdBy: userId,
+          updatedBy: userId,
+        }),
+      );
 
-      const optionValueMap = new Map<string, ProductOptionValue>();
+      console.log(2);
 
-      // 2. สร้าง Options และ Option Values
-      for (const optionInput of createProductInput.options) {
-        const productOption = this.optionRepository.create({
-          product: product,
-          name: optionInput.name,
-        });
-        await this.optionRepository.save(productOption);
+      // 3. 💡 สร้าง Options และ Values พร้อมกัน
+      const savedOptionValues = await Promise.all(
+        optionsInput.map(async (optionInput) => {
+          const productOption = await queryRunner.manager.save(
+            queryRunner.manager.create(ProductOption, {
+              product,
+              name: optionInput.name,
+              createdBy: userId,
+              updatedBy: userId,
+            }),
+          );
 
-        for (const valueInput of optionInput.values) {
-          const optionValue = this.valueRepository.create({
-            productOption: productOption,
-            ...valueInput,
-          });
-          await this.valueRepository.save(optionValue);
-          optionValueMap.set(optionValue.value, optionValue);
-        }
-      }
+          return Promise.all(
+            optionInput.values.map((valueInput) =>
+              queryRunner.manager.save(
+                queryRunner.manager.create(ProductOptionValue, {
+                  ...valueInput,
+                  productOption,
+                  createdBy: userId,
+                  updatedBy: userId,
+                }),
+              ),
+            ),
+          );
+        }),
+      );
 
-      // 3. สร้าง Variants และ Images
-      for (const variantInput of createProductInput.variants) {
-        const relatedOptionValues = variantInput.optionValues.map(
-          (valueName) => {
-            const found = optionValueMap.get(valueName);
-            if (!found) {
-              throw new GraphQLError(`Option value '${valueName}' not found`);
-            }
-            return found;
-          },
-        );
+      console.log(3);
 
-        const generatedSku = await this._generateNextSku(productType);
+      const optionValueMap = new Map(
+        savedOptionValues.flat().map((v) => [v.value, v]),
+      );
 
-        const variant = this.variantRepository.create({
-          product: product,
-          sku: generatedSku,
-          budgetPrice: variantInput.budgetPrice,
-          sellingPrice: variantInput.sellingPrice,
-          stock: variantInput.stock,
-          optionValues: relatedOptionValues,
-        });
-        await this.variantRepository.save(variant);
+      await Promise.all(
+        variantsInput.map(async (variantInput) => {
+          const relatedOptionValues = variantInput.optionValues.map(
+            (valueName) => {
+              const found = optionValueMap.get(valueName);
+              if (!found)
+                throw new GraphQLError(`Option value '${valueName}' not found`);
+              return found;
+            },
+          );
+          console.log(4);
+          const generatedSku = await this._generateNextSku(productType);
 
-        if (variantInput.images && variantInput.images.length > 0) {
-          for (const imageInput of variantInput.images) {
-            const image = this.imageRepository.create({
-              variant: variant,
-              ...imageInput,
-              fileBucket: this.configService.get('AWS_S3_BUCKET'),
-            });
-            await this.imageRepository.save(image);
+          const variant = await queryRunner.manager.save(
+            queryRunner.manager.create(ProductVariant, {
+              ...variantInput,
+              product,
+              sku: generatedSku,
+              optionValues: relatedOptionValues,
+              isActive: true,
+              createdBy: userId,
+              updatedBy: userId,
+            }),
+          );
+          console.log(5);
+          if (variantInput.images?.length > 0) {
+            console.log('variantInput.images.', variantInput.images);
+            const imageEntities = variantInput.images.map((imageInput) =>
+              queryRunner.manager.create(ProductVariantImage, {
+                ...imageInput,
+                variant,
+                fileBucket: bucketName,
+                createdBy: userId,
+                updatedBy: userId,
+              }),
+            );
+            console.log(6);
+            await queryRunner.manager.save(imageEntities);
           }
-        }
-      }
+          console.log(7);
+        }),
+      );
 
-      // คืนค่า Product ที่สร้างเสร็จพร้อมข้อมูลทั้งหมด
+      await queryRunner.commitTransaction();
       return this.findOne(product.id);
     } catch (error) {
-      // หากเกิดข้อผิดพลาด, GraphQL จะจัดการ error ที่ throw ออกไป
+      await queryRunner.rollbackTransaction();
       throw new GraphQLError(error.message || 'Failed to create product');
+    } finally {
+      await queryRunner.release();
     }
   }
-
   private async _generateNextSku(productType: ProductType): Promise<string> {
     const year = dayjs().format('YY');
     const month = dayjs().format('MM');
@@ -142,6 +182,7 @@ export class ProductsService {
       order: {
         sku: 'DESC',
       },
+      withDeleted: true,
     });
 
     let runningNumber = 1;
@@ -171,7 +212,7 @@ export class ProductsService {
       wheres.push(
         { name: Like(query) },
         { description: Like(query) },
-        { variants: { sku: Like(query) } },
+        { variants: { sku: Like(query.toLocaleUpperCase()) } },
         { category: { name: Like(query) } },
         { productType: { name: Like(query) } },
       );
@@ -309,20 +350,67 @@ export class ProductsService {
   }
 
   async remove(id: string, userId: string): Promise<Product> {
-    const product = await this.productRepository.findOneBy({ id });
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        variants: {
+          images: true,
+        },
+        options: {
+          optionValues: true,
+        },
+      },
+    });
+
     if (!product) {
       throw new GraphQLError(`Product with ID "${id}" not found`);
     }
 
-    // 1. บันทึกว่าใครเป็นคนลบ
     product.deletedBy = userId;
     await this.productRepository.save(product);
 
-    // 2. ทำการ soft delete
     await this.productRepository.softRemove(product);
 
-    // 3. คืนค่าข้อมูลที่เพิ่งลบไป
     return product;
+  }
+
+  async updateIsActiveProduct(
+    id: string,
+    isActive: boolean,
+    userId: string,
+  ): Promise<Product> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const product = await queryRunner.manager.findOneBy(Product, { id });
+
+      if (!product) {
+        throw new GraphQLError(`Product with ID "${id}" not found`);
+      }
+
+      await queryRunner.manager.update(
+        ProductVariant,
+        { productId: id },
+        { isActive: isActive, updatedBy: userId },
+      );
+
+      product.isActive = isActive;
+      product.updatedBy = userId;
+      await queryRunner.manager.save(product);
+
+      await queryRunner.commitTransaction();
+
+      return product;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new GraphQLError(
+        error.message || 'Failed to update isActive status',
+      );
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findByVariantIds(

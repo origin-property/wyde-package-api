@@ -1,13 +1,13 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { ProductOptionValueModel } from './productOptionValue.entity';
 import { BaseModel } from './baseModel.entity';
 
 @ObjectType('VariantAttribute')
 export class VariantAttributeModel extends BaseModel {
-  @Field()
+  @Field(() => ID)
   declare id: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   name: string;
 
   @Field(() => ProductOptionValueModel)

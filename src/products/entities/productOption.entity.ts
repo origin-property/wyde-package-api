@@ -5,7 +5,7 @@ import { BaseModel } from './baseModel.entity';
 
 @ObjectType('ProductOption')
 export class ProductOptionModel extends BaseModel {
-  @Field()
+  @Field(() => String)
   name: string;
 
   @Field(() => ProductModel)
