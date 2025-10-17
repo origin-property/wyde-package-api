@@ -21,7 +21,7 @@ export class TowersService {
   }
 
   async getTowersWithIds(ids: readonly string[]) {
-    const towers = await this.towersRepository.find({
+    return this.towersRepository.find({
       where: [
         { projectId: In(ids), isDelete: false },
         { projectId: In(ids), isDelete: IsNull() },
@@ -29,7 +29,5 @@ export class TowersService {
       select: ['id', 'projectId', 'nameTh', 'nameEn'],
       order: { id: 'ASC' },
     });
-    const groupData = groupBy(towers, (tower) => tower.projectId);
-    return ids.map((id) => groupData[id] || []);
   }
 }

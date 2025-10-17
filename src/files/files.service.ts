@@ -77,18 +77,10 @@ export class FilesService {
   }
 
   async getFileWithIds(ids: readonly string[]): Promise<File[]> {
-    const files = await this.fileRepository.find({ where: { id: In(ids) } });
-
-    const key = keyBy(files, (file) => file.refId);
-
-    return ids.map((id) => key[id]);
+    return this.fileRepository.find({ where: { id: In(ids) } });
   }
 
-  async getFilesWithIds(ids: readonly string[]): Promise<File[][]> {
-    const files = await this.fileRepository.find({ where: { id: In(ids) } });
-
-    const key = groupBy(files, (file) => file.refId);
-
-    return ids.map((id) => key[id] || []);
+  async getFilesWithIds(ids: readonly string[]): Promise<File[]> {
+    return this.fileRepository.find({ where: { id: In(ids) } });
   }
 }

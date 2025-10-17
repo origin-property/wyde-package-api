@@ -9,11 +9,10 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
 import { User } from './entities/user.entity';
-import { UserLoader } from './users.loader';
 import { UsersService } from './users.service';
+import { Loader } from '@strv/nestjs-dataloader';
+import { UserLoader, UserLoaderFactory } from './UserLoader.factory';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -41,25 +40,32 @@ export class UsersResolver {
   @ResolveField(() => User, { nullable: true })
   async createdBy(
     @Parent() { createdBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader(UserLoaderFactory) units: UserLoader,
   ) {
-    return createdBy ? loader.load(createdBy) : null;
+    const result = await units.load(createdBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })
   async updatedBy(
     @Parent() { updatedBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader(UserLoaderFactory) units: UserLoader,
   ) {
-    return updatedBy ? loader.load(updatedBy) : null;
+    const result = await units.load(updatedBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })
   async deletedBy(
     @Parent() { deletedBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader(UserLoaderFactory) units: UserLoader,
   ) {
-    return deletedBy ? loader.load(deletedBy) : null;
+    if (!deletedBy) {
+      return null;
+    }
+
+    const result = await units.load(deletedBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => [Role])

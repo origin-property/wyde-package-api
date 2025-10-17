@@ -6,14 +6,20 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { Project } from './entities/project.entity';
 import { Tower } from './entities/tower.entity';
 import { Unit } from './entities/unit.entity';
 import { ProjectsService } from './projects.service';
-import { TowersLoader } from './towers.loader';
-import { UnitsLoader } from './units.loader';
+import {
+  ProjectTowerLoader,
+  ProjectTowerLoaderFactory,
+} from './ProjectTowerLoader.factory';
+import {
+  ProjectUnitLoader,
+  ProjectUnitLoaderFactory,
+} from './ProjectUnitLoader.factory';
 
 @Resolver(() => Project)
 export class ProjectsResolver {
@@ -32,16 +38,18 @@ export class ProjectsResolver {
   @ResolveField(() => [Unit], { name: 'units' })
   async units(
     @Parent() { id }: Project,
-    @Loader(UnitsLoader) unitsLoader: DataLoader<string, Unit>,
+    @Loader(ProjectUnitLoaderFactory) units: ProjectUnitLoader,
   ) {
-    return unitsLoader.load(id);
+    const result = await units.load(id);
+    return result?.values ?? [];
   }
 
   @ResolveField(() => [Tower], { name: 'towers' })
   async towers(
     @Parent() { id }: Project,
-    @Loader(TowersLoader) towersLoader: DataLoader<string, Tower[]>,
+    @Loader(ProjectTowerLoaderFactory) towers: ProjectTowerLoader,
   ) {
-    return towersLoader.load(id);
+    const result = await towers.load(id);
+    return result?.values ?? [];
   }
 }

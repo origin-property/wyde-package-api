@@ -6,13 +6,18 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
 import { ModelType } from './entities/model-type.entity';
 import { Model } from './entities/model.entity';
-import { ModelTypeLoader } from './model-types.loader';
-import { ModelFileUrlLoader } from './models.loader';
+import {
+  ModelFileLoader,
+  ModelFileLoaderFactory,
+} from './ModelFileLoader.factory';
 import { ModelsService } from './models.service';
+import {
+  ModelTypeLoader,
+  ModelTypeLoaderFactory,
+} from './ModelTypeLoader.factory';
 
 @Resolver(() => Model)
 export class ModelsResolver {
@@ -31,17 +36,18 @@ export class ModelsResolver {
   @ResolveField(() => ModelType, { name: 'modelType' })
   async modelType(
     @Parent() { modelTypeId }: Model,
-    @Loader(ModelTypeLoader) modelTypeLoader: DataLoader<string, ModelType>,
+    @Loader(ModelTypeLoaderFactory) modelTypeLoader: ModelTypeLoader,
   ) {
-    return modelTypeId ? modelTypeLoader.load(modelTypeId) : null;
+    const result = await modelTypeLoader.load(modelTypeId);
+    return result?.values ?? null;
   }
 
   @ResolveField(() => String, { nullable: true, description: 'รูปภาพรูปแบบ' })
   async fileUrl(
     @Parent() { id, projectId }: Model,
-    @Loader(ModelFileUrlLoader)
-    modelFileUrlLoader: DataLoader<{ id: string; projectId: string }, string>,
+    @Loader(ModelFileLoaderFactory) modelLoader: ModelFileLoader,
   ) {
-    return modelFileUrlLoader.load({ id, projectId });
+    const result = await modelLoader.load({ id, projectId });
+    return result?.values ?? null;
   }
 }

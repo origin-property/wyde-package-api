@@ -5,7 +5,7 @@ import { BaseModel } from './baseModel.entity';
 @ObjectType('VariantAttribute')
 export class VariantAttributeModel extends BaseModel {
   @Field()
-  id: string;
+  declare id: string;
 
   @Field()
   name: string;

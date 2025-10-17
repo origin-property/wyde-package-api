@@ -70,11 +70,9 @@ export class PackagesService {
 
   async getPackageItemByPackageId(
     ids: readonly string[],
-  ): Promise<PackageItemEntity[][]> {
-    const items = await this.packageItemRepository.find({
+  ): Promise<PackageItemEntity[]> {
+    return this.packageItemRepository.find({
       where: { packageId: In(ids) },
     });
-
-    return ids.map((id) => items.filter((item) => item.packageId === id));
   }
 }

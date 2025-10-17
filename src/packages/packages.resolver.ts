@@ -15,14 +15,27 @@ import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
 import { Project } from '@/projects/entities/project.entity';
 import { Loader } from '@tracworx/nestjs-dataloader';
-import { ProjectLoader } from '@/projects/projects.loader';
 import { Unit } from '@/projects/entities/unit.entity';
-import { UnitLoader } from '@/projects/units.loader';
 import { ProductByVariantIdLoader } from '@/products/product-variant.loader';
 import { File } from '@/files/entities/file.entity';
-import { FilesLoader } from '@/files/files.loader';
-import { PackageItemLoader } from './package.loader';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
+import {
+  PackageUnitLoader,
+  PackageUnitLoaderFactory,
+} from './PackageUnitLoader.factory';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import {
+  PackageProjectLoader,
+  PackageProjectLoaderFactory,
+} from './PackageProjectLoader.factory';
+import {
+  PackageItemLoader,
+  PackageItemLoaderFactory,
+} from './PackageItemLoader.factory';
+import {
+  PackageImageLoader,
+  PackageImageLoaderFactory,
+} from './PackageImageLoader.factory';
 
 @Resolver(() => Package)
 export class PackagesResolver {
@@ -58,33 +71,37 @@ export class PackagesResolver {
   @ResolveField(() => Project)
   async project(
     @Parent() { projectId }: Package,
-    @Loader(ProjectLoader) projectLoader: DataLoader<string, Project>,
-  ): Promise<Project> {
-    return projectLoader.load(projectId);
+    @Loader2(PackageProjectLoaderFactory) projectLoader: PackageProjectLoader,
+  ) {
+    const result = await projectLoader.load(projectId);
+    return result?.values?.[0];
   }
 
   @ResolveField(() => Unit)
   async unit(
     @Parent() { unitId }: Package,
-    @Loader(UnitLoader) unitLoader: DataLoader<string, Unit>,
-  ): Promise<Unit> {
-    return unitLoader.load(unitId);
+    @Loader2(PackageUnitLoaderFactory) units: PackageUnitLoader,
+  ) {
+    const result = await units.load(unitId);
+    return result?.values?.[0];
   }
 
   @ResolveField(() => [File])
   async images(
     @Parent() { id }: Package,
-    @Loader(FilesLoader) fileLoader: DataLoader<string, File[]>,
-  ): Promise<File[]> {
-    return fileLoader.load(id);
+    @Loader2(PackageImageLoaderFactory) loader: PackageImageLoader,
+  ) {
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField(() => [PackageItem])
   async items(
     @Parent() { id }: Package,
-    @Loader(PackageItemLoader) itemLoader: DataLoader<string, PackageItem[]>,
+    @Loader2(PackageItemLoaderFactory) loader: PackageItemLoader,
   ) {
-    return itemLoader.load(id);
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 }
 
