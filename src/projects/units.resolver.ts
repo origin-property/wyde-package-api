@@ -6,13 +6,14 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
 import { Model } from './entities/model.entity';
 import { Project } from './entities/project.entity';
 import { Unit } from './entities/unit.entity';
-import { ModelLoader } from './models.loader';
-import { ProjectLoader } from './projects.loader';
+import {
+  UnitModelLoader,
+  UnitModelLoaderFactory,
+} from './UnitModelLoader.factory';
 import { UnitsService } from './units.service';
 
 @Resolver(() => Unit)
@@ -32,10 +33,10 @@ export class UnitsResolver {
   @ResolveField(() => Model, { name: 'model' })
   async model(
     @Parent() { modelId, projectId }: Unit,
-    @Loader(ModelLoader)
-    loader: DataLoader<{ id: string; projectId: string }, Model>,
+    @Loader(UnitModelLoaderFactory) modelLoader: UnitModelLoader,
   ) {
-    return modelId ? loader.load({ id: modelId, projectId }) : null;
+    const result = await modelLoader.load({ id: modelId, projectId });
+    return result?.values ?? null;
   }
 
   @ResolveField(() => Project, { name: 'project' })

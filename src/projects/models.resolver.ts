@@ -11,8 +11,12 @@ import DataLoader from 'dataloader';
 import { ModelType } from './entities/model-type.entity';
 import { Model } from './entities/model.entity';
 import { ModelTypeLoader } from './model-types.loader';
-import { ModelFileUrlLoader } from './models.loader';
 import { ModelsService } from './models.service';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import {
+  ModelFileLoader,
+  ModelFileLoaderFactory,
+} from './ModelFileLoader.factory';
 
 @Resolver(() => Model)
 export class ModelsResolver {
@@ -39,9 +43,9 @@ export class ModelsResolver {
   @ResolveField(() => String, { nullable: true, description: 'รูปภาพรูปแบบ' })
   async fileUrl(
     @Parent() { id, projectId }: Model,
-    @Loader(ModelFileUrlLoader)
-    modelFileUrlLoader: DataLoader<{ id: string; projectId: string }, string>,
+    @Loader2(ModelFileLoaderFactory) modelLoader: ModelFileLoader,
   ) {
-    return modelFileUrlLoader.load({ id, projectId });
+    const result = await modelLoader.load({ id, projectId });
+    return result?.values ?? null;
   }
 }
