@@ -1,4 +1,4 @@
-import { PackageItem } from '@/packages/entities/package.entity';
+import { PackageItem } from '@/products/entities/package.entity';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';

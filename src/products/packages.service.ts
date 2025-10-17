@@ -11,7 +11,6 @@ import {
 import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
 import { ProductVariant as ProductVariantEntity } from '@/database/entities/product-variant.entity';
 import { FilesService } from '@/files/files.service';
-import { PackageDetail } from '@/database/entities/package-detail.entity';
 import { sumBy } from 'lodash';
 import dayjs from 'dayjs';
 import { UnitsService } from '@/projects/units.service';
@@ -75,6 +74,18 @@ export class PackagesService {
     );
 
     return product;
+  }
+
+  async findAll(): Promise<ProductEntity[]> {
+    return this.productRepository.find({
+      where: {
+        itemType: ProductItemType.PACKAGE,
+      },
+      relations: {
+        packageDetail: true,
+        variants: true,
+      },
+    });
   }
 
   async findAllByUnitId(unitId: string): Promise<ProductEntity[]> {

@@ -39,6 +39,16 @@ input CreateOptionValueInput {
   value: String!
 }
 
+input CreatePackageInput {
+  description: String
+  images: [CreateFileInput!]!
+  isActive: Boolean!
+  items: [PackageItemInput!]!
+  modelId: String!
+  name: String!
+  projectId: String!
+}
+
 input CreateProductInput {
   """The UUID of the product category"""
   categoryId: String!
@@ -225,6 +235,7 @@ type ModelType {
 type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createFile(createFileInput: CreateFileInput!): File!
+  createPackage(createPackageInput: CreatePackageInput!): Product!
   createProduct(createProductInput: CreateProductInput!): Product!
   createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
   createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
@@ -244,6 +255,29 @@ type Mutation {
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
+type PackageItem {
+  id: String!
+  packageSeq: Float!
+  productVariantId: String!
+  quantity: Float!
+  seq: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
+input PackageItemInput {
+  packageSeq: Float!
+  productVariantId: String!
+  quantity: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
+enum PackageItemType {
+  DEFAULT
+  EQUIVALENT
+}
+
 type Product {
   category: Category!
   categoryId: String
@@ -253,8 +287,10 @@ type Product {
   id: ID!
   name: String!
   options: [ProductOption!]!
+  packageItems: [PackageItem!]!
   productType: ProductType!
   productTypeId: String
+  project: Project!
   updatedAt: Date!
   updatedBy: String
   variants: [ProductVariant!]!
@@ -349,6 +385,7 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
+  packagesByUnit(unitId: String!): [Product!]!
   product(id: Int!): Product!
   productType(id: ID!): ProductType!
   productTypes: [ProductType!]!
