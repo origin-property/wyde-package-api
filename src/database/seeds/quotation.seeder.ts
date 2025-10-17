@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
+import { ProductItemType } from '../../shared/enums/product.enum';
 import { QuotationStatus } from '../../shared/enums/quotation.enum';
-import { ProductItemType } from '../entities/product.entity';
 import { Quotation } from '../entities/quotation.entity';
 
 export default class QuotationSeeder implements Seeder {
