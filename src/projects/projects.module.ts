@@ -11,7 +11,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FloorsResolver } from './floors.resolver';
 import { FloorsService } from './floors.service';
-import { ModelTypeLoader } from './model-types.loader';
 import { ModelTypesService } from './model-types.serice';
 import { ModelsResolver } from './models.resolver';
 import { ModelsService } from './models.service';
@@ -26,6 +25,7 @@ import { ProjectUnitLoaderFactory } from './ProjectUnitLoader.factory';
 import { TowerFloorLoaderFactory } from './TowerFloorLoader.factory';
 import { UnitModelLoaderFactory } from './UnitModelLoader.factory';
 import { ModelFileLoaderFactory } from './ModelFileLoader.factory';
+import { ModelTypeLoaderFactory } from './ModelTypeLoader.factory';
 
 @Module({
   imports: [
@@ -54,13 +54,13 @@ import { ModelFileLoaderFactory } from './ModelFileLoader.factory';
     FloorsService,
     ModelsService,
     ModelsResolver,
-    ModelTypeLoader,
     ModelTypesService,
     ProjectTowerLoaderFactory,
     ProjectUnitLoaderFactory,
     TowerFloorLoaderFactory,
     UnitModelLoaderFactory,
     ModelFileLoaderFactory,
+    ModelTypeLoaderFactory,
   ],
   exports: [
     ProjectsService,
