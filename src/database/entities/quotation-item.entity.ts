@@ -93,6 +93,16 @@ export class QuotationItem extends BaseEntity {
   budgetPrice: number;
 
   @Column({
+    name: 'special_price',
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+    default: 0.0,
+    comment: 'ราคาพิเศษ',
+  })
+  specialPrice: number;
+
+  @Column({
     name: 'unit_price',
     comment: 'ราคา/หน่วย',
     type: 'decimal',
