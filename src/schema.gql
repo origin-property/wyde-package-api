@@ -39,6 +39,16 @@ input CreateOptionValueInput {
   value: String!
 }
 
+input CreatePackageInput {
+  description: String
+  images: [CreateFileInput!]!
+  isActive: Boolean!
+  items: [PackageItemInput!]!
+  modelId: String!
+  name: String!
+  projectId: String!
+}
+
 input CreateProductInput {
   """The UUID of the product category"""
   categoryId: String!
@@ -86,6 +96,15 @@ input CreateQuotationInput {
   """รหัสโครงการ"""
   projectId: String
 
+  """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
+  signatureFile: CreateFileInput!
+
+  """รหัสส่วนลดพิเศษ"""
+  specialCode: [String!]
+
+  """ส่วนลดพิเศษ"""
+  specialDiscount: Float
+
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING
 
@@ -94,20 +113,38 @@ input CreateQuotationInput {
 
   """หมายเลขยูนิต"""
   unitNumber: String
+
+  """รหัสส่วนลดพิเศษ"""
+  vocherCode: [String!]
+
+  """ส่วนลดพิเศษ"""
+  vocherDiscount: Float
 }
 
 input CreateQuotationItemInput {
-  """รหัสชุดสินค้า"""
-  packageId: String
+  """ราคางบประมาณสินค้า"""
+  budgetPrice: Float = 0
+
+  """คำอธิบายสินค้า"""
+  productDescription: String
 
   """รหัสรายการสินค้า"""
   productId: String
 
+  """ชื่อสินค้า"""
+  productName: String
+
   """ประเภทสินค้า"""
-  productType: QuotationProductType = PRODUCT
+  productType: ProductItemType = PRODUCT
 
   """จำนวนสินค้า"""
   quantity: Int = 0
+
+  """ราคาขายสินค้า"""
+  sellingPrice: Float = 0
+
+  """SKU สินค้า"""
+  sku: String
 
   """ราคาพิเศษ"""
   specialPrice: Float
@@ -225,6 +262,7 @@ type ModelType {
 type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createFile(createFileInput: CreateFileInput!): File!
+  createPackage(createPackageInput: CreatePackageInput!): Product!
   createProduct(createProductInput: CreateProductInput!): Product!
   createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
   createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
@@ -244,6 +282,29 @@ type Mutation {
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
 
+type PackageItem {
+  id: String!
+  packageSeq: Float!
+  productVariantId: String!
+  quantity: Float!
+  seq: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
+input PackageItemInput {
+  packageSeq: Float!
+  productVariantId: String!
+  quantity: Float!
+  specialPrice: Float!
+  type: PackageItemType!
+}
+
+enum PackageItemType {
+  DEFAULT
+  EQUIVALENT
+}
+
 type Product {
   category: Category!
   categoryId: String
@@ -252,13 +313,25 @@ type Product {
   description: String
   id: ID!
   isActive: Boolean!
+  itemType: ProductItemType
   name: String!
   options: [ProductOption!]!
+  packageItems: [PackageItem!]!
   productType: ProductType!
   productTypeId: String
+  project: Project!
   updatedAt: String!
   updatedBy: String
   variants: [ProductVariant!]!
+}
+
+"""ประเภทสินค้า"""
+enum ProductItemType {
+  """ชุดสินค้า"""
+  PACKAGE
+
+  """สินค้า"""
+  PRODUCT
 }
 
 type ProductOption {
@@ -351,6 +424,7 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
+  packagesByUnit(unitId: String!): [Product!]!
   product(id: Int!): Product!
   productType(id: ID!): ProductType!
   productTypes: [ProductType!]!
@@ -406,15 +480,21 @@ type Quotation {
   date: Date!
   deletedAt: Date
   deletedBy: User
-
-  """ลายเซ็นลูกค้า"""
-  file: File
   id: ID!
   items: [QuotationItem!]!
   project: Project!
 
   """รหัสโครงการ"""
   projectId: String!
+
+  """ลายเซ็นลูกค้า"""
+  signatureFile: File
+
+  """รหัสส่วนลดพิเศษ"""
+  specialCode: [String!]
+
+  """ส่วนลดพิเศษ"""
+  specialDiscount: Float
 
   """สถานะใบเสนอราคา"""
   status: QuotationStatus!
@@ -427,26 +507,37 @@ type Quotation {
   unitNumber: String!
   updatedAt: Date!
   updatedBy: User
+
+  """รหัสส่วนลดพิเศษ"""
+  vocherCode: [String!]
+
+  """ส่วนลดพิเศษ"""
+  vocherDiscount: Float
 }
 
 type QuotationItem {
+  """ราคางบประมาณสินค้า"""
+  budgetPrice: Float!
   createdAt: Date!
   createdBy: User
   deletedAt: Date
   deletedBy: User
   id: ID!
 
-  """รหัสชุดสินค้า"""
-  packageId: String
-
   """รายการสินค้า"""
   product: ProductVariant
+
+  """คำอธิบายสินค้า"""
+  productDescription: String
 
   """รหัสรายการสินค้า"""
   productId: String
 
+  """ชื่อสินค้า"""
+  productName: String
+
   """ประเภทสินค้า"""
-  productType: QuotationProductType!
+  productType: ProductItemType!
 
   """จำนวนสินค้า"""
   quantity: Int!
@@ -456,6 +547,12 @@ type QuotationItem {
 
   """รหัสใบเสนอราคา"""
   quotationId: String
+
+  """ราคาขายสินค้า"""
+  sellingPrice: Float!
+
+  """SKU สินค้า"""
+  sku: String
 
   """ราคาพิเศษ"""
   specialPrice: Float
@@ -477,15 +574,6 @@ type QuotationPaginate {
 
   """ข้อมูลการจัดการหน้า"""
   meta: IPaginateMeta
-}
-
-"""ประเภทสินค้า"""
-enum QuotationProductType {
-  """ชุดสินค้า"""
-  PACKAGE
-
-  """สินค้า"""
-  PRODUCT
 }
 
 """สถานะใบเสนอราคา"""
@@ -576,6 +664,15 @@ input UpdateQuotationInput {
   """รหัสโครงการ"""
   projectId: String
 
+  """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
+  signatureFile: CreateFileInput
+
+  """รหัสส่วนลดพิเศษ"""
+  specialCode: [String!]
+
+  """ส่วนลดพิเศษ"""
+  specialDiscount: Float
+
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING
 
@@ -584,22 +681,39 @@ input UpdateQuotationInput {
 
   """หมายเลขยูนิต"""
   unitNumber: String
+
+  """รหัสส่วนลดพิเศษ"""
+  vocherCode: [String!]
+
+  """ส่วนลดพิเศษ"""
+  vocherDiscount: Float
 }
 
 input UpdateQuotationItemInput {
+  """ราคางบประมาณสินค้า"""
+  budgetPrice: Float = 0
   id: ID!
 
-  """รหัสชุดสินค้า"""
-  packageId: String
+  """คำอธิบายสินค้า"""
+  productDescription: String
 
   """รหัสรายการสินค้า"""
   productId: String
 
+  """ชื่อสินค้า"""
+  productName: String
+
   """ประเภทสินค้า"""
-  productType: QuotationProductType = PRODUCT
+  productType: ProductItemType = PRODUCT
 
   """จำนวนสินค้า"""
   quantity: Int = 0
+
+  """ราคาขายสินค้า"""
+  sellingPrice: Float = 0
+
+  """SKU สินค้า"""
+  sku: String
 
   """ราคาพิเศษ"""
   specialPrice: Float

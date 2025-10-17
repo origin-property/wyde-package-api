@@ -15,7 +15,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
-import { PackageProjectLoaderFactory } from '../packages/PackageProjectLoader.factory';
+import { PackageProjectLoaderFactory } from '../products/dataloaders/PackageProjectLoader.factory';
 import { CreateQuotationInput } from './dto/create-quotation.input';
 import { SearchQuotationArgs } from './dto/search-quotation.agrs';
 import { UpdateQuotationInput } from './dto/update-quotation.input';
@@ -121,7 +121,7 @@ export class QuotationsResolver {
   }
 
   @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
-  async file(
+  async signatureFile(
     @Parent() { id }: Quotation,
     @Loader(QuotationFileLoaderFactory) units: QuotationFileLoader,
   ) {
