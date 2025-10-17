@@ -13,12 +13,15 @@ import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory'
 import { QuotationFileLoaderFactory } from './QuotationFileLoader.factory';
 import { FilesModule } from '../files/files.module';
 import { QuotationItemLoaderFactory } from './QuotationItemLoader.factory';
+import { UsersModule } from '../users/users.module';
+import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Quotation, QuotationItem]),
     ProjectsModule,
     FilesModule,
+    UsersModule,
   ],
   providers: [
     QuotationsResolver,
@@ -30,6 +33,7 @@ import { QuotationItemLoaderFactory } from './QuotationItemLoader.factory';
     QuotationProjectLoaderFactory,
     QuotationFileLoaderFactory,
     QuotationItemLoaderFactory,
+    QuotationUserLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

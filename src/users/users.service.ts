@@ -41,10 +41,6 @@ export class UsersService {
   }
 
   async getUserWithIds(ids: readonly string[]): Promise<User[]> {
-    const users = await this.userRepository.find({ where: { id: In(ids) } });
-
-    const key = keyBy(users, (user) => user.id);
-
-    return ids.map((id) => key[id]);
+    return this.userRepository.find({ where: { id: In(ids) } });
   }
 }

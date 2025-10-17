@@ -4,7 +4,6 @@ import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
-import { UserLoader } from '@/users/users.loader';
 import {
   Args,
   ID,
@@ -22,6 +21,11 @@ import { QuotationItem } from './entities/quotation-item.entity';
 import { Quotation } from './entities/quotation.entity';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import {
+  QuotationUserLoader,
+  QuotationUserLoaderFactory,
+} from './QuotationUserLoader.factory';
 
 @Resolver(() => QuotationItem)
 export class QuotationItemsResolver {
@@ -97,24 +101,31 @@ export class QuotationItemsResolver {
   @ResolveField(() => User, { nullable: true })
   async createdBy(
     @Parent() { createdBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader2(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
-    return createdBy ? loader.load(createdBy) : null;
+    const result = await units.load(createdBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })
   async updatedBy(
     @Parent() { updatedBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader2(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
-    return updatedBy ? loader.load(updatedBy) : null;
+    const result = await units.load(updatedBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })
   async deletedBy(
     @Parent() { deletedBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader2(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
-    return deletedBy ? loader.load(deletedBy) : null;
+    if (!deletedBy) {
+      return null;
+    }
+
+    const result = await units.load(deletedBy);
+    return result?.values || null;
   }
 }

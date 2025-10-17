@@ -5,7 +5,6 @@ import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { User } from '@/users/entities/user.entity';
-import { UserLoader } from '@/users/users.loader';
 import {
   Args,
   ID,
@@ -15,22 +14,14 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
+import { PackageProjectLoaderFactory } from '../packages/PackageProjectLoader.factory';
 import { CreateQuotationInput } from './dto/create-quotation.input';
 import { SearchQuotationArgs } from './dto/search-quotation.agrs';
 import { UpdateQuotationInput } from './dto/update-quotation.input';
 import { QuotationItem } from './entities/quotation-item.entity';
 import { QuotationPaginate } from './entities/quotation-paginate.entity';
 import { Quotation } from './entities/quotation.entity';
-import { QuotationsService } from './quotations.service';
-import { Loader as Loader2 } from '@strv/nestjs-dataloader';
-import {
-  QuotationUnitLoader,
-  QuotationUnitLoaderFactory,
-} from './QuotationUnitLoader.factory';
-import { PackageProjectLoaderFactory } from '../packages/PackageProjectLoader.factory';
-import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
 import {
   QuotationFileLoader,
   QuotationFileLoaderFactory,
@@ -39,6 +30,16 @@ import {
   QuotationItemLoader,
   QuotationItemLoaderFactory,
 } from './QuotationItemLoader.factory';
+import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
+import { QuotationsService } from './quotations.service';
+import {
+  QuotationUnitLoader,
+  QuotationUnitLoaderFactory,
+} from './QuotationUnitLoader.factory';
+import {
+  QuotationUserLoader,
+  QuotationUserLoaderFactory,
+} from './QuotationUserLoader.factory';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {
@@ -95,7 +96,7 @@ export class QuotationsResolver {
   @ResolveField(() => [QuotationItem])
   async items(
     @Parent() { id }: Quotation,
-    @Loader2(QuotationItemLoaderFactory) loader: QuotationItemLoader,
+    @Loader(QuotationItemLoaderFactory) loader: QuotationItemLoader,
   ) {
     const result = await loader.load(id);
     return result?.values || [];
@@ -104,7 +105,7 @@ export class QuotationsResolver {
   @ResolveField(() => Project)
   async project(
     @Parent() { projectId }: Quotation,
-    @Loader2(PackageProjectLoaderFactory) projectLoader: QuotationProjectLoader,
+    @Loader(PackageProjectLoaderFactory) projectLoader: QuotationProjectLoader,
   ) {
     const result = await projectLoader.load(projectId);
     return result?.values?.[0];
@@ -113,7 +114,7 @@ export class QuotationsResolver {
   @ResolveField(() => Unit)
   async unit(
     @Parent() { unitId }: Quotation,
-    @Loader2(QuotationUnitLoaderFactory) units: QuotationUnitLoader,
+    @Loader(QuotationUnitLoaderFactory) units: QuotationUnitLoader,
   ) {
     const result = await units.load(unitId);
     return result?.values?.[0];
@@ -122,7 +123,7 @@ export class QuotationsResolver {
   @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
   async file(
     @Parent() { id }: Quotation,
-    @Loader2(QuotationFileLoaderFactory) units: QuotationFileLoader,
+    @Loader(QuotationFileLoaderFactory) units: QuotationFileLoader,
   ) {
     const result = await units.load(id);
     return result?.values || null;
@@ -131,24 +132,31 @@ export class QuotationsResolver {
   @ResolveField(() => User, { nullable: true })
   async createdBy(
     @Parent() { createdBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
-    return createdBy ? loader.load(createdBy) : null;
+    const result = await units.load(createdBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })
   async updatedBy(
     @Parent() { updatedBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
-    return updatedBy ? loader.load(updatedBy) : null;
+    const result = await units.load(updatedBy);
+    return result?.values || null;
   }
 
   @ResolveField(() => User, { nullable: true })
   async deletedBy(
     @Parent() { deletedBy }: User,
-    @Loader(UserLoader) loader: DataLoader<string, User>,
+    @Loader(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
-    return deletedBy ? loader.load(deletedBy) : null;
+    if (!deletedBy) {
+      return null;
+    }
+
+    const result = await units.load(deletedBy);
+    return result?.values || null;
   }
 }
