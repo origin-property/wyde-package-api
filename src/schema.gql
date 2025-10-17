@@ -550,6 +550,7 @@ type Unit {
   id: ID!
   model: Model!
   modelId: String
+  project: Project!
   projectId: String!
   unitNumber: String!
 }
