@@ -36,37 +36,38 @@ import {
   PackageImageLoader,
   PackageImageLoaderFactory,
 } from './PackageImageLoader.factory';
+import { Product } from '@/database/entities/product.entity';
 
-@Resolver(() => Package)
+@Resolver(() => Product)
 export class PackagesResolver {
   constructor(private readonly packagesService: PackagesService) {}
 
-  @Mutation(() => Package)
+  @Mutation(() => Product)
   createPackage(
     @Args('input') input: CreatePackageInput,
     @CurrentUser() user: User,
-  ): Promise<Package> {
+  ): Promise<Product> {
     return this.packagesService.create(input, user.id);
   }
 
-  @Query(() => [Package], { name: 'packagesByUnit' })
+  @Query(() => [Product], { name: 'packagesByUnit' })
   findAll(
     @Args('unitId', { type: () => String }) unitId: string,
-  ): Promise<Package[]> {
+  ): Promise<Product[]> {
     return this.packagesService.findAllByUnitId(unitId);
   }
 
-  @Query(() => Package, { name: 'package' })
-  findOne(@Args('id', { type: () => String }) id: string): Promise<Package> {
-    return this.packagesService.findOne(id);
-  }
+  // @Query(() => Package, { name: 'package' })
+  // findOne(@Args('id', { type: () => String }) id: string): Promise<Package> {
+  //   return this.packagesService.findOne(id);
+  // }
 
-  @Mutation(() => Boolean)
-  removePackage(
-    @Args('id', { type: () => String }) id: string,
-  ): Promise<boolean> {
-    return this.packagesService.remove(id);
-  }
+  // @Mutation(() => Boolean)
+  // removePackage(
+  //   @Args('id', { type: () => String }) id: string,
+  // ): Promise<boolean> {
+  //   return this.packagesService.remove(id);
+  // }
 
   @ResolveField(() => Project)
   async project(
