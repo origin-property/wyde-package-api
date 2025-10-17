@@ -1,5 +1,4 @@
 import { PackageItem } from '@/packages/entities/package.entity';
-import { PackageItemLoader } from '@/packages/package.loader';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
@@ -85,17 +84,6 @@ export class QuotationItemsResolver {
     loader: DataLoader<string, ProductVariantModel>,
   ) {
     return productId ? loader.load(productId) : null;
-  }
-
-  @ResolveField(() => PackageItem, {
-    nullable: true,
-    description: 'รายการชุดสินค้า',
-  })
-  async package(
-    @Parent() { packageId }: QuotationItem,
-    @Loader(PackageItemLoader) loader: DataLoader<string, PackageItem>,
-  ) {
-    return packageId ? loader.load(packageId) : null;
   }
 
   @ResolveField(() => User, { nullable: true })

@@ -15,6 +15,10 @@ import {
   UnitModelLoaderFactory,
 } from './UnitModelLoader.factory';
 import { UnitsService } from './units.service';
+import {
+  UnitProjectLoader,
+  UnitProjectLoaderFactory,
+} from './UnitProjectLoader.factory';
 
 @Resolver(() => Unit)
 export class UnitsResolver {
@@ -42,9 +46,9 @@ export class UnitsResolver {
   @ResolveField(() => Project, { name: 'project' })
   async project(
     @Parent() { projectId }: Unit,
-    @Loader(ProjectLoader)
-    loader: DataLoader<string, Project>,
+    @Loader(UnitProjectLoaderFactory) projectLoader: UnitProjectLoader,
   ) {
-    return loader.load(projectId);
+    const result = await projectLoader.load(projectId);
+    return result?.values || null;
   }
 }

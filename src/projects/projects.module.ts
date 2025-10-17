@@ -26,6 +26,7 @@ import { TowerFloorLoaderFactory } from './TowerFloorLoader.factory';
 import { UnitModelLoaderFactory } from './UnitModelLoader.factory';
 import { ModelFileLoaderFactory } from './ModelFileLoader.factory';
 import { ModelTypeLoaderFactory } from './ModelTypeLoader.factory';
+import { UnitProjectLoaderFactory } from './UnitProjectLoader.factory';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { ModelTypeLoaderFactory } from './ModelTypeLoader.factory';
     UnitModelLoaderFactory,
     ModelFileLoaderFactory,
     ModelTypeLoaderFactory,
+    UnitProjectLoaderFactory,
   ],
   exports: [
     ProjectsService,
