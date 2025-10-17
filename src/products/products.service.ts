@@ -80,8 +80,6 @@ export class ProductsService {
         }),
       );
 
-      console.log(2);
-
       // 3. 💡 สร้าง Options และ Values พร้อมกัน
       const savedOptionValues = await Promise.all(
         optionsInput.map(async (optionInput) => {
@@ -109,8 +107,6 @@ export class ProductsService {
         }),
       );
 
-      console.log(3);
-
       const optionValueMap = new Map(
         savedOptionValues.flat().map((v) => [v.value, v]),
       );
@@ -125,7 +121,7 @@ export class ProductsService {
               return found;
             },
           );
-          console.log(4);
+
           const generatedSku = await this._generateNextSku(productType);
 
           const variant = await queryRunner.manager.save(
@@ -139,7 +135,7 @@ export class ProductsService {
               updatedBy: userId,
             }),
           );
-          console.log(5);
+
           if (variantInput.images?.length > 0) {
             console.log('variantInput.images.', variantInput.images);
             const imageEntities = variantInput.images.map((imageInput) =>
@@ -151,10 +147,9 @@ export class ProductsService {
                 updatedBy: userId,
               }),
             );
-            console.log(6);
+
             await queryRunner.manager.save(imageEntities);
           }
-          console.log(7);
         }),
       );
 
