@@ -35,6 +35,15 @@ import { ProductTypesResolver } from './product-types.resolver';
 import { CategoryResolver } from './category.resolver';
 import { CategoriesByProductTypeLoader } from './dataloaders/categories-by-product-type.loader';
 import { ProductTypeByIdLoader } from './dataloaders/product-type-by-id.loader';
+import { PackagesService } from './packages.service';
+import { PackageItem } from '@/database/entities/package-item.entity';
+import { FilesService } from '@/files/files.service';
+import { FilesModule } from '@/files/files.module';
+import { PackageImageLoaderFactory } from './dataloaders/PackageImageLoader.factory';
+import { PackageItemLoaderFactory } from './dataloaders/PackageItemLoader.factory';
+import { PackageProjectLoaderFactory } from './dataloaders/PackageProjectLoader.factory';
+import { PackageDetail } from '@/database/entities/package-detail.entity';
+import { ProjectsModule } from '@/projects/projects.module';
 
 @Module({
   imports: [
@@ -47,7 +56,11 @@ import { ProductTypeByIdLoader } from './dataloaders/product-type-by-id.loader';
       ProductVariantImage,
       ProductType,
       Category,
+      PackageDetail,
+      PackageItem,
     ]),
+    FilesModule,
+    ProjectsModule,
   ],
   providers: [
     ProductsResolver,
@@ -75,6 +88,10 @@ import { ProductTypeByIdLoader } from './dataloaders/product-type-by-id.loader';
     CategoryResolver,
     CategoriesByProductTypeLoader,
     ProductTypeByIdLoader,
+    PackagesService,
+    PackageItemLoaderFactory,
+    PackageProjectLoaderFactory,
+    PackageImageLoaderFactory,
   ],
   exports: [ProductsService],
 })

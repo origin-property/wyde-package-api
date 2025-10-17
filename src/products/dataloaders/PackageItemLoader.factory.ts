@@ -5,7 +5,7 @@ import {
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
 import { PackageItem } from '@/database/entities/package-item.entity';
-import { PackagesService } from './packages.service';
+import { PackagesService } from '../packages.service';
 
 type PackageId = string;
 type PackageItemInfo = Aggregated<PackageId, PackageItem>;

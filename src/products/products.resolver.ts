@@ -29,10 +29,27 @@ import { ProductTypeLoader } from './dataloaders/product-type.loader';
 import { CategoryLoader } from './dataloaders/category.loader';
 import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
 import { OptionsByProductLoader } from './dataloaders/options-by-product.loader';
+import { CreatePackageInput } from './dto/create-package.input';
+import { PackagesService } from './packages.service';
+import { PackageItem } from './entities/package.entity';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import { ProductByVariantIdLoader } from './product-variant.loader';
+import {
+  PackageItemLoader,
+  PackageItemLoaderFactory,
+} from './dataloaders/PackageItemLoader.factory';
+import { Project } from '@/projects/entities/project.entity';
+import {
+  PackageProjectLoader,
+  PackageProjectLoaderFactory,
+} from './dataloaders/PackageProjectLoader.factory';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly packagesService: PackagesService,
+  ) {}
 
   @Mutation(() => ProductModel)
   createProduct(
@@ -49,6 +66,21 @@ export class ProductsResolver {
     @CurrentUser() user: any,
   ) {
     return this.productsService.update(updateProductInput, user.id);
+  }
+
+  @Mutation(() => ProductModel)
+  createPackage(
+    @Args('createPackageInput') createPackageInput: CreatePackageInput,
+    @CurrentUser() user: any,
+  ) {
+    return this.packagesService.create(createPackageInput, user.id);
+  }
+
+  @Query(() => [ProductModel], { name: 'packagesByUnit' })
+  findAllPackagesByUnit(
+    @Args('unitId', { type: () => String }) unitId: string,
+  ) {
+    return this.packagesService.findAllByUnitId(unitId);
   }
 
   @Mutation(() => ProductModel)
@@ -104,5 +136,37 @@ export class ProductsResolver {
     @Loader(OptionsByProductLoader) loader: DataLoader<string, ProductOption[]>,
   ) {
     return loader.load(product.id);
+  }
+
+  @ResolveField(() => Project)
+  async project(
+    @Parent() { packageDetail }: Product,
+    @Loader2(PackageProjectLoaderFactory) projectLoader: PackageProjectLoader,
+  ) {
+    const result = await projectLoader.load(packageDetail.projectId);
+    return result?.values?.[0];
+  }
+
+  @ResolveField(() => [PackageItem])
+  async packageItems(
+    @Parent() { id }: Product,
+    @Loader2(PackageItemLoaderFactory) loader: PackageItemLoader,
+  ) {
+    const result = await loader.load(id);
+    return result?.values || [];
+  }
+}
+
+@Resolver(() => PackageItem)
+export class PackageItemsResolver {
+  // constructor(private readonly packageItemsService: PackageItemsService) {}
+
+  @ResolveField(() => ProductVariantModel)
+  async product(
+    @Parent() { productVariantId }: PackageItem,
+    @Loader(ProductByVariantIdLoader)
+    productByVariantLoader: DataLoader<string, ProductVariantModel>,
+  ): Promise<ProductVariantModel> {
+    return productByVariantLoader.load(productVariantId);
   }
 }
