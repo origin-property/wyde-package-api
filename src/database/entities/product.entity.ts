@@ -28,7 +28,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @OneToMany(() => ProductOption, (option) => option.product)
+  @OneToMany(() => ProductOption, (option) => option.product, { cascade: true })
   options: Relation<ProductOption[]>;
 
   @OneToMany(() => ProductVariant, (variant) => variant.product, {
@@ -38,6 +38,11 @@ export class Product extends BaseEntity {
 
   @Column({ name: 'product_type_id', nullable: true })
   productTypeId: string;
+
+  @Column({
+    default: true,
+  })
+  isActive: boolean;
 
   @ManyToOne(() => ProductType, (type) => type.products)
   @JoinColumn({ name: 'product_type_id' })

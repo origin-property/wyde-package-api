@@ -39,9 +39,9 @@ export class ProductVariantImage extends BaseEntity {
   @JoinColumn({ name: 'product_variant_id' })
   variant: Relation<ProductVariant>;
 
-  @Column({ name: 'file_path' })
+  @Column({ name: 'file_path', nullable: true })
   filePath: string;
 
-  @Column({ name: 'file_bucket' })
+  @Column({ name: 'file_bucket', nullable: true })
   fileBucket: string;
 }

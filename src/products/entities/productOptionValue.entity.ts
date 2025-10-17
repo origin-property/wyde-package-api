@@ -4,7 +4,7 @@ import { BaseModel } from './baseModel.entity';
 
 @ObjectType('ProductOptionValue')
 export class ProductOptionValueModel extends BaseModel {
-  @Field()
+  @Field(() => String)
   value: string;
 
   @Field(() => Float)

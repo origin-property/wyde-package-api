@@ -3,7 +3,7 @@ import { BaseModel } from './baseModel.entity';
 
 @ObjectType('ProductVariant')
 export class ProductVariantModel extends BaseModel {
-  @Field()
+  @Field(() => String)
   sku: string;
 
   @Field(() => Float)
@@ -14,4 +14,7 @@ export class ProductVariantModel extends BaseModel {
 
   @Field(() => Int)
   stock: number;
+
+  @Field(() => Boolean)
+  isActive: boolean;
 }

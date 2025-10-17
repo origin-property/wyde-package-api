@@ -3,9 +3,9 @@ import { BaseModel } from './baseModel.entity';
 
 @ObjectType('Category')
 export class CategoryModel extends BaseModel {
-  @Field()
+  @Field(() => String)
   name: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 }
