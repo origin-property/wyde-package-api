@@ -36,7 +36,7 @@ export class CreatePackageInput {
   projectId: string;
 
   @Field(() => String)
-  unitId: string;
+  modelId: string;
 
   @Field(() => [PackageItemInput])
   items: PackageItemInput[];

@@ -485,9 +485,6 @@ type QuotationItem {
   deletedBy: User
   id: ID!
 
-  """รายการชุดสินค้า"""
-  package: PackageItem
-
   """รหัสชุดสินค้า"""
   packageId: String
 
