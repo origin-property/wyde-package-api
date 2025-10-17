@@ -23,7 +23,6 @@ import { UpdateQuotationInput } from './dto/update-quotation.input';
 import { QuotationItem } from './entities/quotation-item.entity';
 import { QuotationPaginate } from './entities/quotation-paginate.entity';
 import { Quotation } from './entities/quotation.entity';
-import { QuotationItemsLoader } from './quotation-items.loader';
 import { QuotationsService } from './quotations.service';
 import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import {
@@ -36,6 +35,10 @@ import {
   QuotationFileLoader,
   QuotationFileLoaderFactory,
 } from './QuotationFileLoader.factory';
+import {
+  QuotationItemLoader,
+  QuotationItemLoaderFactory,
+} from './QuotationItemLoader.factory';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {
@@ -92,9 +95,10 @@ export class QuotationsResolver {
   @ResolveField(() => [QuotationItem])
   async items(
     @Parent() { id }: Quotation,
-    @Loader(QuotationItemsLoader) loader: DataLoader<string, QuotationItem[]>,
+    @Loader2(QuotationItemLoaderFactory) loader: QuotationItemLoader,
   ) {
-    return loader.load(id);
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField(() => Project)

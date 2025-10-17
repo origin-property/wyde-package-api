@@ -74,15 +74,8 @@ export class QuotationItemsService {
   }
 
   async getQuotationItemsWithIds(ids: readonly string[]) {
-    const quotationItems = await this.quotationItemRepository.find({
+    return this.quotationItemRepository.find({
       where: { quotationId: In(ids) },
     });
-
-    const groupData = groupBy(
-      quotationItems,
-      (quotationItem) => quotationItem.quotationId,
-    );
-
-    return ids.map((id) => groupData[id] || []);
   }
 }

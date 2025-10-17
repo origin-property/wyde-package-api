@@ -3,7 +3,6 @@ import { Quotation } from '@/database/entities/quotation.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectsModule } from '../projects/projects.module';
-import { QuotationItemsLoader } from './quotation-items.loader';
 import { QuotationItemsResolver } from './quotation-items.resolver';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
@@ -13,6 +12,7 @@ import { QuotationUnitLoaderFactory } from './QuotationUnitLoader.factory';
 import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory';
 import { QuotationFileLoaderFactory } from './QuotationFileLoader.factory';
 import { FilesModule } from '../files/files.module';
+import { QuotationItemLoaderFactory } from './QuotationItemLoader.factory';
 
 @Module({
   imports: [
@@ -26,10 +26,10 @@ import { FilesModule } from '../files/files.module';
     QuotationLoader,
     QuotationItemsResolver,
     QuotationItemsService,
-    QuotationItemsLoader,
     QuotationUnitLoaderFactory,
     QuotationProjectLoaderFactory,
     QuotationFileLoaderFactory,
+    QuotationItemLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })
