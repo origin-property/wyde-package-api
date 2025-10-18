@@ -14,6 +14,7 @@ import { Product } from '../database/entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { ProductVariantModel } from './entities/productVariant.entity';
+import { ProductItemType } from '@/shared/enums/product.enum';
 
 @Injectable()
 export class ProductsService {
@@ -217,7 +218,19 @@ export class ProductsService {
     }
 
     return this.productRepository.find({
-      where: wheres.length > 0 ? wheres : undefined,
+      where:
+        wheres.length > 0
+          ? wheres.map((w) => ({ ...w, itemType: ProductItemType.PRODUCT }))
+          : undefined,
+
+      relations: {
+        productType: true,
+        category: true,
+        variants: {
+          images: true,
+          optionValues: true,
+        },
+      },
       order: {
         createdAt: 'DESC',
       },

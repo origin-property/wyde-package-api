@@ -55,7 +55,7 @@ export class Product extends BaseEntity {
   @JoinColumn({ name: 'category_id' })
   category: Relation<Category>;
 
-  @OneToMany(() => PackageItem, (item) => item.product)
+  @OneToMany(() => PackageItem, (item) => item.product, { cascade: true })
   packageItems: Relation<PackageItem[]>;
 
   @Column({

@@ -414,6 +414,7 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
+  packages: [Product!]!
   packagesByUnit(unitId: String!): [Product!]!
   product(id: Int!): Product!
   productType(id: ID!): ProductType!

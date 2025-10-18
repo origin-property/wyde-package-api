@@ -24,7 +24,9 @@ export class PackageItem extends BaseEntity {
   @Column({ name: 'product_id' })
   productId: string;
 
-  @ManyToOne(() => Product, (product) => product.packageItems)
+  @ManyToOne(() => Product, (product) => product.packageItems, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'product_id' })
   product: Relation<Product>;
 
