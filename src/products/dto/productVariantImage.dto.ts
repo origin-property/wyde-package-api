@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { BaseModel } from './baseModel.entity';
+import { BaseModel } from './baseModel.dto';
 // import { ProductVariantModel } from './productVariant.entity';
 
 @ObjectType('ProductVariantImage')

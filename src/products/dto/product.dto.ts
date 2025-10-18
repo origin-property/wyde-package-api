@@ -1,6 +1,6 @@
 import { ProductItemType } from '@/shared/enums/product.enum';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { BaseModel } from './baseModel.entity';
+import { BaseModel } from './baseModel.dto';
 
 @ObjectType('Product')
 export class ProductModel extends BaseModel {

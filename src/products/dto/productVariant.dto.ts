@@ -1,5 +1,5 @@
 import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
-import { BaseModel } from './baseModel.entity';
+import { BaseModel } from './baseModel.dto';
 
 @ObjectType('ProductVariant')
 export class ProductVariantModel extends BaseModel {

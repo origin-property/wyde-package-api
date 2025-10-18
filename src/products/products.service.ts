@@ -11,10 +11,10 @@ import { ProductType } from '../database/entities/product-type.entity';
 import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
 import { ProductVariant } from '../database/entities/product-variant.entity';
 import { Product } from '../database/entities/product.entity';
-import { CreateProductInput } from './dto/create-product.input';
-import { UpdateProductInput } from './dto/update-product.input';
-import { ProductVariantModel } from './entities/productVariant.entity';
 import { ProductItemType } from '@/shared/enums/product.enum';
+import { CreateProductInput } from './input/create-product.input';
+import { UpdateProductInput } from './input/update-product.input';
+import { ProductVariantModel } from './dto/productVariant.dto';
 
 @Injectable()
 export class ProductsService {

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CreatePackageInput } from './dto/create-package.input';
+import { CreatePackageInput } from './input/create-package.input';
 
 import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
 import { ProductVariant as ProductVariantEntity } from '@/database/entities/product-variant.entity';
@@ -14,7 +14,7 @@ import { ProductItemType } from '@/shared/enums/product.enum';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash';
 import { ConfigService } from '@nestjs/config';
-import { FindAllPackagesInput } from './dto/find-all-products.input';
+import { FindAllPackagesInput } from './input/find-all-products.input';
 
 @Injectable()
 export class PackagesService {

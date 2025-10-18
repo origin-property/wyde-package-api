@@ -7,8 +7,8 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { ProductTypesService } from './product-types.service';
-import { ProductTypeModel } from './entities/product-type.entity';
-import { CategoryModel } from './entities/category.entity';
+import { ProductTypeModel } from './dto/product-type.dto';
+import { CategoryModel } from './dto/category.dto';
 import { ProductType } from '@/database/entities/product-type.entity';
 import { CategoriesByProductTypeLoader } from './dataloaders/categories-by-product-type.loader';
 import { Loader } from '@tracworx/nestjs-dataloader';
