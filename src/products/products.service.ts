@@ -10,7 +10,7 @@ import { ProductOption } from '../database/entities/product-option.entity';
 import { ProductType } from '../database/entities/product-type.entity';
 import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
 import { ProductVariant } from '../database/entities/product-variant.entity';
-import { Product } from '../database/entities/product.entity';
+import { Product, ProductItemType } from '../database/entities/product.entity';
 import { CreateProductInput } from './dto/create-product.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { ProductVariantModel } from './entities/productVariant.entity';
@@ -182,7 +182,10 @@ export class ProductsService {
     }
 
     return this.productRepository.find({
-      where: wheres.length > 0 ? wheres : undefined,
+      where:
+        wheres.length > 0
+          ? wheres.map((w) => ({ ...w, itemType: ProductItemType.PRODUCT }))
+          : undefined,
 
       relations: {
         productType: true,

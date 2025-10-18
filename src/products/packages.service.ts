@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Like, Repository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 
 import { CreatePackageInput } from './dto/create-package.input';
 
@@ -38,9 +39,27 @@ export class PackagesService {
     const { name, description, projectId, modelId, isActive, images, items } =
       createPackageInput;
 
+    // ตรวจสอบว่า ProductVariant ที่อ้างอิงมีอยู่จริงหรือไม่
+    const variantIds = items.map(item => item.productVariantId);
+    const existingVariants = await this.variantRepository.find({
+      where: { id: In(variantIds) },
+      select: ['id']
+    });
+
+    if (existingVariants.length !== variantIds.length) {
+      const existingVariantIds = existingVariants.map(v => v.id);
+      const missingVariantIds = variantIds.filter(id => !existingVariantIds.includes(id));
+      throw new NotFoundException(`ProductVariants not found: ${missingVariantIds.join(', ')}`);
+    }
+
     const newSku = await this.generateSKU();
 
+    console.log(newSku);
+
+    const productId = uuidv4();
+
     const product = await this.productRepository.save({
+      id: productId,
       name,
       description,
       createdBy: userId,
@@ -54,6 +73,7 @@ export class PackagesService {
         updatedBy: userId,
       })),
       packageDetail: {
+        productId,
         projectId,
         modelId,
       },
@@ -131,7 +151,7 @@ export class PackagesService {
       },
     });
 
-    const currentSKU = currentVariant.sku.split('-')[2] || '00000';
+    const currentSKU = currentVariant?.sku.split('-')[2] ?? '00000';
     const nextSKUNumber = parseInt(currentSKU) + 1;
     const nextSKU = nextSKUNumber.toString().padStart(5, '0');
 
