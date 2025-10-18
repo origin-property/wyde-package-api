@@ -15,7 +15,10 @@ import { Role } from './role.entity';
 @Index(['username'], { unique: true })
 @Index(['email'], { unique: true })
 export class User extends BaseEntity {
-  @PrimaryColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column()

@@ -1,17 +1,14 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  Relation,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
 import { BaseEntity } from './base';
-import { Product } from './product.entity';
 import { Category } from './category.entity';
+import { Product } from './product.entity';
 
 @Entity({ name: 'product_type' })
 export class ProductType extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column({ length: 10, unique: true, default: 'FUR' })

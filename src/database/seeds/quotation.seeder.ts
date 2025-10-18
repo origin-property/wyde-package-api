@@ -9,6 +9,8 @@ export default class QuotationSeeder implements Seeder {
   public async run(dataSource: DataSource): Promise<any> {
     console.log(`-------- Start QuotationSeeder --------`);
 
+    return;
+
     const userId = '800efe5e-ac25-4608-ac88-4f967d9fcbba';
 
     const createdQuotations = Array.from({ length: 1000 }).map((_, index) => {

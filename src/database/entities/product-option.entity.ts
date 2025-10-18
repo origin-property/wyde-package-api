@@ -1,19 +1,22 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
+  PrimaryColumn,
   Relation,
 } from 'typeorm';
 import { BaseEntity } from './base';
-import { Product } from './product.entity';
 import { ProductOptionValue } from './product-option-value.entity';
+import { Product } from './product.entity';
 
 @Entity({ name: 'product_option' })
 export class ProductOption extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column({ name: 'product_id' })

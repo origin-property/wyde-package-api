@@ -11,6 +11,7 @@ import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
 import { QuotationFileLoaderFactory } from './QuotationFileLoader.factory';
 import { QuotationItemLoaderFactory } from './QuotationItemLoader.factory';
+import { QuotationItemPackageLoaderFactory } from './QuotationItemPackageLoader.factory';
 import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory';
 import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
@@ -35,6 +36,7 @@ import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
     QuotationFileLoaderFactory,
     QuotationItemLoaderFactory,
     QuotationUserLoaderFactory,
+    QuotationItemPackageLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

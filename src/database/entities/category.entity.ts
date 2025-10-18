@@ -1,10 +1,10 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
+  Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn,
+  PrimaryColumn,
   Relation,
 } from 'typeorm';
 import { BaseEntity } from './base';
@@ -13,7 +13,10 @@ import { Product } from './product.entity';
 
 @Entity({ name: 'category' })
 export class Category extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column({ name: 'product_type_id' })

@@ -1,10 +1,10 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  Relation,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  Relation,
 } from 'typeorm';
 
 import { BaseEntity } from './base';
@@ -18,7 +18,10 @@ export enum PackageItemType {
 
 @Entity({ name: 'package_item' })
 export class PackageItem extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column({ name: 'product_id' })

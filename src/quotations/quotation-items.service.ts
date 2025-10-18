@@ -2,8 +2,7 @@ import { QuotationItem } from '@/database/entities/quotation-item.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
-import { groupBy } from 'lodash';
-import { In, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { CreateQuotationItemInput } from './dto/create-quotation-item.input';
 import { UpdateQuotationItemInput } from './dto/update-quotation-item.input';
 
@@ -75,7 +74,13 @@ export class QuotationItemsService {
 
   async getQuotationItemsWithIds(ids: readonly string[]) {
     return this.quotationItemRepository.find({
-      where: { quotationId: In(ids) },
+      where: { quotationId: In(ids), parentId: IsNull() },
+    });
+  }
+
+  async getQuotationItemPackagesWithParentId(parentId: readonly string[]) {
+    return this.quotationItemRepository.find({
+      where: { parentId: In(parentId) },
     });
   }
 }

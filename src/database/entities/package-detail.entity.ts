@@ -1,5 +1,4 @@
-import { Entity, Column, PrimaryColumn, OneToOne, Relation } from 'typeorm';
-import { BaseEntity } from './base';
+import { Column, Entity, OneToOne, PrimaryColumn, Relation } from 'typeorm';
 import { Product } from './product.entity';
 
 @Entity({ name: 'package_detail' })
