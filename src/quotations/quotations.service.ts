@@ -91,6 +91,7 @@ export class QuotationsService {
             createdBy: userId,
             updatedBy: userId,
             items: item?.items?.map((packageItem) => ({
+              packageItemId: packageItem.packageItemId,
               productVariantId: packageItem.productId,
               productType: packageItem.productType,
               productName: packageItem.productName,

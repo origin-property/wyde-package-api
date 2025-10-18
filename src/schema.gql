@@ -113,6 +113,9 @@ input CreateQuotationItemInput {
   """รายการสินค้าหลัก"""
   items: [CreateQuotationItemInput!]
 
+  """รหัสแพ๊คเกจ"""
+  packageItemId: String
+
   """ราคา"""
   price: Float = 0
 
@@ -494,6 +497,9 @@ type QuotationItem {
   deletedBy: User
   id: ID!
 
+  """รหัสแพ๊คเกจ"""
+  packageItemId: String
+
   """รายการสินค้า"""
   packageItems: [QuotationItem!]
 
@@ -655,6 +661,9 @@ input UpdateQuotationItemInput {
 
   """รายการสินค้าหลัก"""
   items: [CreateQuotationItemInput!]
+
+  """รหัสแพ๊คเกจ"""
+  packageItemId: String
 
   """ราคา"""
   price: Float = 0

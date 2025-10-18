@@ -16,6 +16,9 @@ export class QuotationItem extends Base {
   @Field(() => String, { nullable: true, description: 'รหัสรายการสินค้า' })
   productVariantId: string;
 
+  @Field(() => String, { nullable: true, description: 'รหัสแพ๊คเกจ' })
+  packageItemId: string;
+
   @Field(() => ProductItemType, {
     defaultValue: ProductItemType.PRODUCT,
     description: 'ประเภทสินค้า',

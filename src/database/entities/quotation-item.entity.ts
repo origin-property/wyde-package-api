@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { ProductItemType } from '../../shared/enums/product.enum';
 import { BaseEntity } from './base';
+import { PackageItem } from './package-item.entity';
 import { ProductVariant } from './product-variant.entity';
 import { Product } from './product.entity';
 import { Quotation } from './quotation.entity';
@@ -62,6 +63,20 @@ export class QuotationItem extends BaseEntity {
   })
   @JoinColumn({ name: 'product_variant_id' })
   variant: Relation<ProductVariant>;
+
+  @Column({
+    type: 'uuid',
+    name: 'package_item_id',
+    nullable: true,
+    comment: 'รหัสแพ๊คเกจ',
+  })
+  packageItemId: string;
+
+  @ManyToOne(() => PackageItem, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'package_item_id' })
+  package: Relation<PackageItem>;
 
   @Column({
     name: 'product_type',
