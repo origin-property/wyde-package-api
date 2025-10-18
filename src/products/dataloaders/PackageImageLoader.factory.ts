@@ -22,7 +22,7 @@ class PackageImageLoaderFactory extends DataloaderFactory<
 
   async load(ids: PackageId[], context: ExecutionContext) {
     const results: File[] = await this.fileService.getFilesWithIds(ids);
-    return this.aggregateBy(results, (file) => file.id);
+    return this.aggregateBy(results, (file) => file.refId);
   }
 
   id(entity: PackageImageInfo) {

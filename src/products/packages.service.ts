@@ -5,16 +5,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { CreatePackageInput } from './dto/create-package.input';
 
-import {
-  Product as ProductEntity,
-  ProductItemType,
-} from '@/database/entities/product.entity';
 import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
 import { ProductVariant as ProductVariantEntity } from '@/database/entities/product-variant.entity';
+import { Product as ProductEntity } from '@/database/entities/product.entity';
 import { FilesService } from '@/files/files.service';
-import { sumBy } from 'lodash';
-import dayjs from 'dayjs';
 import { UnitsService } from '@/projects/units.service';
+import { ProductItemType } from '@/shared/enums/product.enum';
+import dayjs from 'dayjs';
+import { sumBy } from 'lodash';
 
 @Injectable()
 export class PackagesService {

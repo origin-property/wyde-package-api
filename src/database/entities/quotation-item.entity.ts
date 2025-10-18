@@ -6,9 +6,8 @@ import {
   PrimaryColumn,
   Relation,
 } from 'typeorm';
-import { QuotationProductType } from '../../shared/enums/quotation.enum';
+import { ProductItemType } from '../../shared/enums/product.enum';
 import { BaseEntity } from './base';
-import { PackageItem } from './package-item.entity';
 import { ProductVariant } from './product-variant.entity';
 import { Quotation } from './quotation.entity';
 
@@ -22,11 +21,11 @@ export class QuotationItem extends BaseEntity {
   @Column({
     name: 'product_type',
     type: 'enum',
-    enum: QuotationProductType,
-    default: QuotationProductType.PRODUCT,
+    enum: ProductItemType,
+    default: ProductItemType.PRODUCT,
     comment: 'ประเภทสินค้า',
   })
-  productType: QuotationProductType;
+  productType: ProductItemType;
 
   @Column({ name: 'quotation_id', comment: 'รหัสใบเสนอราคา' })
   quotationId: string;
@@ -44,13 +43,6 @@ export class QuotationItem extends BaseEntity {
   @JoinColumn({ name: 'product_id' })
   product: Relation<ProductVariant>;
 
-  @Column({ name: 'package_id', nullable: true, comment: 'รหัสชุดสินค้า' })
-  packageId: string;
-
-  @ManyToOne(() => PackageItem, { nullable: true })
-  @JoinColumn({ name: 'package_id' })
-  package: Relation<PackageItem>;
-
   @Column({
     name: 'quantity',
     type: 'integer',
@@ -60,11 +52,52 @@ export class QuotationItem extends BaseEntity {
   quantity: number;
 
   @Column({
+    name: 'product_name',
+    nullable: true,
+    comment: 'ชื่อสินค้า',
+  })
+  productName: string;
+
+  @Column({
+    name: 'product_description',
+    nullable: true,
+    comment: 'คำอธิบายสินค้า',
+  })
+  productDescription: string;
+
+  @Column({
+    name: 'sku',
+    nullable: true,
+    comment: 'SKU สินค้า',
+  })
+  sku: string;
+
+  @Column({
+    name: 'selling_price',
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+    default: 0.0,
+    comment: 'ราคาขายสินค้า',
+  })
+  sellingPrice: number;
+
+  @Column({
+    name: 'budget_price',
+    type: 'decimal',
+    precision: 18,
+    scale: 2,
+    default: 0.0,
+    comment: 'ราคางบประมาณสินค้า',
+  })
+  budgetPrice: number;
+
+  @Column({
     name: 'special_price',
     type: 'decimal',
     precision: 18,
     scale: 2,
-    nullable: true,
+    default: 0.0,
     comment: 'ราคาพิเศษ',
   })
   specialPrice: number;

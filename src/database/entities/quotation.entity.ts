@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
 import { QuotationStatus } from '../../shared/enums/quotation.enum';
 import { BaseEntity } from './base';
 import { QuotationItem } from './quotation-item.entity';
+import { QuotationVocher } from './quotation-vocher.entity';
 
 @Entity()
 export class Quotation extends BaseEntity {
@@ -72,4 +73,9 @@ export class Quotation extends BaseEntity {
     cascade: true,
   })
   items: Relation<QuotationItem[]>;
+
+  @OneToMany(() => QuotationVocher, (vocher) => vocher.quotation, {
+    cascade: true,
+  })
+  vochers: Relation<QuotationVocher[]>;
 }

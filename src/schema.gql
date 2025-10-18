@@ -11,13 +11,13 @@ type Auth {
 }
 
 type Category {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   description: String
   id: ID!
   name: String!
   productType: ProductType!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
@@ -96,6 +96,9 @@ input CreateQuotationInput {
   """รหัสโครงการ"""
   projectId: String
 
+  """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
+  signatureFile: CreateFileInput!
+
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING
 
@@ -107,17 +110,29 @@ input CreateQuotationInput {
 }
 
 input CreateQuotationItemInput {
-  """รหัสชุดสินค้า"""
-  packageId: String
+  """ราคางบประมาณสินค้า"""
+  budgetPrice: Float = 0
+
+  """คำอธิบายสินค้า"""
+  productDescription: String
 
   """รหัสรายการสินค้า"""
   productId: String
 
+  """ชื่อสินค้า"""
+  productName: String
+
   """ประเภทสินค้า"""
-  productType: QuotationProductType = PRODUCT
+  productType: ProductItemType = PRODUCT
 
   """จำนวนสินค้า"""
   quantity: Int = 0
+
+  """ราคาขายสินค้า"""
+  sellingPrice: Float = 0
+
+  """SKU สินค้า"""
+  sku: String
 
   """ราคาพิเศษ"""
   specialPrice: Float
@@ -258,6 +273,7 @@ type Mutation {
 type PackageItem {
   id: String!
   packageSeq: Float!
+  product: ProductVariant!
   productVariantId: String!
   quantity: Float!
   seq: Float!
@@ -279,89 +295,102 @@ enum PackageItemType {
 }
 
 type Product {
-  category: Category!
+  category: Category
   categoryId: String
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   description: String
   id: ID!
+  images: [File!]!
+  isActive: Boolean!
+  itemType: ProductItemType
   name: String!
   options: [ProductOption!]!
   packageItems: [PackageItem!]!
-  productType: ProductType!
+  productType: ProductType
   productTypeId: String
   project: Project!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
   variants: [ProductVariant!]!
 }
 
+"""ประเภทสินค้า"""
+enum ProductItemType {
+  """ชุดสินค้า"""
+  PACKAGE
+
+  """สินค้า"""
+  PRODUCT
+}
+
 type ProductOption {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   id: ID!
   name: String!
   optionValues: [ProductOptionValue!]!
   product: Product!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
 type ProductOptionValue {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   id: ID!
   image: String
   price: Float!
   productOption: ProductOption!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
   value: String!
 }
 
 type ProductType {
   categories: [Category!]!
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   description: String
   id: ID!
   name: String!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
 type ProductVariant {
   attributes: [VariantAttribute!]!
   budgetPrice: Float!
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   id: ID!
   images: [ProductVariantImage!]!
+  isActive: Boolean!
   optionValues: [ProductOptionValue!]!
   product: Product!
   sellingPrice: Float!
   sku: String!
   stock: Int!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
 type ProductVariantImage {
   altText: String
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
   fileBucket: String!
-  fileCurName: String
-  fileExtension: String
+  fileCurName: String!
+  fileExtension: String!
   filePath: String!
-  filePrevName: String
+  filePrevName: String!
   fileUrl: String!
   id: ID!
   isMain: Boolean!
   productVariantImage(id: ID!): ProductVariantImage!
   productVariantImages(productVariantId: String!): [ProductVariantImage!]!
   sortOrder: Int!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }
 
@@ -442,15 +471,15 @@ type Quotation {
   date: Date!
   deletedAt: Date
   deletedBy: User
-
-  """ลายเซ็นลูกค้า"""
-  file: File
   id: ID!
   items: [QuotationItem!]!
   project: Project!
 
   """รหัสโครงการ"""
   projectId: String!
+
+  """ลายเซ็นลูกค้า"""
+  signatureFile: File
 
   """สถานะใบเสนอราคา"""
   status: QuotationStatus!
@@ -466,23 +495,28 @@ type Quotation {
 }
 
 type QuotationItem {
+  """ราคางบประมาณสินค้า"""
+  budgetPrice: Float!
   createdAt: Date!
   createdBy: User
   deletedAt: Date
   deletedBy: User
   id: ID!
 
-  """รหัสชุดสินค้า"""
-  packageId: String
-
   """รายการสินค้า"""
   product: ProductVariant
+
+  """คำอธิบายสินค้า"""
+  productDescription: String
 
   """รหัสรายการสินค้า"""
   productId: String
 
+  """ชื่อสินค้า"""
+  productName: String
+
   """ประเภทสินค้า"""
-  productType: QuotationProductType!
+  productType: ProductItemType!
 
   """จำนวนสินค้า"""
   quantity: Int!
@@ -492,6 +526,12 @@ type QuotationItem {
 
   """รหัสใบเสนอราคา"""
   quotationId: String
+
+  """ราคาขายสินค้า"""
+  sellingPrice: Float!
+
+  """SKU สินค้า"""
+  sku: String
 
   """ราคาพิเศษ"""
   specialPrice: Float
@@ -513,15 +553,6 @@ type QuotationPaginate {
 
   """ข้อมูลการจัดการหน้า"""
   meta: IPaginateMeta
-}
-
-"""ประเภทสินค้า"""
-enum QuotationProductType {
-  """ชุดสินค้า"""
-  PACKAGE
-
-  """สินค้า"""
-  PRODUCT
 }
 
 """สถานะใบเสนอราคา"""
@@ -612,6 +643,9 @@ input UpdateQuotationInput {
   """รหัสโครงการ"""
   projectId: String
 
+  """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
+  signatureFile: CreateFileInput
+
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING
 
@@ -623,19 +657,30 @@ input UpdateQuotationInput {
 }
 
 input UpdateQuotationItemInput {
+  """ราคางบประมาณสินค้า"""
+  budgetPrice: Float = 0
   id: ID!
 
-  """รหัสชุดสินค้า"""
-  packageId: String
+  """คำอธิบายสินค้า"""
+  productDescription: String
 
   """รหัสรายการสินค้า"""
   productId: String
 
+  """ชื่อสินค้า"""
+  productName: String
+
   """ประเภทสินค้า"""
-  productType: QuotationProductType = PRODUCT
+  productType: ProductItemType = PRODUCT
 
   """จำนวนสินค้า"""
   quantity: Int = 0
+
+  """ราคาขายสินค้า"""
+  sellingPrice: Float = 0
+
+  """SKU สินค้า"""
+  sku: String
 
   """ราคาพิเศษ"""
   specialPrice: Float
@@ -677,11 +722,11 @@ type User {
 }
 
 type VariantAttribute {
-  createdAt: Date!
+  createdAt: String!
   createdBy: String
-  id: String!
-  name: String!
+  id: ID!
+  name: String
   optionValue: ProductOptionValue!
-  updatedAt: Date!
+  updatedAt: String!
   updatedBy: String
 }

@@ -121,7 +121,7 @@ export class QuotationsResolver {
   }
 
   @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
-  async file(
+  async signatureFile(
     @Parent() { id }: Quotation,
     @Loader(QuotationFileLoaderFactory) units: QuotationFileLoader,
   ) {

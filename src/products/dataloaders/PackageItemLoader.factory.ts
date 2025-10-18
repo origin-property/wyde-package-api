@@ -1,10 +1,10 @@
+import { PackageItem } from '@/database/entities/package-item.entity';
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import {
   DataloaderFactory,
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { PackageItem } from '@/database/entities/package-item.entity';
 import { PackagesService } from '../packages.service';
 
 type PackageId = string;
@@ -23,7 +23,7 @@ class PackageItemLoaderFactory extends DataloaderFactory<
   async load(ids: PackageId[], context: ExecutionContext) {
     const results: PackageItem[] =
       await this.packagesService.getPackageItemByProductId(ids);
-    return this.aggregateBy(results, (project) => project.id);
+    return this.aggregateBy(results, (packageItem) => packageItem.productId);
   }
 
   id(entity: PackageItemInfo) {

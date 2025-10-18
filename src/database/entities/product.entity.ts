@@ -1,25 +1,21 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  OneToMany,
-  Relation,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  OneToMany,
   OneToOne,
+  PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
+import { ProductItemType } from '../../shared/enums/product.enum';
 import { BaseEntity } from './base';
-import { ProductOption } from './product-option.entity';
-import { ProductVariant } from './product-variant.entity';
-import { ProductType } from './product-type.entity';
 import { Category } from './category.entity';
-import { PackageItem } from './package-item.entity';
 import { PackageDetail } from './package-detail.entity';
-
-export enum ProductItemType {
-  PRODUCT = 'PRODUCT',
-  PACKAGE = 'PACKAGE',
-}
+import { PackageItem } from './package-item.entity';
+import { ProductOption } from './product-option.entity';
+import { ProductType } from './product-type.entity';
+import { ProductVariant } from './product-variant.entity';
 
 @Entity({ name: 'product' })
 export class Product extends BaseEntity {
@@ -32,7 +28,7 @@ export class Product extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @OneToMany(() => ProductOption, (option) => option.product)
+  @OneToMany(() => ProductOption, (option) => option.product, { cascade: true })
   options: Relation<ProductOption[]>;
 
   @OneToMany(() => ProductVariant, (variant) => variant.product, {
@@ -42,6 +38,11 @@ export class Product extends BaseEntity {
 
   @Column({ name: 'product_type_id', nullable: true })
   productTypeId: string;
+
+  @Column({
+    default: true,
+  })
+  isActive: boolean;
 
   @ManyToOne(() => ProductType, (type) => type.products)
   @JoinColumn({ name: 'product_type_id' })
