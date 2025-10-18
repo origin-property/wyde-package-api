@@ -5,7 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Relation,
 } from 'typeorm';
 import { ProductItemType } from '../../shared/enums/product.enum';
@@ -19,7 +19,10 @@ import { ProductVariant } from './product-variant.entity';
 
 @Entity({ name: 'product' })
 export class Product extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column({ length: 255 })
