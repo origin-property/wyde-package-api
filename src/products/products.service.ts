@@ -1,11 +1,10 @@
-import { QueryRunner } from 'typeorm';
 import { Category } from '@/database/entities/category.entity';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { GraphQLError } from 'graphql';
-import { FindOptionsWhere, In, Like, Repository, DataSource } from 'typeorm';
+import { DataSource, FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { ProductOptionValue } from '../database/entities/product-option-value.entity';
 import { ProductOption } from '../database/entities/product-option.entity';
 import { ProductType } from '../database/entities/product-type.entity';
@@ -219,15 +218,6 @@ export class ProductsService {
 
     return this.productRepository.find({
       where: wheres.length > 0 ? wheres : undefined,
-
-      relations: {
-        productType: true,
-        category: true,
-        variants: {
-          images: true,
-          optionValues: true,
-        },
-      },
       order: {
         createdAt: 'DESC',
       },

@@ -1,6 +1,6 @@
 import { Base } from '@/shared/@types/base';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Quotation extends Base {
@@ -42,16 +42,4 @@ export class Quotation extends Base {
 
   @Field(() => String, { description: 'หมายเลขยูนิต' })
   unitNumber: string;
-
-  @Field(() => [String], { nullable: true, description: 'รหัสส่วนลดพิเศษ' })
-  specialCode: string[];
-
-  @Field(() => Float, { nullable: true, description: 'ส่วนลดพิเศษ' })
-  specialDiscount: number;
-
-  @Field(() => [String], { nullable: true, description: 'รหัสส่วนลดพิเศษ' })
-  vocherCode: string[];
-
-  @Field(() => Float, { nullable: true, description: 'ส่วนลดพิเศษ' })
-  vocherDiscount: number;
 }
