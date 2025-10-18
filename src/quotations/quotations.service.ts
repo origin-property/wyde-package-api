@@ -1,5 +1,6 @@
 import { File } from '@/database/entities/file.entity';
 import { Quotation } from '@/database/entities/quotation.entity';
+import { ProductItemType } from '@/shared/enums/product.enum';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -30,8 +31,6 @@ export class QuotationsService {
   constructor(
     @InjectRepository(Quotation)
     private quotationRepository: Repository<Quotation>,
-    @InjectRepository(File)
-    private fileRepository: Repository<File>,
 
     @InjectDataSource()
     private readonly dataSource: DataSource,
@@ -75,9 +74,33 @@ export class QuotationsService {
           createdBy: userId,
           updatedBy: userId,
           items: createQuotationInput.items.map((item) => ({
-            ...item,
+            productId:
+              item.productType === ProductItemType.PACKAGE
+                ? item.productId
+                : null,
+            productVariantId:
+              item.productType === ProductItemType.PRODUCT
+                ? item.productId
+                : null,
+            productName: item.productName,
+            productDescription: item.productDescription,
+            productType: item.productType,
+            quantity: item.quantity,
+            specialPrice: item.specialPrice,
+            price: item.price,
             createdBy: userId,
             updatedBy: userId,
+            items: item?.items?.map((packageItem) => ({
+              productVariantId: packageItem.productId,
+              productType: packageItem.productType,
+              productName: packageItem.productName,
+              productDescription: packageItem.productDescription,
+              quantity: packageItem.quantity,
+              specialPrice: packageItem.specialPrice,
+              price: packageItem.price,
+              createdBy: userId,
+              updatedBy: userId,
+            })),
           })),
         });
 
@@ -95,7 +118,7 @@ export class QuotationsService {
       return quotation;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw error;
+      throw new GraphQLError(error.message || 'Failed to create quotation');
     } finally {
       await queryRunner.release();
     }

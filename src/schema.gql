@@ -110,13 +110,16 @@ input CreateQuotationInput {
 }
 
 input CreateQuotationItemInput {
-  """ราคางบประมาณสินค้า"""
-  budgetPrice: Float = 0
+  """รายการสินค้าหลัก"""
+  items: [CreateQuotationItemInput!]
+
+  """ราคา"""
+  price: Float = 0
 
   """คำอธิบายสินค้า"""
   productDescription: String
 
-  """รหัสรายการสินค้า"""
+  """รหัสสินค้า"""
   productId: String
 
   """ชื่อสินค้า"""
@@ -125,23 +128,14 @@ input CreateQuotationItemInput {
   """ประเภทสินค้า"""
   productType: ProductItemType = PRODUCT
 
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
   """จำนวนสินค้า"""
   quantity: Int = 0
 
-  """ราคาขายสินค้า"""
-  sellingPrice: Float = 0
-
-  """SKU สินค้า"""
-  sku: String
-
   """ราคาพิเศษ"""
   specialPrice: Float
-
-  """ราคารวม"""
-  totalPrice: Float = 0
-
-  """ราคา/หน่วย"""
-  unitPrice: Float = 0
 }
 
 input CreateRoleInput {
@@ -494,8 +488,6 @@ type Quotation {
 }
 
 type QuotationItem {
-  """ราคางบประมาณสินค้า"""
-  budgetPrice: Float!
   createdAt: Date!
   createdBy: User
   deletedAt: Date
@@ -503,12 +495,21 @@ type QuotationItem {
   id: ID!
 
   """รายการสินค้า"""
-  product: ProductVariant
+  packageItems: [QuotationItem!]
+
+  """รหัสรายการสินค้าหลัก"""
+  parentId: String
+
+  """ราคา"""
+  price: Float!
+
+  """สินค้า"""
+  product: Product
 
   """คำอธิบายสินค้า"""
   productDescription: String
 
-  """รหัสรายการสินค้า"""
+  """รหัสสินค้า"""
   productId: String
 
   """ชื่อสินค้า"""
@@ -516,6 +517,9 @@ type QuotationItem {
 
   """ประเภทสินค้า"""
   productType: ProductItemType!
+
+  """รหัสรายการสินค้า"""
+  productVariantId: String
 
   """จำนวนสินค้า"""
   quantity: Int!
@@ -526,22 +530,13 @@ type QuotationItem {
   """รหัสใบเสนอราคา"""
   quotationId: String
 
-  """ราคาขายสินค้า"""
-  sellingPrice: Float!
-
-  """SKU สินค้า"""
-  sku: String
-
   """ราคาพิเศษ"""
   specialPrice: Float
-
-  """ราคารวม"""
-  totalPrice: Float!
-
-  """ราคา/หน่วย"""
-  unitPrice: Float!
   updatedAt: Date!
   updatedBy: User
+
+  """รายการสินค้า"""
+  variant: ProductVariant
 }
 
 type QuotationPaginate {
@@ -656,14 +651,18 @@ input UpdateQuotationInput {
 }
 
 input UpdateQuotationItemInput {
-  """ราคางบประมาณสินค้า"""
-  budgetPrice: Float = 0
   id: ID!
+
+  """รายการสินค้าหลัก"""
+  items: [CreateQuotationItemInput!]
+
+  """ราคา"""
+  price: Float = 0
 
   """คำอธิบายสินค้า"""
   productDescription: String
 
-  """รหัสรายการสินค้า"""
+  """รหัสสินค้า"""
   productId: String
 
   """ชื่อสินค้า"""
@@ -672,23 +671,14 @@ input UpdateQuotationItemInput {
   """ประเภทสินค้า"""
   productType: ProductItemType = PRODUCT
 
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
   """จำนวนสินค้า"""
   quantity: Int = 0
 
-  """ราคาขายสินค้า"""
-  sellingPrice: Float = 0
-
-  """SKU สินค้า"""
-  sku: String
-
   """ราคาพิเศษ"""
   specialPrice: Float
-
-  """ราคารวม"""
-  totalPrice: Float = 0
-
-  """ราคา/หน่วย"""
-  unitPrice: Float = 0
 }
 
 input UpdateRoleInput {

@@ -3,20 +3,65 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryColumn,
   Relation,
 } from 'typeorm';
 import { ProductItemType } from '../../shared/enums/product.enum';
 import { BaseEntity } from './base';
 import { ProductVariant } from './product-variant.entity';
+import { Product } from './product.entity';
 import { Quotation } from './quotation.entity';
 
-@Entity()
+@Entity({
+  orderBy: {
+    id: 'ASC',
+  },
+})
 export class QuotationItem extends BaseEntity {
   @PrimaryColumn({
+    type: 'uuid',
     default: () => 'uuidv7()',
   })
   id: string;
+
+  @Column({ name: 'quotation_id', comment: 'รหัสใบเสนอราคา', nullable: true })
+  quotationId: string;
+
+  @ManyToOne(() => Quotation, (quotation) => quotation.items, {
+    nullable: true,
+    orphanedRowAction: 'soft-delete',
+  })
+  @JoinColumn({ name: 'quotation_id' })
+  quotation: Relation<Quotation>;
+
+  @Column({
+    type: 'uuid',
+    name: 'product_id',
+    nullable: true,
+    comment: 'รหัสสินค้า',
+  })
+  productId: string;
+
+  @ManyToOne(() => Product, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'product_id' })
+  product: Relation<Product>;
+
+  @Column({
+    type: 'uuid',
+    name: 'product_variant_id',
+    nullable: true,
+    comment: 'รหัสรายการสินค้า',
+  })
+  productVariantId: string;
+
+  @ManyToOne(() => ProductVariant, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'product_variant_id' })
+  variant: Relation<ProductVariant>;
 
   @Column({
     name: 'product_type',
@@ -26,30 +71,6 @@ export class QuotationItem extends BaseEntity {
     comment: 'ประเภทสินค้า',
   })
   productType: ProductItemType;
-
-  @Column({ name: 'quotation_id', comment: 'รหัสใบเสนอราคา' })
-  quotationId: string;
-
-  @ManyToOne(() => Quotation, (quotation) => quotation.items, {
-    orphanedRowAction: 'soft-delete',
-  })
-  @JoinColumn({ name: 'quotation_id' })
-  quotation: Relation<Quotation>;
-
-  @Column({ name: 'product_id', nullable: true, comment: 'รหัสสินค้า' })
-  productId: string;
-
-  @ManyToOne(() => ProductVariant)
-  @JoinColumn({ name: 'product_id' })
-  product: Relation<ProductVariant>;
-
-  @Column({
-    name: 'quantity',
-    type: 'integer',
-    comment: 'จำนวนสินค้า',
-    default: 0,
-  })
-  quantity: number;
 
   @Column({
     name: 'product_name',
@@ -66,59 +87,48 @@ export class QuotationItem extends BaseEntity {
   productDescription: string;
 
   @Column({
-    name: 'sku',
-    nullable: true,
-    comment: 'SKU สินค้า',
+    name: 'quantity',
+    type: 'integer',
+    comment: 'จำนวนสินค้า',
+    default: 0,
   })
-  sku: string;
-
-  @Column({
-    name: 'selling_price',
-    type: 'decimal',
-    precision: 18,
-    scale: 2,
-    default: 0.0,
-    comment: 'ราคาขายสินค้า',
-  })
-  sellingPrice: number;
-
-  @Column({
-    name: 'budget_price',
-    type: 'decimal',
-    precision: 18,
-    scale: 2,
-    default: 0.0,
-    comment: 'ราคางบประมาณสินค้า',
-  })
-  budgetPrice: number;
+  quantity: number;
 
   @Column({
     name: 'special_price',
     type: 'decimal',
-    precision: 18,
+    precision: 10,
     scale: 2,
-    default: 0.0,
+    nullable: true,
     comment: 'ราคาพิเศษ',
   })
   specialPrice: number;
 
   @Column({
-    name: 'unit_price',
-    comment: 'ราคา/หน่วย',
+    name: 'price',
+    comment: 'ราคา',
     type: 'decimal',
-    precision: 18,
+    precision: 10,
     scale: 2,
     default: 0.0,
   })
-  unitPrice: number;
+  price: number;
 
   @Column({
-    name: 'total_price',
-    comment: 'ราคารวม',
-    type: 'decimal',
-    precision: 18,
-    scale: 2,
-    default: 0.0,
+    name: 'parent_id',
+    nullable: true,
+    comment: 'รหัสรายการสินค้าหลัก',
   })
-  totalPrice: number;
+  parentId: string;
+
+  @ManyToOne(() => QuotationItem, (item) => item.items, {
+    orphanedRowAction: 'soft-delete',
+  })
+  @JoinColumn({ name: 'parent_id' })
+  parent: Relation<QuotationItem>;
+
+  @OneToMany(() => QuotationItem, (item) => item.parent, {
+    cascade: true,
+  })
+  items: Relation<QuotationItem[]>;
 }
