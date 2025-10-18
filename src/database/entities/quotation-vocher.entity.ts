@@ -1,5 +1,13 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 import { BaseEntity } from './base';
+import { Quotation } from './quotation.entity';
 
 export enum QuotationVocherType {
   SPECIAL = 'SPECIAL',
@@ -12,6 +20,18 @@ export class QuotationVocher extends BaseEntity {
     default: () => 'uuidv7()',
   })
   id: string;
+
+  @Column({
+    name: 'quotation_id',
+    comment: 'รหัสใบเสนอราคา',
+  })
+  quotationId: string;
+
+  @ManyToOne(() => Quotation, (quotation) => quotation.vochers, {
+    orphanedRowAction: 'soft-delete',
+  })
+  @JoinColumn({ name: 'quotation_id' })
+  quotation: Relation<Quotation>;
 
   @Column({
     name: 'ref_id',
