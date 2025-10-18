@@ -1,6 +1,6 @@
 import { UploadService } from '@/upload/upload.service';
 import { Args, ID, Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { ProductVariantImageModel } from './entities/productVariantImage.entity';
+import { ProductVariantImageModel } from './dto/productVariantImage.dto';
 import { ProductVariantImagesService } from './product-variant-images.service';
 
 @Resolver(() => ProductVariantImageModel)

@@ -1,5 +1,5 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { BaseModel } from './baseModel.entity';
+import { BaseModel } from './baseModel.dto';
 
 @ObjectType('Category')
 export class CategoryModel extends BaseModel {

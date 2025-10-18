@@ -8,14 +8,14 @@ import {
   Parent,
 } from '@nestjs/graphql';
 import { CategoryService } from './category.service';
-import { CategoryModel } from './entities/category.entity';
-import { ProductTypeModel } from './entities/product-type.entity';
+import { CategoryModel } from './dto/category.dto';
+import { ProductTypeModel } from './dto/product-type.dto';
 import { Category } from '@/database/entities/category.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { ProductTypeByIdLoader } from './dataloaders/product-type-by-id.loader';
-import { CreateCategoryInput } from './dto/create-category.input';
+import { CreateCategoryInput } from './input/create-category.input';
 import { CurrentUser } from '@/shared/decorators/decorators';
 
 @Resolver(() => CategoryModel)

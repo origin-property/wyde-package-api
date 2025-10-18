@@ -9,11 +9,11 @@ import { ImagesByVariantLoader } from './dataloaders/images-by-variant.loader';
 import { OptionByIdLoader } from './dataloaders/option-by-id.loader';
 import { OptionValuesByVariantLoader } from './dataloaders/option-values-by-variant.loader';
 import { ProductByIdLoader } from './dataloaders/product-by-id.loader';
-import { ProductModel } from './entities/product.entity';
-import { ProductOptionValueModel } from './entities/productOptionValue.entity';
-import { ProductVariantModel } from './entities/productVariant.entity';
-import { ProductVariantImageModel } from './entities/productVariantImage.entity';
-import { VariantAttributeModel } from './entities/variant-attribute.entity';
+import { ProductModel } from './dto/product.dto';
+import { ProductOptionValueModel } from './dto/productOptionValue.dto';
+import { ProductVariantModel } from './dto/productVariant.dto';
+import { ProductVariantImageModel } from './dto/productVariantImage.dto';
+import { VariantAttributeModel } from './dto/variant-attribute.dto';
 
 @Resolver(() => ProductVariantModel)
 export class ProductVariantResolver {

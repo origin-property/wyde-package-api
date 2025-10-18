@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { ProductOptionValueModel } from './productOptionValue.entity';
-import { BaseModel } from './baseModel.entity';
+import { ProductOptionValueModel } from './productOptionValue.dto';
+import { BaseModel } from './baseModel.dto';
 
 @ObjectType('VariantAttribute')
 export class VariantAttributeModel extends BaseModel {

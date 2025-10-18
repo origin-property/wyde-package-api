@@ -2,7 +2,7 @@ import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { DataloaderProvider } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { ProductsService } from './products.service';
-import { ProductVariantModel } from './entities/productVariant.entity';
+import { ProductVariantModel } from './dto/productVariant.dto';
 
 @DataloaderProvider()
 export class ProductByVariantIdLoader {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '@/database/entities/category.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
-import { CreateCategoryInput } from './dto/create-category.input';
+import { CreateCategoryInput } from './input/create-category.input';
 import { FindOptionsWhere, Repository, In } from 'typeorm';
 import { GraphQLError } from 'graphql';
 

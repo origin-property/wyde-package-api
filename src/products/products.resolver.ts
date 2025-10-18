@@ -1,26 +1,38 @@
-import { Category } from '@/database/entities/category.entity';
-import { ProductOption } from '@/database/entities/product-option.entity';
-import { ProductType } from '@/database/entities/product-type.entity';
-import { ProductVariant } from '@/database/entities/product-variant.entity';
-import { Product } from '@/database/entities/product.entity';
-import { File } from '@/files/entities/file.entity';
-import { Project } from '@/projects/entities/project.entity';
-import { CurrentUser } from '@/shared/decorators/decorators';
 import {
-  Args,
-  ID,
-  Int,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
   Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+  ID,
 } from '@nestjs/graphql';
-import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import { ProductsService } from './products.service';
+import { ProductModel } from './dto/product.dto';
+import { CreateProductInput } from './input/create-product.input';
+import { UpdateProductInput } from './input/update-product.input';
+import { FindAllProductsInput } from './input/find-all-products.input';
+import { CurrentUser } from '@/shared/decorators/decorators';
+import { ProductTypeModel } from './dto/product-type.dto';
+import { CategoryModel } from './dto/category.dto';
+import { ProductVariantModel } from './dto/productVariant.dto';
+import { ProductOptionModel } from './dto/productOption.dto';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
+import { Product } from '@/database/entities/product.entity';
+import { ProductOption } from '@/database/entities/product-option.entity';
+import { Category } from '@/database/entities/category.entity';
+import { ProductType } from '@/database/entities/product-type.entity';
+import { ProductVariant } from '@/database/entities/product-variant.entity';
+import { ProductTypeLoader } from './dataloaders/product-type.loader';
 import { CategoryLoader } from './dataloaders/category.loader';
+import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
 import { OptionsByProductLoader } from './dataloaders/options-by-product.loader';
+import { CreatePackageInput } from './input/create-package.input';
+import { PackagesService } from './packages.service';
+import { PackageItem } from './dto/package.dto';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import {
   PackageItemLoader,
   PackageItemLoaderFactory,
@@ -29,28 +41,13 @@ import {
   PackageProjectLoader,
   PackageProjectLoaderFactory,
 } from './dataloaders/PackageProjectLoader.factory';
-import { ProductTypeLoader } from './dataloaders/product-type.loader';
 import {
   ProductFileLoader,
   ProductFileLoaderFactory,
 } from './dataloaders/ProductFileLoader.factory';
-import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
-import { CreatePackageInput } from './dto/create-package.input';
-import { CreateProductInput } from './dto/create-product.input';
-import {
-  FindAllPackagesInput,
-  FindAllProductsInput,
-} from './dto/find-all-products.input';
-import { UpdateProductInput } from './dto/update-product.input';
-import { CategoryModel } from './entities/category.entity';
-import { PackageItem } from './entities/package.entity';
-import { ProductTypeModel } from './entities/product-type.entity';
-import { ProductModel } from './entities/product.entity';
-import { ProductOptionModel } from './entities/productOption.entity';
-import { ProductVariantModel } from './entities/productVariant.entity';
-import { PackagesService } from './packages.service';
+import { FindAllPackagesInput } from './input/find-all-products.input';
 import { ProductByVariantIdLoader } from './product-variant.loader';
-import { ProductsService } from './products.service';
+import { Project } from '../projects/entities/project.entity';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {

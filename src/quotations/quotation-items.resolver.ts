@@ -1,6 +1,6 @@
 import { ProductByIdLoader } from '@/products/dataloaders/product-by-id.loader';
-import { ProductModel } from '@/products/entities/product.entity';
-import { ProductVariantModel } from '@/products/entities/productVariant.entity';
+import { ProductModel } from '@/products/dto/product.dto';
+import { ProductVariantModel } from '@/products/dto/productVariant.dto';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
