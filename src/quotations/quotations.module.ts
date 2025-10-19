@@ -15,7 +15,9 @@ import { QuotationFileLoaderFactory } from './QuotationFileLoader.factory';
 import { QuotationItemLoaderFactory } from './QuotationItemLoader.factory';
 import { QuotationItemPackageLoaderFactory } from './QuotationItemPackageLoader.factory';
 import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory';
+import { QuotationPromotionDiscountPriceLoaderFactory } from './QuotationPromotionDiscountPriceLoader.factory';
 import { QuotationPromotionLoaderFactory } from './QuotationPromotionLoader.factory';
+import { QuotationPromotionVoucherPriceLoaderFactory } from './QuotationPromotionVoucherPriceLoader.factory';
 import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
 import { QuotationUnitLoaderFactory } from './QuotationUnitLoader.factory';
@@ -47,6 +49,8 @@ import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
     QuotationItemPackageLoaderFactory,
     QuotationPromotionsService,
     QuotationPromotionLoaderFactory,
+    QuotationPromotionDiscountPriceLoaderFactory,
+    QuotationPromotionVoucherPriceLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

@@ -25,6 +25,7 @@ import {
 import { CreateQuotationInput } from './dto/create-quotation.input';
 import { SearchQuotationArgs } from './dto/search-quotation.agrs';
 import { UpdateQuotationInput } from './dto/update-quotation.input';
+import { QuotationPromotionsService } from './quotation-promotion.service';
 
 @Injectable()
 export class QuotationsService {
@@ -35,6 +36,7 @@ export class QuotationsService {
     @InjectDataSource()
     private readonly dataSource: DataSource,
 
+    private readonly quotationPromotionsService: QuotationPromotionsService,
     private readonly configService: ConfigService,
   ) {}
 

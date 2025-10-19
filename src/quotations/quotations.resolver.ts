@@ -3,7 +3,6 @@ import { Project } from '@/projects/entities/project.entity';
 import { Unit } from '@/projects/entities/unit.entity';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
-import { PromotionKind } from '@/shared/enums/promotion.enum';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { User } from '@/users/entities/user.entity';
 import {
@@ -17,7 +16,6 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
-import { sumBy } from 'lodash';
 import { PackageProjectLoaderFactory } from '../products/dataloaders/PackageProjectLoader.factory';
 import { CreateQuotationInput } from './dto/create-quotation.input';
 import { SearchQuotationArgs } from './dto/search-quotation.agrs';
@@ -36,9 +34,17 @@ import {
 } from './QuotationItemLoader.factory';
 import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
 import {
+  QuotationPromotionDiscountPriceLoader,
+  QuotationPromotionDiscountPriceLoaderFactory,
+} from './QuotationPromotionDiscountPriceLoader.factory';
+import {
   QuotationPromotionLoader,
   QuotationPromotionLoaderFactory,
 } from './QuotationPromotionLoader.factory';
+import {
+  QuotationPromotionVoucherPriceLoader,
+  QuotationPromotionVoucherPriceLoaderFactory,
+} from './QuotationPromotionVoucherPriceLoader.factory';
 import { QuotationsService } from './quotations.service';
 import {
   QuotationUnitLoader,
@@ -124,27 +130,23 @@ export class QuotationsResolver {
   @ResolveField(() => Float, { defaultValue: 0, description: 'ส่วนลดพิเศษ' })
   async discountPrice(
     @Parent() { id }: Quotation,
-    @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
+    @Loader(QuotationPromotionDiscountPriceLoaderFactory)
+    loader: QuotationPromotionDiscountPriceLoader,
   ) {
-    const promotions = await loader.load(id);
-    if (!promotions.values) return 0;
-    const discounts = promotions.values.filter(
-      (promotion) => promotion.kind === PromotionKind.DISCOUNT,
-    );
-    return sumBy(discounts, (discount) => Number(discount.value));
+    const discountPrice = await loader.load(id);
+    if (!discountPrice) return 0;
+    return discountPrice.value;
   }
 
   @ResolveField(() => Float, { defaultValue: 0, description: 'voucher wyde' })
   async voucherPrice(
     @Parent() { id }: Quotation,
-    @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
+    @Loader(QuotationPromotionVoucherPriceLoaderFactory)
+    loader: QuotationPromotionVoucherPriceLoader,
   ) {
-    const promotions = await loader.load(id);
-    if (!promotions.values) return 0;
-    const vouchers = promotions.values.filter(
-      (promotion) => promotion.kind === PromotionKind.VOUCHER,
-    );
-    return sumBy(vouchers, (voucher) => Number(voucher.value));
+    const voucherPrice = await loader.load(id);
+    if (!voucherPrice) return 0;
+    return voucherPrice.value;
   }
 
   @ResolveField(() => Project)
