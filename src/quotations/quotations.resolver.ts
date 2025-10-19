@@ -3,10 +3,12 @@ import { Project } from '@/projects/entities/project.entity';
 import { Unit } from '@/projects/entities/unit.entity';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
+import { PromotionKind } from '@/shared/enums/promotion.enum';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { User } from '@/users/entities/user.entity';
 import {
   Args,
+  Float,
   ID,
   Mutation,
   Parent,
@@ -15,6 +17,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
+import { sumBy } from 'lodash';
 import { PackageProjectLoaderFactory } from '../products/dataloaders/PackageProjectLoader.factory';
 import { CreateQuotationInput } from './dto/create-quotation.input';
 import { SearchQuotationArgs } from './dto/search-quotation.agrs';
@@ -116,6 +119,32 @@ export class QuotationsResolver {
   ) {
     const result = await loader.load(id);
     return result?.values || [];
+  }
+
+  @ResolveField(() => Float, { defaultValue: 0, description: 'ส่วนลดพิเศษ' })
+  async discount(
+    @Parent() { id }: Quotation,
+    @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
+  ) {
+    const promotions = await loader.load(id);
+    if (!promotions.values) return 0;
+    const discounts = promotions.values.filter(
+      (promotion) => promotion.kind === PromotionKind.DISCOUNT,
+    );
+    return sumBy(discounts, (discount) => Number(discount.value));
+  }
+
+  @ResolveField(() => Float, { defaultValue: 0, description: 'voucher wyde' })
+  async voucher(
+    @Parent() { id }: Quotation,
+    @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
+  ) {
+    const promotions = await loader.load(id);
+    if (!promotions.values) return 0;
+    const vouchers = promotions.values.filter(
+      (promotion) => promotion.kind === PromotionKind.VOUCHER,
+    );
+    return sumBy(vouchers, (voucher) => Number(voucher.value));
   }
 
   @ResolveField(() => Project)

@@ -605,6 +605,9 @@ type Quotation {
   date: Date!
   deletedAt: Date
   deletedBy: User
+
+  """ส่วนลดพิเศษ"""
+  discount: Float!
   id: ID!
   items: [QuotationItem!]!
   project: Project!
@@ -627,6 +630,9 @@ type Quotation {
   unitNumber: String!
   updatedAt: Date!
   updatedBy: User
+
+  """voucher wyde"""
+  voucher: Float!
 }
 
 type QuotationItem {
