@@ -122,7 +122,7 @@ export class QuotationsResolver {
   }
 
   @ResolveField(() => Float, { defaultValue: 0, description: 'ส่วนลดพิเศษ' })
-  async discount(
+  async discountPrice(
     @Parent() { id }: Quotation,
     @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
   ) {
@@ -135,7 +135,7 @@ export class QuotationsResolver {
   }
 
   @ResolveField(() => Float, { defaultValue: 0, description: 'voucher wyde' })
-  async voucher(
+  async voucherPrice(
     @Parent() { id }: Quotation,
     @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
   ) {

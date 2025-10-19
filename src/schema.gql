@@ -607,7 +607,7 @@ type Quotation {
   deletedBy: User
 
   """ส่วนลดพิเศษ"""
-  discount: Float!
+  discountPrice: Float!
   id: ID!
   items: [QuotationItem!]!
   project: Project!
@@ -632,7 +632,7 @@ type Quotation {
   updatedBy: User
 
   """voucher wyde"""
-  voucher: Float!
+  voucherPrice: Float!
 }
 
 type QuotationItem {
