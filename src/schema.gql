@@ -127,6 +127,9 @@ input CreateQuotationInput {
   """รหัสโครงการ"""
   projectId: String
 
+  """รายการโปรโมชั่น"""
+  promotions: [CreateQuotationPromotionInput!]
+
   """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
   signatureFile: CreateFileInput!
 
@@ -170,6 +173,23 @@ input CreateQuotationItemInput {
 
   """ราคาพิเศษ"""
   specialPrice: Float
+}
+
+input CreateQuotationPromotionInput {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String
+  description: String
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind = VOUCHER
+  name: String
+
+  """รหัสโปรโมชั่น"""
+  promotionId: String
+  type: PromotionType = FIXED_AMOUNT
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float = 0
 }
 
 input CreateRoleInput {
@@ -591,6 +611,7 @@ type Quotation {
 
   """รหัสโครงการ"""
   projectId: String!
+  promotions: [QuotationPromotion!]!
 
   """ลายเซ็นลูกค้า"""
   signatureFile: File
@@ -671,6 +692,30 @@ type QuotationPaginate {
 
   """ข้อมูลการจัดการหน้า"""
   meta: IPaginateMeta
+}
+
+type QuotationPromotion {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String!
+  createdAt: Date!
+  deletedAt: Date
+  description: String
+  id: ID!
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind!
+  name: String!
+
+  """รหัสโปรโมชั่น"""
+  promotionId: String!
+
+  """รหัสใบเสนอราคา"""
+  quotationId: String!
+  type: PromotionType!
+  updatedAt: Date!
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float!
 }
 
 """สถานะใบเสนอราคา"""
@@ -791,6 +836,9 @@ input UpdateQuotationInput {
 
   """รหัสโครงการ"""
   projectId: String
+
+  """รายการโปรโมชั่น"""
+  promotions: [CreateQuotationPromotionInput!]
 
   """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
   signatureFile: CreateFileInput
