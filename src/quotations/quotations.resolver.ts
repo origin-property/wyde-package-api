@@ -21,6 +21,7 @@ import { SearchQuotationArgs } from './dto/search-quotation.agrs';
 import { UpdateQuotationInput } from './dto/update-quotation.input';
 import { QuotationItem } from './entities/quotation-item.entity';
 import { QuotationPaginate } from './entities/quotation-paginate.entity';
+import { QuotationPromotionDto } from './entities/quotation-promotion.dto';
 import { Quotation } from './entities/quotation.entity';
 import {
   QuotationFileLoader,
@@ -31,6 +32,10 @@ import {
   QuotationItemLoaderFactory,
 } from './QuotationItemLoader.factory';
 import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
+import {
+  QuotationPromotionLoader,
+  QuotationPromotionLoaderFactory,
+} from './QuotationPromotionLoader.factory';
 import { QuotationsService } from './quotations.service';
 import {
   QuotationUnitLoader,
@@ -99,6 +104,15 @@ export class QuotationsResolver {
   async items(
     @Parent() { id }: Quotation,
     @Loader(QuotationItemLoaderFactory) loader: QuotationItemLoader,
+  ) {
+    const result = await loader.load(id);
+    return result?.values || [];
+  }
+
+  @ResolveField(() => [QuotationPromotionDto])
+  async promotions(
+    @Parent() { id }: Quotation,
+    @Loader(QuotationPromotionLoaderFactory) loader: QuotationPromotionLoader,
   ) {
     const result = await loader.load(id);
     return result?.values || [];

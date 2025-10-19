@@ -1,9 +1,17 @@
-import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryColumn,
+  Relation,
+} from 'typeorm';
 import {
   PromotionKind,
   PromotionType,
 } from '../../shared/enums/promotion.enum';
 import { BaseEntity } from './base';
+import { QuotationPromotion } from './quotation-promotion.entity';
 
 @Entity()
 @Index(['code'], { unique: true })
@@ -126,4 +134,7 @@ export class Promotion extends BaseEntity {
     comment: 'ส่วนลดสูงสุด (สำหรับ percentage)',
   })
   maxDiscountAmount: number;
+
+  @OneToMany(() => QuotationPromotion, (item) => item.promotion)
+  promotions: Relation<QuotationPromotion[]>;
 }

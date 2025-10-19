@@ -103,6 +103,17 @@ export class QuotationsService {
               updatedBy: userId,
             })),
           })),
+          promotions: createQuotationInput?.promotions?.map((promotion) => ({
+            promotionId: promotion.promotionId,
+            code: promotion.code,
+            kind: promotion.kind,
+            type: promotion.type,
+            name: promotion.name,
+            description: promotion.description,
+            value: promotion.value,
+            createdBy: userId,
+            updatedBy: userId,
+          })),
         });
 
       if (createQuotationInput.signatureFile) {
