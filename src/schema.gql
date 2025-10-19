@@ -41,11 +41,11 @@ input CreateOptionValueInput {
 
 input CreatePackageInput {
   description: String
-  images: [CreateFileInput!]!
-  isActive: Boolean!
+  images: [CreateVariantImageInput!]!
+  isActive: Boolean = true
   items: [PackageItemInput!]!
   modelId: String!
-  name: String!
+  name: String
   projectId: String!
 }
 
@@ -53,6 +53,7 @@ input CreateProductInput {
   """The UUID of the product category"""
   categoryId: String!
   description: String
+  isActive: Boolean = true
   name: String!
   options: [CreateProductOptionInput!] = []
 
