@@ -74,6 +74,36 @@ input CreateProductVariantInput {
   stock: Float! = 0
 }
 
+input CreatePromotionInput {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String
+  description: String
+  endAt: Date
+  isActive: Boolean = true
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind = VOUCHER
+
+  """ส่วนลดสูงสุด (สำหรับ percentage)"""
+  maxDiscountAmount: Float
+
+  """ยอดสั่งซื้อขั้นต่ำ"""
+  minOrderTotal: Float
+  name: String
+
+  """จำกัดการใช้งานต่อผู้ใช้"""
+  perUserLimit: Int
+  startAt: Date
+  type: PromotionType = FIXED_AMOUNT
+
+  """จำกัดจำนวนครั้งรวมทั้งหมด"""
+  usageLimit: Int
+  usedCount: Int = 0
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float = 0
+}
+
 input CreateQuotationInput {
   """ที่อยู่ลูกค้า"""
   customerAddress: String
@@ -249,18 +279,21 @@ type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Product!
   createProduct(createProductInput: CreateProductInput!): Product!
+  createPromotion(createPromotionInput: CreatePromotionInput!): Promotion!
   createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
   createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
   removeProduct(id: ID!): Product!
+  removePromotion(id: ID!): Promotion!
   removeQuotation(id: ID!): Quotation!
   removeQuotationItem(id: ID!): Boolean!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
+  updatePromotion(updatePromotionInput: UpdatePromotionInput!): Promotion!
   updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
   updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
   updateQuotationStatus(id: ID!, status: QuotationStatus!): Quotation!
@@ -399,6 +432,50 @@ type Project {
   units: [Unit!]!
 }
 
+type Promotion {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String!
+  createdAt: Date!
+  deletedAt: Date
+  description: String
+  endAt: Date
+  id: ID!
+  isActive: Boolean!
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind!
+
+  """ส่วนลดสูงสุด (สำหรับ percentage)"""
+  maxDiscountAmount: Float
+
+  """ยอดสั่งซื้อขั้นต่ำ"""
+  minOrderTotal: Float
+  name: String!
+
+  """จำกัดการใช้งานต่อผู้ใช้"""
+  perUserLimit: Int
+  startAt: Date!
+  type: PromotionType!
+  updatedAt: Date!
+
+  """จำกัดจำนวนครั้งรวมทั้งหมด"""
+  usageLimit: Int
+  usedCount: Int!
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float!
+}
+
+enum PromotionKind {
+  DISCOUNT
+  VOUCHER
+}
+
+enum PromotionType {
+  FIXED_AMOUNT
+  PERCENTAGE
+}
+
 type Query {
   categories(productTypeId: ID): [Category!]!
   category(id: ID!): Category!
@@ -418,6 +495,8 @@ type Query {
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
+  promotion(id: ID!): Promotion!
+  promotions: [Promotion!]!
   quotation(id: ID!): Quotation!
   quotationItem(id: ID!): QuotationItem!
   quotationItems: [QuotationItem!]!
@@ -618,6 +697,37 @@ input UpdateProductInput {
 input UpdateProductVariantInput {
   data: UpdateVariantDataInput!
   id: ID!
+}
+
+input UpdatePromotionInput {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String
+  description: String
+  endAt: Date
+  id: ID!
+  isActive: Boolean = true
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind = VOUCHER
+
+  """ส่วนลดสูงสุด (สำหรับ percentage)"""
+  maxDiscountAmount: Float
+
+  """ยอดสั่งซื้อขั้นต่ำ"""
+  minOrderTotal: Float
+  name: String
+
+  """จำกัดการใช้งานต่อผู้ใช้"""
+  perUserLimit: Int
+  startAt: Date
+  type: PromotionType = FIXED_AMOUNT
+
+  """จำกัดจำนวนครั้งรวมทั้งหมด"""
+  usageLimit: Int
+  usedCount: Int = 0
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float = 0
 }
 
 input UpdateQuotationInput {
