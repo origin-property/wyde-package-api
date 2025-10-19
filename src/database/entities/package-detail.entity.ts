@@ -6,10 +6,10 @@ export class PackageDetail {
   @PrimaryColumn('uuid', { name: 'product_id' })
   productId: string;
 
-  @Column('uuid')
+  @Column()
   projectId: string;
 
-  @Column('uuid')
+  @Column()
   modelId: string;
 
   @OneToOne(() => Product, (product) => product.packageDetail, {

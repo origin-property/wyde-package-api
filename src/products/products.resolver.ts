@@ -81,6 +81,11 @@ export class ProductsResolver {
     return this.packagesService.create(createPackageInput, user.id);
   }
 
+  @Query(() => [ProductModel], { name: 'packages'})
+  findAllPackages() {
+    return this.packagesService.findAll();
+  }
+
   @Query(() => [ProductModel], { name: 'packagesByUnit' })
   findAllPackagesByUnit(
     @Args('unitId', { type: () => String }) unitId: string,
