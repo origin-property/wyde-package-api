@@ -63,6 +63,7 @@ export class QuotationsResolver {
     return this.quotationsService.findOne(id);
   }
 
+  @Roles(['admin'])
   @Mutation(() => Quotation)
   async updateQuotation(
     @Args('updateQuotationInput') updateQuotationInput: UpdateQuotationInput,
@@ -75,6 +76,7 @@ export class QuotationsResolver {
     );
   }
 
+  @Roles(['admin'])
   @Mutation(() => Quotation)
   async updateQuotationStatus(
     @Args('id', { type: () => ID }) id: string,

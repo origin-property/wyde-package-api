@@ -1,3 +1,5 @@
+import { ProductByIdLoader } from '@/products/dataloaders/product-by-id.loader';
+import { ProductModel } from '@/products/entities/product.entity';
 import { ProductVariantModel } from '@/products/entities/productVariant.entity';
 import { ProductVariantLoader } from '@/products/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
@@ -20,6 +22,10 @@ import { QuotationItem } from './entities/quotation-item.entity';
 import { Quotation } from './entities/quotation.entity';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
+import {
+  QuotationItemPackageLoader,
+  QuotationItemPackageLoaderFactory,
+} from './QuotationItemPackageLoader.factory';
 import {
   QuotationUserLoader,
   QuotationUserLoaderFactory,
@@ -73,16 +79,37 @@ export class QuotationItemsResolver {
     return loader.load(quotationId);
   }
 
+  @ResolveField(() => ProductModel, { nullable: true, description: 'สินค้า' })
+  async product(
+    @Parent() { productId }: QuotationItem,
+    @Loader(ProductByIdLoader) loader: DataLoader<string, ProductModel>,
+  ) {
+    return productId ? loader.load(productId) : null;
+  }
+
   @ResolveField(() => ProductVariantModel, {
     nullable: true,
     description: 'รายการสินค้า',
   })
-  async product(
-    @Parent() { productId }: QuotationItem,
+  async variant(
+    @Parent() { productVariantId }: QuotationItem,
     @Loader(ProductVariantLoader)
     loader: DataLoader<string, ProductVariantModel>,
   ) {
-    return productId ? loader.load(productId) : null;
+    return productVariantId ? loader.load(productVariantId) : null;
+  }
+
+  @ResolveField(() => [QuotationItem], {
+    nullable: true,
+    description: 'รายการสินค้า',
+  })
+  async packageItems(
+    @Parent() { id }: QuotationItem,
+    @Loader2(QuotationItemPackageLoaderFactory)
+    loader: QuotationItemPackageLoader,
+  ) {
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField(() => User, { nullable: true })
