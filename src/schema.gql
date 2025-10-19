@@ -436,7 +436,9 @@ type Promotion {
   """รหัสโค้ด เช่น WY001, Discount100"""
   code: String!
   createdAt: Date!
+  createdBy: User
   deletedAt: Date
+  deletedBy: User
   description: String
   endAt: Date
   id: ID!
@@ -457,6 +459,7 @@ type Promotion {
   startAt: Date!
   type: PromotionType!
   updatedAt: Date!
+  updatedBy: User
 
   """จำกัดจำนวนครั้งรวมทั้งหมด"""
   usageLimit: Int

@@ -1,11 +1,24 @@
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { User } from '@/users/entities/user.entity';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  ID,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { Loader } from '@strv/nestjs-dataloader';
 import { CreatePromotionInput } from './dto/create-promotion.input';
 import { UpdatePromotionInput } from './dto/update-promotion.input';
 import { PromotionDto } from './entities/promotion.dto';
 import { PromotionsService } from './promotions.service';
+import {
+  PromotionUserLoader,
+  PromotionUserLoaderFactory,
+} from './PromotionsUserLoader.factory';
 
 @Resolver(() => PromotionDto)
 export class PromotionsResolver {
@@ -50,5 +63,36 @@ export class PromotionsResolver {
     @CurrentUser() user: User,
   ) {
     return this.promotionsService.remove(id, user.id);
+  }
+
+  @ResolveField(() => User, { nullable: true })
+  async createdBy(
+    @Parent() { createdBy }: PromotionDto,
+    @Loader(PromotionUserLoaderFactory) userLoader: PromotionUserLoader,
+  ) {
+    const result = await userLoader.load(createdBy);
+    return result?.values || null;
+  }
+
+  @ResolveField(() => User, { nullable: true })
+  async updatedBy(
+    @Parent() { updatedBy }: PromotionDto,
+    @Loader(PromotionUserLoaderFactory) userLoader: PromotionUserLoader,
+  ) {
+    const result = await userLoader.load(updatedBy);
+    return result?.values || null;
+  }
+
+  @ResolveField(() => User, { nullable: true })
+  async deletedBy(
+    @Parent() { deletedBy }: PromotionDto,
+    @Loader(PromotionUserLoaderFactory) userLoader: PromotionUserLoader,
+  ) {
+    if (!deletedBy) {
+      return null;
+    }
+
+    const result = await userLoader.load(deletedBy);
+    return result?.values || null;
   }
 }
