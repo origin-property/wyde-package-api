@@ -75,6 +75,36 @@ input CreateProductVariantInput {
   stock: Float! = 0
 }
 
+input CreatePromotionInput {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String
+  description: String
+  endAt: Date
+  isActive: Boolean = true
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind = VOUCHER
+
+  """ส่วนลดสูงสุด (สำหรับ percentage)"""
+  maxDiscountAmount: Float
+
+  """ยอดสั่งซื้อขั้นต่ำ"""
+  minOrderTotal: Float
+  name: String
+
+  """จำกัดการใช้งานต่อผู้ใช้"""
+  perUserLimit: Int
+  startAt: Date
+  type: PromotionType = FIXED_AMOUNT
+
+  """จำกัดจำนวนครั้งรวมทั้งหมด"""
+  usageLimit: Int
+  usedCount: Int = 0
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float = 0
+}
+
 input CreateQuotationInput {
   """ที่อยู่ลูกค้า"""
   customerAddress: String
@@ -111,13 +141,19 @@ input CreateQuotationInput {
 }
 
 input CreateQuotationItemInput {
-  """ราคางบประมาณสินค้า"""
-  budgetPrice: Float = 0
+  """รายการสินค้าหลัก"""
+  items: [CreateQuotationItemInput!]
+
+  """รหัสแพ๊คเกจ"""
+  packageItemId: String
+
+  """ราคา"""
+  price: Float = 0
 
   """คำอธิบายสินค้า"""
   productDescription: String
 
-  """รหัสรายการสินค้า"""
+  """รหัสสินค้า"""
   productId: String
 
   """ชื่อสินค้า"""
@@ -126,23 +162,14 @@ input CreateQuotationItemInput {
   """ประเภทสินค้า"""
   productType: ProductItemType = PRODUCT
 
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
   """จำนวนสินค้า"""
   quantity: Int = 0
 
-  """ราคาขายสินค้า"""
-  sellingPrice: Float = 0
-
-  """SKU สินค้า"""
-  sku: String
-
   """ราคาพิเศษ"""
   specialPrice: Float
-
-  """ราคารวม"""
-  totalPrice: Float = 0
-
-  """ราคา/หน่วย"""
-  unitPrice: Float = 0
 }
 
 input CreateRoleInput {
@@ -253,18 +280,21 @@ type Mutation {
   createFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Product!
   createProduct(createProductInput: CreateProductInput!): Product!
+  createPromotion(createPromotionInput: CreatePromotionInput!): Promotion!
   createQuotation(createQuotationInput: CreateQuotationInput!): Quotation!
   createQuotationItem(createQuotationItemInput: CreateQuotationItemInput!): QuotationItem!
   createRole(createRoleInput: CreateRoleInput!): Role!
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
   removeProduct(id: ID!): Product!
+  removePromotion(id: ID!): Promotion!
   removeQuotation(id: ID!): Quotation!
   removeQuotationItem(id: ID!): Boolean!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
+  updatePromotion(updatePromotionInput: UpdatePromotionInput!): Promotion!
   updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
   updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
   updateQuotationStatus(id: ID!, status: QuotationStatus!): Quotation!
@@ -403,6 +433,63 @@ type Project {
   units: [Unit!]!
 }
 
+type Promotion {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String!
+  createdAt: Date!
+  createdBy: User
+  deletedAt: Date
+  deletedBy: User
+  description: String
+  endAt: Date
+  id: ID!
+  isActive: Boolean!
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind!
+
+  """ส่วนลดสูงสุด (สำหรับ percentage)"""
+  maxDiscountAmount: Float
+
+  """ยอดสั่งซื้อขั้นต่ำ"""
+  minOrderTotal: Float
+  name: String!
+
+  """จำกัดการใช้งานต่อผู้ใช้"""
+  perUserLimit: Int
+  startAt: Date!
+  type: PromotionType!
+  updatedAt: Date!
+  updatedBy: User
+
+  """จำกัดจำนวนครั้งรวมทั้งหมด"""
+  usageLimit: Int
+  usedCount: Int!
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float!
+}
+
+enum PromotionKind {
+  DISCOUNT
+  VOUCHER
+}
+
+type PromotionPaginate {
+  items: [Promotion!]!
+
+  """ลิงค์หน้า"""
+  links: IPaginateLinks
+
+  """ข้อมูลการจัดการหน้า"""
+  meta: IPaginateMeta
+}
+
+enum PromotionType {
+  FIXED_AMOUNT
+  PERCENTAGE
+}
+
 type Query {
   categories(productTypeId: ID): [Category!]!
   category(id: ID!): Category!
@@ -423,6 +510,14 @@ type Query {
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
+  promotion(id: ID!): Promotion!
+  promotions(
+    """ประเภทโปรโมชั่น: discount หรือ voucher"""
+    kind: PromotionKind
+    limit: Int! = 10
+    page: Int! = 1
+    type: PromotionType
+  ): PromotionPaginate!
   quotation(id: ID!): Quotation!
   quotationItem(id: ID!): QuotationItem!
   quotationItems: [QuotationItem!]!
@@ -496,21 +591,31 @@ type Quotation {
 }
 
 type QuotationItem {
-  """ราคางบประมาณสินค้า"""
-  budgetPrice: Float!
   createdAt: Date!
   createdBy: User
   deletedAt: Date
   deletedBy: User
   id: ID!
 
+  """รหัสแพ๊คเกจ"""
+  packageItemId: String
+
   """รายการสินค้า"""
-  product: ProductVariant
+  packageItems: [QuotationItem!]
+
+  """รหัสรายการสินค้าหลัก"""
+  parentId: String
+
+  """ราคา"""
+  price: Float!
+
+  """สินค้า"""
+  product: Product
 
   """คำอธิบายสินค้า"""
   productDescription: String
 
-  """รหัสรายการสินค้า"""
+  """รหัสสินค้า"""
   productId: String
 
   """ชื่อสินค้า"""
@@ -518,6 +623,9 @@ type QuotationItem {
 
   """ประเภทสินค้า"""
   productType: ProductItemType!
+
+  """รหัสรายการสินค้า"""
+  productVariantId: String
 
   """จำนวนสินค้า"""
   quantity: Int!
@@ -528,22 +636,13 @@ type QuotationItem {
   """รหัสใบเสนอราคา"""
   quotationId: String
 
-  """ราคาขายสินค้า"""
-  sellingPrice: Float!
-
-  """SKU สินค้า"""
-  sku: String
-
   """ราคาพิเศษ"""
   specialPrice: Float
-
-  """ราคารวม"""
-  totalPrice: Float!
-
-  """ราคา/หน่วย"""
-  unitPrice: Float!
   updatedAt: Date!
   updatedBy: User
+
+  """รายการสินค้า"""
+  variant: ProductVariant
 }
 
 type QuotationPaginate {
@@ -621,6 +720,37 @@ input UpdateProductVariantInput {
   id: ID!
 }
 
+input UpdatePromotionInput {
+  """รหัสโค้ด เช่น WY001, Discount100"""
+  code: String
+  description: String
+  endAt: Date
+  id: ID!
+  isActive: Boolean = true
+
+  """ประเภทโปรโมชั่น: discount หรือ voucher"""
+  kind: PromotionKind = VOUCHER
+
+  """ส่วนลดสูงสุด (สำหรับ percentage)"""
+  maxDiscountAmount: Float
+
+  """ยอดสั่งซื้อขั้นต่ำ"""
+  minOrderTotal: Float
+  name: String
+
+  """จำกัดการใช้งานต่อผู้ใช้"""
+  perUserLimit: Int
+  startAt: Date
+  type: PromotionType = FIXED_AMOUNT
+
+  """จำกัดจำนวนครั้งรวมทั้งหมด"""
+  usageLimit: Int
+  usedCount: Int = 0
+
+  """ค่าลด เช่น 10% หรือ 100 บาท"""
+  value: Float = 0
+}
+
 input UpdateQuotationInput {
   """ที่อยู่ลูกค้า"""
   customerAddress: String
@@ -658,14 +788,21 @@ input UpdateQuotationInput {
 }
 
 input UpdateQuotationItemInput {
-  """ราคางบประมาณสินค้า"""
-  budgetPrice: Float = 0
   id: ID!
+
+  """รายการสินค้าหลัก"""
+  items: [CreateQuotationItemInput!]
+
+  """รหัสแพ๊คเกจ"""
+  packageItemId: String
+
+  """ราคา"""
+  price: Float = 0
 
   """คำอธิบายสินค้า"""
   productDescription: String
 
-  """รหัสรายการสินค้า"""
+  """รหัสสินค้า"""
   productId: String
 
   """ชื่อสินค้า"""
@@ -674,23 +811,14 @@ input UpdateQuotationItemInput {
   """ประเภทสินค้า"""
   productType: ProductItemType = PRODUCT
 
+  """รหัสรายการสินค้า"""
+  productVariantId: String
+
   """จำนวนสินค้า"""
   quantity: Int = 0
 
-  """ราคาขายสินค้า"""
-  sellingPrice: Float = 0
-
-  """SKU สินค้า"""
-  sku: String
-
   """ราคาพิเศษ"""
   specialPrice: Float
-
-  """ราคารวม"""
-  totalPrice: Float = 0
-
-  """ราคา/หน่วย"""
-  unitPrice: Float = 0
 }
 
 input UpdateRoleInput {

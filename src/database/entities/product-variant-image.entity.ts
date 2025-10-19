@@ -1,9 +1,9 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  Entity,
   JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
   Relation,
 } from 'typeorm';
 import { BaseEntity } from './base';
@@ -11,7 +11,10 @@ import { ProductVariant } from './product-variant.entity';
 
 @Entity({ name: 'product_variant_image' })
 export class ProductVariantImage extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn({
+    type: 'uuid',
+    default: () => 'uuidv7()',
+  })
   id: string;
 
   @Column({ name: 'product_variant_id' })

@@ -28,6 +28,7 @@ import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
 import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
 import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
+import { PromotionsModule } from './promotions/promotions.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
     ProductsModule,
     ProjectsModule,
     QuotationsModule,
+    PromotionsModule,
   ],
   controllers: [AppController],
   providers: [
