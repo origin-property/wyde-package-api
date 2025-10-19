@@ -1,4 +1,4 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
+import { InputType, Field, Int, PartialType, OmitType } from '@nestjs/graphql';
 import { IsArray, IsOptional, IsString, Min } from 'class-validator';
 
 @InputType()
@@ -33,4 +33,19 @@ export class FindAllProductsInput {
   @Min(1)
   @IsOptional()
   limit?: number;
+}
+
+@InputType()
+export class FindAllPackagesInput extends PartialType(
+  OmitType(FindAllProductsInput, ['categoryIds'], InputType),
+) {
+  @Field(() => String, { nullable: true, description: 'รหัสโครงการ' })
+  @IsString()
+  @IsOptional()
+  projectId?: string;
+
+  @Field(() => String, { nullable: true, description: 'รหัสโมเดล' })
+  @IsString()
+  @IsOptional()
+  modelId?: string;
 }

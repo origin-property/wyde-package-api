@@ -176,6 +176,23 @@ type File {
   updatedAt: Date!
 }
 
+input FindAllPackagesInput {
+  """จำนวนรายการต่อหน้า"""
+  limit: Int = 10
+
+  """รหัสโมเดล"""
+  modelId: String
+
+  """หน้าปัจจุบัน"""
+  page: Int = 1
+
+  """รหัสโครงการ"""
+  projectId: String
+
+  """คำค้นหา"""
+  searchText: String
+}
+
 input FindAllProductsInput {
   """รหัสหมวดหมู่สินค้า"""
   categoryIds: [String]
@@ -305,12 +322,13 @@ type Product {
   images: [File!]!
   isActive: Boolean!
   itemType: ProductItemType
+  model: String
   name: String!
   options: [ProductOption!]!
   packageItems: [PackageItem!]!
   productType: ProductType
   productTypeId: String
-  project: Project!
+  project: Project
   updatedAt: String!
   updatedBy: String
   variants: [ProductVariant!]!
@@ -415,7 +433,7 @@ type Query {
   me: User!
   model(id: ID!): Model!
   models(projectId: ID!): [Model!]!
-  packages: [Product!]!
+  packages(input: FindAllPackagesInput!): [Product!]!
   packagesByUnit(unitId: String!): [Product!]!
   product(id: Int!): Product!
   productType(id: ID!): ProductType!

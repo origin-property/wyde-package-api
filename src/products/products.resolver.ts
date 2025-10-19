@@ -37,7 +37,10 @@ import {
 import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
 import { CreatePackageInput } from './dto/create-package.input';
 import { CreateProductInput } from './dto/create-product.input';
-import { FindAllProductsInput } from './dto/find-all-products.input';
+import {
+  FindAllPackagesInput,
+  FindAllProductsInput,
+} from './dto/find-all-products.input';
 import { UpdateProductInput } from './dto/update-product.input';
 import { CategoryModel } from './entities/category.entity';
 import { PackageItem } from './entities/package.entity';
@@ -81,9 +84,12 @@ export class ProductsResolver {
     return this.packagesService.create(createPackageInput, user.id);
   }
 
-  @Query(() => [ProductModel], { name: 'packages'})
-  findAllPackages() {
-    return this.packagesService.findAll();
+  @Query(() => [ProductModel], { name: 'packages' })
+  findAllPackages(
+    @Args('input', { type: () => FindAllPackagesInput })
+    input: FindAllPackagesInput,
+  ) {
+    return this.packagesService.findAll(input);
   }
 
   @Query(() => [ProductModel], { name: 'packagesByUnit' })
@@ -148,13 +154,22 @@ export class ProductsResolver {
     return loader.load(product.id);
   }
 
-  @ResolveField(() => Project)
+  @ResolveField(() => Project, { nullable: true })
   async project(
     @Parent() { packageDetail }: Product,
     @Loader2(PackageProjectLoaderFactory) projectLoader: PackageProjectLoader,
   ) {
-    const result = await projectLoader.load(packageDetail.projectId);
-    return result?.values?.[0];
+    if (packageDetail) {
+      const result = await projectLoader.load(packageDetail.projectId);
+      return result?.values?.[0];
+    }
+
+    return null;
+  }
+
+  @ResolveField(() => String, { nullable: true })
+  model(@Parent() { packageDetail }: Product) {
+    return packageDetail?.modelId ?? null;
   }
 
   @ResolveField(() => [PackageItem])
