@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Like, Repository } from 'typeorm';
+import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 import { CreatePackageInput } from './dto/create-package.input';
@@ -14,6 +14,7 @@ import { ProductItemType } from '@/shared/enums/product.enum';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash';
 import { ConfigService } from '@nestjs/config';
+import { FindAllPackagesInput } from './dto/find-all-products.input';
 
 @Injectable()
 export class PackagesService {
@@ -106,14 +107,52 @@ export class PackagesService {
     return product;
   }
 
-  async findAll(): Promise<ProductEntity[]> {
+  async findAll(input: FindAllPackagesInput): Promise<ProductEntity[]> {
+    const { projectId, modelId, searchText, page, limit } = input;
+
+    const where: FindOptionsWhere<ProductEntity>[] = [];
+
+    if (modelId && projectId) {
+      where.push({
+        packageDetail: {
+          modelId,
+          projectId,
+        },
+      });
+    }
+
+    if (projectId) {
+      where.push({
+        packageDetail: {
+          projectId,
+        },
+      });
+    }
+
+    if (searchText && searchText.trim() !== '') {
+      const query = `%${searchText.trim()}%`;
+      where.push(
+        {
+          name: Like(query),
+        },
+        {
+          variants: {
+            sku: Like(query),
+          },
+        },
+      );
+    }
+
     return this.productRepository.find({
-      where: {
-        itemType: ProductItemType.PACKAGE,
-      },
+      where:
+        where.length > 0
+          ? where.map((w) => ({ ...w, itemType: ProductItemType.PACKAGE }))
+          : [{ itemType: ProductItemType.PACKAGE }],
       relations: {
+        variants: {
+          images: true,
+        },
         packageDetail: true,
-        variants: true,
       },
     });
   }
@@ -141,6 +180,9 @@ export class PackagesService {
   ): Promise<PackageItemEntity[]> {
     return this.packageItemRepository.find({
       where: { productId: In(ids) },
+      order: {
+        seq: 'ASC',
+      },
     });
   }
 
