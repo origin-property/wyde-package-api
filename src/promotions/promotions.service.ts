@@ -2,8 +2,14 @@ import { Promotion } from '@/database/entities/promotion.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
-import { Repository } from 'typeorm';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
+import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { CreatePromotionInput } from './dto/create-promotion.input';
+import { SearchPromotionArgs } from './dto/search-promotion.agrs';
 import { UpdatePromotionInput } from './dto/update-promotion.input';
 
 @Injectable()
@@ -25,8 +31,36 @@ export class PromotionsService {
     return this.promotionRepository.find();
   }
 
+  async searchWithPaginate(args: SearchPromotionArgs) {
+    const { page, limit, kind, type } = args;
+
+    const wheres: FindOptionsWhere<Promotion> = {
+      ...(kind && { kind }),
+      ...(kind && { type }),
+    };
+
+    return this.paginate(
+      { page, limit },
+      {
+        where: wheres,
+        order: { updatedAt: 'DESC' },
+      },
+    );
+  }
+
   async findOne(id: string) {
     return this.promotionRepository.findOneBy({ id });
+  }
+
+  private async paginate(
+    pageOptions: IPaginationOptions,
+    findOptions?: FindManyOptions<Promotion>,
+  ): Promise<Pagination<Promotion>> {
+    return paginate<Promotion>(
+      this.promotionRepository,
+      pageOptions,
+      findOptions,
+    );
   }
 
   async update(

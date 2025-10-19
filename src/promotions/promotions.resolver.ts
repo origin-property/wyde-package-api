@@ -12,7 +12,9 @@ import {
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
 import { CreatePromotionInput } from './dto/create-promotion.input';
+import { SearchPromotionArgs } from './dto/search-promotion.agrs';
 import { UpdatePromotionInput } from './dto/update-promotion.input';
+import { PromotionPaginateDto } from './entities/promotion-paginate.dto';
 import { PromotionDto } from './entities/promotion.dto';
 import { PromotionsService } from './promotions.service';
 import {
@@ -33,9 +35,9 @@ export class PromotionsResolver {
     return this.promotionsService.create(createPromotionInput, user.id);
   }
 
-  @Query(() => [PromotionDto], { name: 'promotions' })
-  async findAll() {
-    return this.promotionsService.findAll();
+  @Query(() => PromotionPaginateDto, { name: 'promotions' })
+  async findAll(@Args() searchPromotionArgs: SearchPromotionArgs) {
+    return this.promotionsService.searchWithPaginate(searchPromotionArgs);
   }
 
   @Query(() => PromotionDto, { name: 'promotion' })

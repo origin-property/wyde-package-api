@@ -474,6 +474,16 @@ enum PromotionKind {
   VOUCHER
 }
 
+type PromotionPaginate {
+  items: [Promotion!]!
+
+  """ลิงค์หน้า"""
+  links: IPaginateLinks
+
+  """ข้อมูลการจัดการหน้า"""
+  meta: IPaginateMeta
+}
+
 enum PromotionType {
   FIXED_AMOUNT
   PERCENTAGE
@@ -499,7 +509,13 @@ type Query {
   project(id: ID!): Project!
   projects: [Project!]!
   promotion(id: ID!): Promotion!
-  promotions: [Promotion!]!
+  promotions(
+    """ประเภทโปรโมชั่น: discount หรือ voucher"""
+    kind: PromotionKind
+    limit: Int! = 10
+    page: Int! = 1
+    type: PromotionType
+  ): PromotionPaginate!
   quotation(id: ID!): Quotation!
   quotationItem(id: ID!): QuotationItem!
   quotationItems: [QuotationItem!]!
