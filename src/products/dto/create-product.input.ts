@@ -13,7 +13,7 @@ import {
 
 // DTO สำหรับรูปภาพ (เป็นส่วนหนึ่งของ Variant)
 @InputType()
-class CreateVariantImageInput {
+export class CreateVariantImageInput {
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -151,4 +151,9 @@ export class CreateProductInput {
   @IsUUID('4')
   @IsNotEmpty()
   categoryId: string;
+
+  @Field(() => Boolean, { nullable: true, defaultValue: true })
+  @IsBoolean()
+  @IsOptional()
+  isActive: boolean;
 }

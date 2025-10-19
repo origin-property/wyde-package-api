@@ -13,9 +13,11 @@ import { UnitsService } from '@/projects/units.service';
 import { ProductItemType } from '@/shared/enums/product.enum';
 import dayjs from 'dayjs';
 import { sumBy } from 'lodash';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PackagesService {
+  buckketName: string;
   constructor(
     @InjectRepository(ProductEntity)
     private readonly productRepository: Repository<ProductEntity>,
@@ -26,10 +28,12 @@ export class PackagesService {
     @InjectRepository(PackageItemEntity)
     private readonly packageItemRepository: Repository<PackageItemEntity>,
 
-    private readonly filesService: FilesService,
-
     private readonly unitService: UnitsService,
-  ) {}
+
+    private configService: ConfigService,
+  ) {
+    this.buckketName = this.configService.getOrThrow<string>('AWS_S3_BUCKET');
+  }
   async create(
     createPackageInput: CreatePackageInput,
     userId: string,
@@ -38,23 +42,26 @@ export class PackagesService {
       createPackageInput;
 
     // ตรวจสอบว่า ProductVariant ที่อ้างอิงมีอยู่จริงหรือไม่
-    const variantIds = items.map(item => item.productVariantId);
+    const variantIds = items.map((item) => item.productVariantId);
     const existingVariants = await this.variantRepository.find({
       where: { id: In(variantIds) },
-      select: ['id']
+      select: ['id', 'sellingPrice'],
     });
 
     if (existingVariants.length !== variantIds.length) {
-      const existingVariantIds = existingVariants.map(v => v.id);
-      const missingVariantIds = variantIds.filter(id => !existingVariantIds.includes(id));
-      throw new NotFoundException(`ProductVariants not found: ${missingVariantIds.join(', ')}`);
+      const existingVariantIds = existingVariants.map((v) => v.id);
+      const missingVariantIds = variantIds.filter(
+        (id) => !existingVariantIds.includes(id),
+      );
+      throw new NotFoundException(
+        `ProductVariants not found: ${missingVariantIds.join(', ')}`,
+      );
     }
 
     const newSku = await this.generateSKU();
 
-    console.log(newSku);
-
     const productId = uuidv4();
+    const variantId = uuidv4();
 
     const product = await this.productRepository.save({
       id: productId,
@@ -77,19 +84,24 @@ export class PackagesService {
       },
       variants: [
         {
+          id: variantId,
           sku: newSku,
-          budgetPrice: 0,
+          budgetPrice: sumBy(existingVariants, (i) => Number(i.sellingPrice)),
           sellingPrice: sumBy(items, 'specialPrice'),
           stock: 0,
+          images: images.map((img) => ({
+            ...img,
+            fileBucket: this.buckketName,
+            variantId,
+            createdBy: userId,
+            updatedBy: userId,
+          })),
+          createdBy: userId,
+          updatedBy: userId,
+          isActive: true,
         },
       ],
     });
-
-    await Promise.all(
-      images.map((image) =>
-        this.filesService.create({ ...image, refId: product.id }, userId),
-      ),
-    );
 
     return product;
   }

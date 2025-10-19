@@ -221,7 +221,7 @@ export class ProductsService {
       where:
         wheres.length > 0
           ? wheres.map((w) => ({ ...w, itemType: ProductItemType.PRODUCT }))
-          : undefined,
+          : [{ itemType: ProductItemType.PRODUCT }],
 
       relations: {
         productType: true,
