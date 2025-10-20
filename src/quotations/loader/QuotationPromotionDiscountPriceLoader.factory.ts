@@ -26,7 +26,7 @@ class QuotationPromotionDiscountPriceLoaderFactory extends DataloaderFactory<
 
     return ids.map((id, index) => ({
       id,
-      value: results[index].value,
+      value: results[index]?.value ?? 0,
     }));
   }
 
