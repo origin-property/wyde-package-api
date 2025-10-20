@@ -1,53 +1,56 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  ResolveField,
-  Parent,
-  ID,
-} from '@nestjs/graphql';
-import { ProductsService } from './products.service';
-import { ProductModel } from './dto/product.dto';
-import { CreateProductInput } from './input/create-product.input';
-import { UpdateProductInput } from './input/update-product.input';
-import { FindAllProductsInput } from './input/find-all-products.input';
-import { CurrentUser } from '@/shared/decorators/decorators';
-import { ProductTypeModel } from './dto/product-type.dto';
-import { CategoryModel } from './dto/category.dto';
-import { ProductVariantModel } from './dto/productVariant.dto';
-import { ProductOptionModel } from './dto/productOption.dto';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
-import { Product } from '@/database/entities/product.entity';
-import { ProductOption } from '@/database/entities/product-option.entity';
 import { Category } from '@/database/entities/category.entity';
+import { ProductOption } from '@/database/entities/product-option.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
-import { ProductTypeLoader } from './dataloaders/product-type.loader';
-import { CategoryLoader } from './dataloaders/category.loader';
-import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
-import { OptionsByProductLoader } from './dataloaders/options-by-product.loader';
-import { CreatePackageInput } from './input/create-package.input';
-import { PackagesService } from './packages.service';
-import { PackageItem } from './dto/package.dto';
+import { Product } from '@/database/entities/product.entity';
+import { Project } from '@/projects/dto/project.dto';
+import { CurrentUser } from '@/shared/decorators/decorators';
+import {
+  Args,
+  ID,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
 import { Loader as Loader2 } from '@strv/nestjs-dataloader';
+import { Loader } from '@tracworx/nestjs-dataloader';
+import DataLoader from 'dataloader';
+import { CategoryLoader } from './dataloaders/category.loader';
+import { OptionsByProductLoader } from './dataloaders/options-by-product.loader';
 import {
   PackageItemLoader,
   PackageItemLoaderFactory,
 } from './dataloaders/PackageItemLoader.factory';
-import { Project } from '@/projects/dto/project.dto';
 import {
   PackageProjectLoader,
   PackageProjectLoaderFactory,
 } from './dataloaders/PackageProjectLoader.factory';
+import { ProductTypeLoader } from './dataloaders/product-type.loader';
 import {
   ProductFileLoader,
   ProductFileLoaderFactory,
 } from './dataloaders/ProductFileLoader.factory';
-import { FindAllPackagesInput } from './input/find-all-products.input';
+import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
+import { CategoryModel } from './dto/category.dto';
+import { PackageItem } from './dto/package.dto';
+import { ProductTypeModel } from './dto/product-type.dto';
+import { ProductModel } from './dto/product.dto';
+import { ProductOptionModel } from './dto/productOption.dto';
+import { ProductVariantModel } from './dto/productVariant.dto';
+import { CreatePackageInput } from './input/create-package.input';
+import { CreateProductInput } from './input/create-product.input';
+import {
+  FindAllPackagesInput,
+  FindAllProductsInput,
+} from './input/find-all-products.input';
+import { UpdateProductInput } from './input/update-product.input';
+import { PackagesService } from './packages.service';
 import { ProductByVariantIdLoader } from './product-variant.loader';
+import { ProductsService } from './products.service';
+import { File } from '@/files/entities/file.entity';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {

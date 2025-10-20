@@ -7,19 +7,18 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
-import DataLoader from 'dataloader';
 import { Project } from './dto/project.dto';
 import { Tower } from './dto/tower.dto';
 import { Unit } from './dto/unit.dto';
-import { ProjectsService } from './projects.service';
 import {
   ProjectTowerLoader,
   ProjectTowerLoaderFactory,
-} from './ProjectTowerLoader.factory';
+} from './loader/ProjectTowerLoader.factory';
 import {
   ProjectUnitLoader,
   ProjectUnitLoaderFactory,
-} from './ProjectUnitLoader.factory';
+} from './loader/ProjectUnitLoader.factory';
+import { ProjectsService } from './projects.service';
 
 @Resolver(() => Project)
 export class ProjectsResolver {

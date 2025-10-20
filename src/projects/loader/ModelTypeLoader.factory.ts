@@ -1,7 +1,7 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { ModelTypesService } from './model-types.serice';
-import { ModelType } from './dto/model-type.dto';
+import { ModelTypesService } from '../model-types.serice';
+import { ModelType } from '../dto/model-type.dto';
 
 type ModelTypeId = string;
 type ModelTypeInfo = { id: ModelTypeId; values: ModelType };
