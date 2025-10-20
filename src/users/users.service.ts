@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { keyBy } from 'lodash';
 import { FindOptionsWhere, In, Repository } from 'typeorm';
-import { CreateUserInput } from './dto/create-user.input';
+import { CreateUserInput } from './input/create-user.input';
 
 @Injectable()
 export class UsersService {

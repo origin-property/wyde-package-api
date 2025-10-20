@@ -1,6 +1,6 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../users/dto/user.dto';
 import { UsersService } from '../../users/users.service';
 
 type UserId = string;

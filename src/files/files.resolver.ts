@@ -1,6 +1,6 @@
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { UploadService } from '@/upload/upload.service';
-import { User } from '@/users/entities/user.entity';
+import { User } from '@/users/dto/user.dto';
 import {
   Args,
   ID,

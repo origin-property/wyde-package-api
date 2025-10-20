@@ -1,6 +1,6 @@
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
-import { User } from '@/users/entities/user.entity';
+import { User } from '@/users/dto/user.dto';
 import {
   Args,
   ID,
