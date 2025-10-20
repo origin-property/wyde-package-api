@@ -1,4 +1,4 @@
-import { Role } from '@/roles/entities/role.entity';
+import { Role } from '@/roles/dto/role.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import {

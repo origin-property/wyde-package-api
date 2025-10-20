@@ -1,5 +1,5 @@
 import { InputType, OmitType, PartialType } from '@nestjs/graphql';
-import { Role } from '../entities/role.entity';
+import { Role } from '../dto/role.dto';
 
 @InputType()
 export class CreateRoleInput extends PartialType(
