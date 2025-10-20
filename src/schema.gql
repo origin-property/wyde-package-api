@@ -551,7 +551,7 @@ type Query {
   product(id: String!): Product!
   productType(id: ID!): ProductType!
   productTypes: [ProductType!]!
-  products(findAllProductsInput: FindAllProductsInput!): [Product!]!
+  products(findAllProductsInput: FindAllProductsInput!, isActive: Boolean): [Product!]!
   project(id: ID!): Project!
   projects: [Project!]!
   promotion(id: ID!): Promotion!

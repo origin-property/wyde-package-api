@@ -162,6 +162,7 @@ export class ProductsService {
   async findAll(
     searchText?: string,
     categoryIds?: string[],
+    isActive?: boolean,
     page = 1,
     limit = 10,
   ): Promise<Product[]> {
@@ -184,6 +185,9 @@ export class ProductsService {
             },
           },
         },
+        isActive !== undefined && {
+          isActive: isActive,
+        },
       );
     }
 
@@ -196,14 +200,6 @@ export class ProductsService {
         wheres.length > 0
           ? wheres.map((w) => ({ ...w, itemType: ProductItemType.PRODUCT }))
           : [{ itemType: ProductItemType.PRODUCT }],
-
-      relations: {
-        category: true,
-        variants: {
-          images: true,
-          optionValues: true,
-        },
-      },
       order: {
         createdAt: 'DESC',
       },
@@ -329,6 +325,8 @@ export class ProductsService {
     isActive: boolean,
     userId: string,
   ): Promise<Product> {
+    throw new GraphQLError('Failed to update isActive status');
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

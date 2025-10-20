@@ -107,6 +107,7 @@ export class ProductsResolver {
   @Mutation(() => ProductModel)
   removeProduct(
     @Args('id', { type: () => ID }) id: string,
+
     @CurrentUser() user: any,
   ) {
     return this.productsService.remove(id, user.id);
@@ -115,10 +116,18 @@ export class ProductsResolver {
   @Query(() => [ProductModel], { name: 'products' })
   findAll(
     @Args('findAllProductsInput') findAllProductsInput: FindAllProductsInput,
+    @Args('isActive', { type: () => Boolean, nullable: true })
+    isActive: boolean,
   ) {
     const { searchText, categoryIds, page, limit } = findAllProductsInput;
 
-    return this.productsService.findAll(searchText, categoryIds, page, limit);
+    return this.productsService.findAll(
+      searchText,
+      categoryIds,
+      isActive,
+      page,
+      limit,
+    );
   }
 
   @Query(() => ProductModel, { name: 'product' })
