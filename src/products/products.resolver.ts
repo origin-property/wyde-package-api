@@ -1,4 +1,3 @@
-import { ProductOption } from '@/database/entities/product-option.entity';
 import { Product } from '@/database/entities/product.entity';
 import { File } from '@/files/entities/file.entity';
 import { Project } from '@/projects/dto/project.dto';
@@ -12,9 +11,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader as Loader2 } from '@strv/nestjs-dataloader';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
 import { CategoryModel } from './dto/category.dto';
 import { PackageItem } from './dto/package.dto';
 import { ProductModel } from './dto/product.dto';
@@ -30,7 +27,6 @@ import {
   FindAllProductsInput,
 } from './input/find-all-products.input';
 import { UpdateProductInput } from './input/update-product.input';
-import { OptionsByProductLoader } from './loader/options-by-product.loader';
 import {
   PackageItemLoader,
   PackageItemLoaderFactory,
@@ -39,7 +35,6 @@ import {
   PackageProjectLoader,
   PackageProjectLoaderFactory,
 } from './loader/PackageProjectLoader.factory';
-import { ProductByVariantIdLoader } from './loader/product-variant.loader';
 import {
   ProductCategoryLoader,
   ProductCategoryLoaderFactory,
@@ -48,6 +43,10 @@ import {
   ProductFileLoader,
   ProductFileLoaderFactory,
 } from './loader/ProductFileLoader.factory';
+import {
+  ProductOptionLoader,
+  ProductOptionLoaderFactory,
+} from './loader/ProductOptionLoader.factory';
 import {
   ProductVariantLoader,
   ProductVariantLoaderFactory,
@@ -135,7 +134,7 @@ export class ProductsResolver {
   @ResolveField('category', () => CategoryModel, { nullable: true })
   async category(
     @Parent() { categoryId }: Product,
-    @Loader2(ProductCategoryLoaderFactory) loader: ProductCategoryLoader,
+    @Loader(ProductCategoryLoaderFactory) loader: ProductCategoryLoader,
   ) {
     const result = await loader.load(categoryId);
     return result?.values;
@@ -144,24 +143,25 @@ export class ProductsResolver {
   @ResolveField('variants', () => [ProductVariantModel])
   async variants(
     @Parent() { id }: Product,
-    @Loader2(ProductVariantLoaderFactory) loader: ProductVariantLoader,
+    @Loader(ProductVariantLoaderFactory) loader: ProductVariantLoader,
   ) {
     const result = await loader.load(id);
     return result?.values || [];
   }
 
   @ResolveField('options', () => [ProductOptionModel])
-  getOptions(
-    @Parent() product: Product,
-    @Loader(OptionsByProductLoader) loader: DataLoader<string, ProductOption[]>,
+  async options(
+    @Parent() { id }: Product,
+    @Loader(ProductOptionLoaderFactory) loader: ProductOptionLoader,
   ) {
-    return loader.load(product.id);
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField(() => Project, { nullable: true })
   async project(
     @Parent() { packageDetail }: Product,
-    @Loader2(PackageProjectLoaderFactory) projectLoader: PackageProjectLoader,
+    @Loader(PackageProjectLoaderFactory) projectLoader: PackageProjectLoader,
   ) {
     if (packageDetail) {
       const result = await projectLoader.load(packageDetail.projectId);
@@ -179,7 +179,7 @@ export class ProductsResolver {
   @ResolveField(() => [PackageItem])
   async packageItems(
     @Parent() { id }: Product,
-    @Loader2(PackageItemLoaderFactory) packageItemLoader: PackageItemLoader,
+    @Loader(PackageItemLoaderFactory) packageItemLoader: PackageItemLoader,
   ) {
     const result = await packageItemLoader.load(id);
     return result?.values || [];
@@ -188,20 +188,9 @@ export class ProductsResolver {
   @ResolveField(() => [File])
   async images(
     @Parent() { id }: Product,
-    @Loader2(ProductFileLoaderFactory) productFileLoader: ProductFileLoader,
+    @Loader(ProductFileLoaderFactory) productFileLoader: ProductFileLoader,
   ) {
     const result = await productFileLoader.load(id);
     return result?.values || [];
-  }
-}
-@Resolver(() => PackageItem)
-export class PackageItemsResolver {
-  @ResolveField(() => ProductVariantModel)
-  async product(
-    @Parent() { productVariantId }: PackageItem,
-    @Loader(ProductByVariantIdLoader)
-    productByVariantLoader: DataLoader<string, ProductVariantModel>,
-  ): Promise<ProductVariantModel> {
-    return productByVariantLoader.load(productVariantId);
   }
 }

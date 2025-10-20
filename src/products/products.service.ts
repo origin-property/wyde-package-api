@@ -427,14 +427,10 @@ export class ProductsService {
 
   async findOptionsByProductIds(
     productIds: readonly string[],
-  ): Promise<ProductOption[][]> {
-    const options = await this.optionRepository.find({
+  ): Promise<ProductOption[]> {
+    return this.optionRepository.find({
       where: { productId: In([...productIds]) },
     });
-    const map = new Map<string, ProductOption[]>();
-    productIds.forEach((id) => map.set(id, []));
-    options.forEach((opt) => map.get(opt.productId).push(opt));
-    return productIds.map((id) => map.get(id));
   }
 
   async findOptionValuesByOptionIds(
