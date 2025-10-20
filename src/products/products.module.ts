@@ -15,13 +15,11 @@ import { DataloaderModule } from '@tracworx/nestjs-dataloader';
 import { CategoryResolver } from './category.resolver';
 import { CategoryService } from './category.service';
 import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLoader.factory';
-import { DataloadersService } from './loader/dataloaders.service';
 import { OptionByIdLoader } from './loader/option-by-id.loader';
 import { OptionValuesByOptionIdLoader } from './loader/option-values-by-option-id.loader';
 import { PackageImageLoaderFactory } from './loader/PackageImageLoader.factory';
 import { PackageItemLoaderFactory } from './loader/PackageItemLoader.factory';
 import { PackageProjectLoaderFactory } from './loader/PackageProjectLoader.factory';
-import { ProductTypeLoader } from './loader/product-type.loader';
 import {
   ProductByVariantIdLoader,
   ProductVariantLoader,
@@ -65,11 +63,9 @@ import { ProductsService } from './products.service';
   providers: [
     ProductsResolver,
     ProductsService,
-    DataloadersService,
     ProductVariantResolver,
     ProductOptionValueResolver,
     ProductOptionResolver,
-    ProductTypeLoader,
     OptionByIdLoader,
     OptionValuesByOptionIdLoader,
     ProductByVariantIdLoader,

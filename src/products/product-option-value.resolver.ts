@@ -5,12 +5,11 @@ import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { ProductOptionModel } from './dto/productOption.dto';
 import { ProductOptionValueModel } from './dto/productOptionValue.dto';
-import { DataloadersService } from './loader/dataloaders.service';
 import { OptionByIdLoader } from './loader/option-by-id.loader';
 
 @Resolver(() => ProductOptionValueModel)
 export class ProductOptionValueResolver {
-  constructor(private readonly dataloadersService: DataloadersService) {}
+  constructor() {}
 
   @ResolveField('productOption', () => ProductOptionModel)
   getProductOption(
