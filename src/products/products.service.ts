@@ -390,14 +390,10 @@ export class ProductsService {
 
   async findVariantsByProductIds(
     productIds: readonly string[],
-  ): Promise<ProductVariant[][]> {
-    const variants = await this.variantRepository.find({
+  ): Promise<ProductVariant[]> {
+    return this.variantRepository.find({
       where: { productId: In([...productIds]) },
     });
-    const map = new Map<string, ProductVariant[]>();
-    productIds.forEach((id) => map.set(id, []));
-    variants.forEach((v) => map.get(v.productId).push(v));
-    return productIds.map((id) => map.get(id));
   }
 
   async findImagesByVariantIds(

@@ -1,7 +1,4 @@
-import { Category } from '@/database/entities/category.entity';
 import { ProductOption } from '@/database/entities/product-option.entity';
-import { ProductType } from '@/database/entities/product-type.entity';
-import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Product } from '@/database/entities/product.entity';
 import { File } from '@/files/entities/file.entity';
 import { Project } from '@/projects/dto/project.dto';
@@ -9,7 +6,6 @@ import { CurrentUser } from '@/shared/decorators/decorators';
 import {
   Args,
   ID,
-  Int,
   Mutation,
   Parent,
   Query,
@@ -21,7 +17,6 @@ import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { CategoryModel } from './dto/category.dto';
 import { PackageItem } from './dto/package.dto';
-import { ProductTypeModel } from './dto/product-type.dto';
 import { ProductModel } from './dto/product.dto';
 import { ProductOptionModel } from './dto/productOption.dto';
 import { ProductVariantModel } from './dto/productVariant.dto';
@@ -44,19 +39,21 @@ import {
   PackageProjectLoader,
   PackageProjectLoaderFactory,
 } from './loader/PackageProjectLoader.factory';
-import { ProductTypeLoader } from './loader/product-type.loader';
-import {
-  ProductFileLoader,
-  ProductFileLoaderFactory,
-} from './loader/ProductFileLoader.factory';
-import { VariantsByProductLoader } from './loader/variants-by-product.loader';
-import { PackagesService } from './packages.service';
 import { ProductByVariantIdLoader } from './loader/product-variant.loader';
-import { ProductsService } from './products.service';
 import {
   ProductCategoryLoader,
   ProductCategoryLoaderFactory,
 } from './loader/ProductCategoryLoader.factory';
+import {
+  ProductFileLoader,
+  ProductFileLoaderFactory,
+} from './loader/ProductFileLoader.factory';
+import {
+  ProductVariantLoader,
+  ProductVariantLoaderFactory,
+} from './loader/ProductVariantLoader.factory';
+import { PackagesService } from './packages.service';
+import { ProductsService } from './products.service';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
@@ -145,12 +142,12 @@ export class ProductsResolver {
   }
 
   @ResolveField('variants', () => [ProductVariantModel])
-  getVariants(
-    @Parent() product: Product,
-    @Loader(VariantsByProductLoader)
-    loader: DataLoader<string, ProductVariant[]>,
+  async variants(
+    @Parent() { id }: Product,
+    @Loader2(ProductVariantLoaderFactory) loader: ProductVariantLoader,
   ) {
-    return loader.load(product.id);
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField('options', () => [ProductOptionModel])

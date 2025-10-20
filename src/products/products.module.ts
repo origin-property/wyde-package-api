@@ -28,7 +28,6 @@ import { ProductByIdLoader } from './loader/product-by-id.loader';
 import { ProductTypeLoader } from './loader/product-type.loader';
 import { ProductFileLoaderFactory } from './loader/ProductFileLoader.factory';
 import { ProductTypeCategoryLoaderFactory } from './loader/ProductTypeCategoryLoader.factory';
-import { VariantsByProductLoader } from './loader/variants-by-product.loader';
 import { PackagesService } from './packages.service';
 import { ProductOptionValueResolver } from './product-option-value.resolver';
 import { ProductOptionResolver } from './product-option.resolver';
@@ -44,6 +43,7 @@ import { ProductVariantResolver } from './product-variant.resolver';
 import { PackageItemsResolver, ProductsResolver } from './products.resolver';
 import { ProductsService } from './products.service';
 import { ProductCategoryLoaderFactory } from './loader/ProductCategoryLoader.factory';
+import { ProductVariantLoaderFactory } from './loader/ProductVariantLoader.factory';
 
 @Module({
   imports: [
@@ -70,7 +70,6 @@ import { ProductCategoryLoaderFactory } from './loader/ProductCategoryLoader.fac
     ProductOptionValueResolver,
     ProductOptionResolver,
     ProductTypeLoader,
-    VariantsByProductLoader,
     ImagesByVariantLoader,
     OptionByIdLoader,
     OptionValuesByOptionIdLoader,
@@ -94,6 +93,7 @@ import { ProductCategoryLoaderFactory } from './loader/ProductCategoryLoader.fac
     CategoryProductTypeLoaderFactory,
     ProductTypeCategoryLoaderFactory,
     ProductCategoryLoaderFactory,
+    ProductVariantLoaderFactory,
   ],
   exports: [ProductsService],
 })
