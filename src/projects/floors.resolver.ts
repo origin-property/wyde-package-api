@@ -1,5 +1,5 @@
 import { Args, ID, Int, Query, Resolver } from '@nestjs/graphql';
-import { Floor } from './entities/floor.entity';
+import { Floor } from './dto/floor.dto';
 import { FloorsService } from './floors.service';
 
 @Resolver(() => Floor)

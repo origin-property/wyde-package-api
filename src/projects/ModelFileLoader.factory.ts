@@ -1,8 +1,6 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { ModelsService } from './models.service.js';
-import { Model } from './entities/model.entity.js';
-import { keyBy } from 'lodash';
+import { ModelsService } from './models.service';
 
 type ModelId = { id: string; projectId: string };
 type ModelFileInfo = { id: ModelId; values: string };

@@ -1,6 +1,6 @@
 import { File } from '@/files/entities/file.entity';
-import { Project } from '@/projects/entities/project.entity';
-import { Unit } from '@/projects/entities/unit.entity';
+import { Project } from '@/projects/dto/project.dto';
+import { Unit } from '@/projects/dto/unit.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
