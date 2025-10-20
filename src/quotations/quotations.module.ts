@@ -11,19 +11,20 @@ import { UsersModule } from '../users/users.module';
 import { QuotationItemsResolver } from './quotation-items.resolver';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationPromotionsService } from './quotation-promotion.service';
-import { QuotationLoader } from './quotation.loader';
-import { QuotationFileLoaderFactory } from './QuotationFileLoader.factory';
-import { QuotationItemLoaderFactory } from './QuotationItemLoader.factory';
-import { QuotationItemPackageLoaderFactory } from './QuotationItemPackageLoader.factory';
-import { QuotationProjectLoaderFactory } from './QuotationProjectLoader.factory';
-import { QuotationPromotionDiscountPriceLoaderFactory } from './QuotationPromotionDiscountPriceLoader.factory';
-import { QuotationPromotionLoaderFactory } from './QuotationPromotionLoader.factory';
-import { QuotationPromotionVoucherPriceLoaderFactory } from './QuotationPromotionVoucherPriceLoader.factory';
+import { QuotationFileLoaderFactory } from './loader/QuotationFileLoader.factory';
+import { QuotationItemLoaderFactory } from './loader/QuotationItemLoader.factory';
+import { QuotationItemPackageLoaderFactory } from './loader/QuotationItemPackageLoader.factory';
+import { QuotationProjectLoaderFactory } from './loader/QuotationProjectLoader.factory';
+import { QuotationPromotionDiscountPriceLoaderFactory } from './loader/QuotationPromotionDiscountPriceLoader.factory';
+import { QuotationPromotionLoaderFactory } from './loader/QuotationPromotionLoader.factory';
+import { QuotationPromotionVoucherPriceLoaderFactory } from './loader/QuotationPromotionVoucherPriceLoader.factory';
 import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
-import { QuotationUnitLoaderFactory } from './QuotationUnitLoader.factory';
-import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
+import { QuotationUnitLoaderFactory } from './loader/QuotationUnitLoader.factory';
+import { QuotationUserLoaderFactory } from './loader/QuotationUserLoader.factory';
 import { QuotationVariantLoaderFactory } from './loader/QuotationVariantLoader.factory';
+import { ItemQuotationLoaderFactory } from './loader/ItemQuotationLoader.factory';
+import { QuotationProductLoaderFactory } from './loader/QuotationProductLoader.factory';
 
 @Module({
   imports: [
@@ -41,7 +42,6 @@ import { QuotationVariantLoaderFactory } from './loader/QuotationVariantLoader.f
   providers: [
     QuotationsResolver,
     QuotationsService,
-    QuotationLoader,
     QuotationItemsResolver,
     QuotationItemsService,
     QuotationUnitLoaderFactory,
@@ -55,6 +55,8 @@ import { QuotationVariantLoaderFactory } from './loader/QuotationVariantLoader.f
     QuotationPromotionDiscountPriceLoaderFactory,
     QuotationPromotionVoucherPriceLoaderFactory,
     QuotationVariantLoaderFactory,
+    ItemQuotationLoaderFactory,
+    QuotationProductLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

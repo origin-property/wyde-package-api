@@ -27,33 +27,33 @@ import { Quotation } from './dto/quotation.dto';
 import {
   QuotationFileLoader,
   QuotationFileLoaderFactory,
-} from './QuotationFileLoader.factory';
+} from './loader/QuotationFileLoader.factory';
 import {
   QuotationItemLoader,
   QuotationItemLoaderFactory,
-} from './QuotationItemLoader.factory';
-import { QuotationProjectLoader } from './QuotationProjectLoader.factory';
+} from './loader/QuotationItemLoader.factory';
+import { QuotationProjectLoader } from './loader/QuotationProjectLoader.factory';
 import {
   QuotationPromotionDiscountPriceLoader,
   QuotationPromotionDiscountPriceLoaderFactory,
-} from './QuotationPromotionDiscountPriceLoader.factory';
+} from './loader/QuotationPromotionDiscountPriceLoader.factory';
 import {
   QuotationPromotionLoader,
   QuotationPromotionLoaderFactory,
-} from './QuotationPromotionLoader.factory';
+} from './loader/QuotationPromotionLoader.factory';
 import {
   QuotationPromotionVoucherPriceLoader,
   QuotationPromotionVoucherPriceLoaderFactory,
-} from './QuotationPromotionVoucherPriceLoader.factory';
+} from './loader/QuotationPromotionVoucherPriceLoader.factory';
 import { QuotationsService } from './quotations.service';
 import {
   QuotationUnitLoader,
   QuotationUnitLoaderFactory,
-} from './QuotationUnitLoader.factory';
+} from './loader/QuotationUnitLoader.factory';
 import {
   QuotationUserLoader,
   QuotationUserLoaderFactory,
-} from './QuotationUserLoader.factory';
+} from './loader/QuotationUserLoader.factory';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {

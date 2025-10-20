@@ -4,8 +4,8 @@ import {
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { QuotationPromotionDto } from './dto/quotation-promotion.dto';
-import { QuotationPromotionsService } from './quotation-promotion.service';
+import { QuotationPromotionDto } from '../dto/quotation-promotion.dto';
+import { QuotationPromotionsService } from '../quotation-promotion.service';
 
 type QuotationId = string;
 type QuotationPromotionInfo = Aggregated<QuotationId, QuotationPromotionDto>;
