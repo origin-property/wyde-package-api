@@ -71,19 +71,38 @@ export class QuotationsService {
     queryRunner: QueryRunner,
     quotation: Quotation,
   ): Promise<void> {
-    const variants = quotation.items.map((item) => ({
-      quantity: item.quantity,
-      productVariantId: item.productVariantId,
-    }));
+    const variantQuantities: Record<string, number> = {};
 
-    if (variants.length === 0) {
+    quotation.items
+      .filter((item) => item.productVariantId)
+      .forEach((item) => {
+        const key = String(item.productVariantId);
+        const currentQty = variantQuantities[key] || 0;
+        variantQuantities[key] = currentQty + item.quantity;
+      });
+
+    quotation.items
+      .filter((item) => item.items?.length > 0)
+      .forEach((item) => {
+        item.items.forEach((nestedItem) => {
+          if (nestedItem.productVariantId) {
+            const key = String(nestedItem.productVariantId);
+            const currentQty = variantQuantities[key] || 0;
+            variantQuantities[key] = currentQty + nestedItem.quantity;
+          }
+        });
+      });
+
+    const productVariantIds = Object.keys(variantQuantities);
+
+    if (productVariantIds.length === 0) {
       return;
     }
 
     const products = await queryRunner.manager
       .getRepository(ProductVariant)
       .find({
-        where: { id: In(variants.map((variant) => variant.productVariantId)) },
+        where: { id: In(productVariantIds) },
         select: {
           id: true,
           stock: true,
@@ -100,18 +119,24 @@ export class QuotationsService {
 
     const productById = keyBy(products, 'id');
 
+    const missingProductIds = productVariantIds.filter(
+      (id) => !productById[id],
+    );
+    if (missingProductIds.length > 0) {
+      throw new Error(
+        `ไม่พบข้อมูลสินค้า ID: ${missingProductIds.join(', ')} กรุณาติดต่อแอดมิน`,
+      );
+    }
+
     const unavailableItems: string[] = [];
 
-    for (const variant of variants) {
-      const product = productById[variant.productVariantId];
+    for (const productVariantId of productVariantIds) {
+      const product = productById[productVariantId];
+      const requiredQuantity = variantQuantities[productVariantId];
 
-      if (!product) {
-        throw new Error('ไม่พอข้อมูลสินค้าที่เลือก กรุณาติดต่อแอดมิน');
-      }
-
-      if (product.stock < variant.quantity) {
+      if (product.stock < requiredQuantity) {
         unavailableItems.push(
-          `${product.product.name} (SKU: ${product.sku}) - มีสต็อกเพียง ${product.stock} แต่ต้องการ ${variant.quantity}`,
+          `${product.product.name} (SKU: ${product.sku}) - มีสต็อกเพียง ${product.stock} แต่ต้องการ ${requiredQuantity}`,
         );
       }
     }
@@ -122,10 +147,14 @@ export class QuotationsService {
       );
     }
 
-    for (const variant of variants) {
+    for (const productVariantId of productVariantIds) {
       await queryRunner.manager
         .getRepository(ProductVariant)
-        .decrement({ id: variant.productVariantId }, 'stock', variant.quantity);
+        .decrement(
+          { id: productVariantId },
+          'stock',
+          variantQuantities[productVariantId],
+        );
     }
   }
 
@@ -152,8 +181,6 @@ export class QuotationsService {
   async create(createQuotationInput: CreateQuotationInput, userId: string) {
     return this.executeTransaction(async (queryRunner) => {
       const code = await this.generateCode();
-
-      // Check stock availability for product variants
 
       const quotation = await queryRunner.manager
         .getRepository(Quotation)
