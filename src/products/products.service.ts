@@ -43,125 +43,94 @@ export class ProductsService {
     createProductInput: CreateProductInput,
     userId: string,
   ): Promise<Product> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    const bucketName = this.configService.get('AWS_S3_BUCKET');
     try {
-      const {
-        productTypeId,
-        categoryId,
-        name,
-        description,
-        options: optionsInput,
-        variants: variantsInput,
-      } = createProductInput;
-
-      // 1. ตรวจสอบข้อมูลหลัก
       const [productType, category] = await Promise.all([
-        queryRunner.manager.findOneBy(ProductType, { id: productTypeId }),
-        queryRunner.manager.findOneBy(Category, { id: categoryId }),
+        this.productTypeRepository.findOneBy({
+          id: createProductInput.productTypeId,
+        }),
+        this.categoryRepository.findOneBy({
+          id: createProductInput.categoryId,
+        }),
       ]);
 
       if (!productType) throw new GraphQLError('Product Type ID is invalid.');
       if (!category) throw new GraphQLError('Category ID is invalid.');
 
-      // 2. สร้างและ SAVE Product (แม่) ก่อนเสมอ
-      const product = await queryRunner.manager.save(
-        queryRunner.manager.create(Product, {
-          name,
-          description,
-          productType,
-          category,
-          isActive: true,
-          createdBy: userId,
-          updatedBy: userId,
-        }),
-      );
+      // 1. สร้าง Product หลัก
+      const product = this.productRepository.create({
+        name: createProductInput.name,
+        description: createProductInput.description,
+        productType: productType,
+        category: category,
+        createdBy: userId,
+        updatedBy: userId,
+      });
+      await this.productRepository.save(product);
 
-      // 3. 💡 สร้าง Options และ Values พร้อมกัน
-      const savedOptionValues = await Promise.all(
-        optionsInput.map(async (optionInput) => {
-          const productOption = await queryRunner.manager.save(
-            queryRunner.manager.create(ProductOption, {
-              product,
-              name: optionInput.name,
-              createdBy: userId,
-              updatedBy: userId,
-            }),
-          );
+      const optionValueMap = new Map<string, ProductOptionValue>();
 
-          return Promise.all(
-            optionInput.values.map((valueInput) =>
-              queryRunner.manager.save(
-                queryRunner.manager.create(ProductOptionValue, {
-                  ...valueInput,
-                  productOption,
-                  createdBy: userId,
-                  updatedBy: userId,
-                }),
-              ),
-            ),
-          );
-        }),
-      );
+      // 2. สร้าง Options และ Option Values
+      for (const optionInput of createProductInput.options) {
+        const productOption = this.optionRepository.create({
+          product: product,
+          name: optionInput.name,
+        });
+        await this.optionRepository.save(productOption);
 
-      const optionValueMap = new Map(
-        savedOptionValues.flat().map((v) => [v.value, v]),
-      );
+        for (const valueInput of optionInput.values) {
+          const optionValue = this.valueRepository.create({
+            productOption: productOption,
+            ...valueInput,
+          });
+          await this.valueRepository.save(optionValue);
+          optionValueMap.set(optionValue.value, optionValue);
+        }
+      }
 
-      await Promise.all(
-        variantsInput.map(async (variantInput) => {
-          const relatedOptionValues = variantInput.optionValues.map(
-            (valueName) => {
-              const found = optionValueMap.get(valueName);
-              if (!found)
-                throw new GraphQLError(`Option value '${valueName}' not found`);
-              return found;
-            },
-          );
+      // 3. สร้าง Variants และ Images
+      for (const variantInput of createProductInput.variants) {
+        const relatedOptionValues = variantInput.optionValues.map(
+          (valueName) => {
+            const found = optionValueMap.get(valueName);
+            if (!found) {
+              throw new GraphQLError(`Option value '${valueName}' not found`);
+            }
+            return found;
+          },
+        );
 
-          const generatedSku = await this._generateNextSku(productType);
+        const generatedSku = await this._generateNextSku(productType);
 
-          const variant = await queryRunner.manager.save(
-            queryRunner.manager.create(ProductVariant, {
-              ...variantInput,
-              product,
-              sku: generatedSku,
-              optionValues: relatedOptionValues,
-              isActive: true,
-              createdBy: userId,
-              updatedBy: userId,
-            }),
-          );
+        const variant = this.variantRepository.create({
+          product: product,
+          sku: generatedSku,
+          budgetPrice: variantInput.budgetPrice,
+          sellingPrice: variantInput.sellingPrice,
+          stock: variantInput.stock,
+          optionValues: relatedOptionValues,
+        });
+        await this.variantRepository.save(variant);
 
-          if (variantInput.images?.length > 0) {
-            console.log('variantInput.images.', variantInput.images);
-            const imageEntities = variantInput.images.map((imageInput) =>
-              queryRunner.manager.create(ProductVariantImage, {
-                ...imageInput,
-                variant,
-                fileBucket: bucketName,
-                createdBy: userId,
-                updatedBy: userId,
-              }),
-            );
-
-            await queryRunner.manager.save(imageEntities);
+        if (variantInput.images && variantInput.images.length > 0) {
+          for (const imageInput of variantInput.images) {
+            const image = this.imageRepository.create({
+              variant: variant,
+              ...imageInput,
+              fileBucket: this.configService.get('AWS_S3_BUCKET'),
+            });
+            await this.imageRepository.save(image);
           }
-        }),
-      );
+        }
+      }
 
-      await queryRunner.commitTransaction();
+      // คืนค่า Product ที่สร้างเสร็จพร้อมข้อมูลทั้งหมด
       return this.findOne(product.id);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      // หากเกิดข้อผิดพลาด, GraphQL จะจัดการ error ที่ throw ออกไป
       throw new GraphQLError(error.message || 'Failed to create product');
-    } finally {
-      await queryRunner.release();
     }
   }
+
   private async _generateNextSku(productType: ProductType): Promise<string> {
     const year = dayjs().format('YY');
     const month = dayjs().format('MM');
@@ -276,14 +245,12 @@ export class ProductsService {
       deleteVariantIds,
     } = updateProductInput;
 
-    // 1. ค้นหา Product หลักที่จะแก้ไข
     const product = await this.productRepository.findOneBy({ id });
     if (!product) {
       throw new GraphQLError(`Product with ID "${id}" not found`);
     }
 
     try {
-      // 2. --- จัดการการลบก่อน (ถ้ามี) ---
       if (deleteOptionIds?.length > 0) {
         await this.optionRepository.softDelete({
           id: In(deleteOptionIds),
@@ -297,7 +264,6 @@ export class ProductsService {
         });
       }
 
-      // 3. --- จัดการการอัปเดต Variant ที่มีอยู่ (ถ้ามี) ---
       if (updateVariants?.length > 0) {
         for (const variantUpdate of updateVariants) {
           const variant = await this.variantRepository.findOneBy({
@@ -305,20 +271,13 @@ export class ProductsService {
             productId: id,
           });
           if (variant) {
-            Object.assign(variant, variantUpdate.data); // อัปเดตข้อมูล price, stock
+            Object.assign(variant, variantUpdate.data);
             variant.updatedBy = userId;
             await this.variantRepository.save(variant);
           }
         }
       }
 
-      // 4. --- จัดการการสร้างใหม่ (ถ้ามี) ---
-      // (ส่วนนี้จะใช้ Logic คล้ายกับฟังก์ชัน create)
-      if (createOptions?.length > 0 || createVariants?.length > 0) {
-        // ... สามารถนำ Logic การสร้าง Option/Variant จากฟังก์ชัน create มาใส่ตรงนี้ได้ ...
-      }
-
-      // 5. --- อัปเดตข้อมูลหลักของ Product ---
       if (name) product.name = name;
       if (description) product.description = description;
 
