@@ -49,7 +49,7 @@ import {
 } from './loader/ProductFileLoader.factory';
 import { VariantsByProductLoader } from './loader/variants-by-product.loader';
 import { PackagesService } from './packages.service';
-import { ProductByVariantIdLoader } from './product-variant.loader';
+import { ProductByVariantIdLoader } from './loader/product-variant.loader';
 import { ProductsService } from './products.service';
 
 @Resolver(() => ProductModel)
@@ -117,7 +117,7 @@ export class ProductsResolver {
   }
 
   @Query(() => ProductModel, { name: 'product' })
-  findOne(@Args('id', { type: () => Int }) id: string) {
+  findOne(@Args('id') id: string) {
     return this.productsService.findOne(id);
   }
 

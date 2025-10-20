@@ -40,7 +40,7 @@ import { ProductVariantImagesService } from './product-variant-images.service';
 import {
   ProductByVariantIdLoader,
   ProductVariantLoader,
-} from './product-variant.loader';
+} from './loader/product-variant.loader';
 import { ProductVariantResolver } from './product-variant.resolver';
 import { PackageItemsResolver, ProductsResolver } from './products.resolver';
 import { ProductsService } from './products.service';

@@ -543,7 +543,7 @@ type Query {
   models(projectId: ID!): [Model!]!
   packages(input: FindAllPackagesInput!): [Product!]!
   packagesByUnit(unitId: String!): [Product!]!
-  product(id: Int!): Product!
+  product(id: String!): Product!
   productType(id: ID!): ProductType!
   productTypes: [ProductType!]!
   products(findAllProductsInput: FindAllProductsInput!): [Product!]!
