@@ -5,6 +5,7 @@ import { Quotation } from '@/database/entities/quotation.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FilesModule } from '../files/files.module';
+import { ProductsModule } from '../products/products.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { UsersModule } from '../users/users.module';
 import { QuotationItemsResolver } from './quotation-items.resolver';
@@ -34,6 +35,7 @@ import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
     ProjectsModule,
     FilesModule,
     UsersModule,
+    ProductsModule,
   ],
   providers: [
     QuotationsResolver,

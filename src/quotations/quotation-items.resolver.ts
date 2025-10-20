@@ -1,6 +1,5 @@
 import { ProductModel } from '@/products/dto/product.dto';
 import { ProductVariantModel } from '@/products/dto/productVariant.dto';
-import { ProductByIdLoader } from '@/products/loader/product-by-id.loader';
 import { ProductVariantLoader } from '@/products/loader/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
@@ -20,6 +19,10 @@ import { CreateQuotationItemInput } from './dto/create-quotation-item.input';
 import { UpdateQuotationItemInput } from './dto/update-quotation-item.input';
 import { QuotationItem } from './entities/quotation-item.entity';
 import { Quotation } from './entities/quotation.entity';
+import {
+  QuotationProductLoader,
+  QuotationProductLoaderFactory,
+} from './loader/QuotationProductLoader.factory';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
 import {
@@ -82,9 +85,10 @@ export class QuotationItemsResolver {
   @ResolveField(() => ProductModel, { nullable: true, description: 'สินค้า' })
   async product(
     @Parent() { productId }: QuotationItem,
-    @Loader(ProductByIdLoader) loader: DataLoader<string, ProductModel>,
+    @Loader(QuotationProductLoaderFactory) loader: QuotationProductLoader,
   ) {
-    return productId ? loader.load(productId) : null;
+    const result = await loader.load(productId);
+    return result?.values;
   }
 
   @ResolveField(() => ProductVariantModel, {

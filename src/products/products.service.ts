@@ -416,9 +416,7 @@ export class ProductsService {
   }
 
   async findProductsByIds(ids: readonly string[]): Promise<Product[]> {
-    const products = await this.productRepository.findBy({ id: In([...ids]) });
-    const map = new Map(products.map((p) => [p.id, p]));
-    return ids.map((id) => map.get(id));
+    return this.productRepository.findBy({ id: In([...ids]) });
   }
 
   async findOptionsByProductIds(
