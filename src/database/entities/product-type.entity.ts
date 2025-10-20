@@ -20,9 +20,6 @@ export class ProductType extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @OneToMany(() => Product, (product) => product.productType)
-  products: Relation<Product[]>;
-
   @OneToMany(() => Category, (category) => category.productType)
   categorys: Relation<Category[]>;
 }

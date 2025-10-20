@@ -121,14 +121,6 @@ export class ProductsResolver {
     return this.productsService.findOne(id);
   }
 
-  @ResolveField('productType', () => ProductTypeModel, { nullable: true })
-  getProductType(
-    @Parent() product: Product,
-    @Loader(ProductTypeLoader) loader: DataLoader<string, ProductType>,
-  ) {
-    return product.productTypeId ? loader.load(product.productTypeId) : null;
-  }
-
   @ResolveField('category', () => CategoryModel, { nullable: true })
   getCategory(
     @Parent() { categoryId }: Product,
