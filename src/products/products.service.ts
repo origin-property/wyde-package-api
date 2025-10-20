@@ -398,14 +398,10 @@ export class ProductsService {
 
   async findImagesByVariantIds(
     variantIds: readonly string[],
-  ): Promise<ProductVariantImage[][]> {
-    const images = await this.imageRepository.find({
+  ): Promise<ProductVariantImage[]> {
+    return this.imageRepository.find({
       where: { productVariantId: In([...variantIds]) },
     });
-    const map = new Map<string, ProductVariantImage[]>();
-    variantIds.forEach((id) => map.set(id, []));
-    images.forEach((img) => map.get(img.productVariantId).push(img));
-    return variantIds.map((id) => map.get(id));
   }
 
   async findOptionValuesByVariantIds(

@@ -1,8 +1,8 @@
 import { ProductOptionValue } from '@/database/entities/product-option-value.entity';
 import { ProductOption } from '@/database/entities/product-option.entity';
-import { ProductVariantImage } from '@/database/entities/product-variant-image.entity';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
+import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
 import { ProductModel } from './dto/product.dto';
@@ -10,10 +10,13 @@ import { ProductOptionValueModel } from './dto/productOptionValue.dto';
 import { ProductVariantModel } from './dto/productVariant.dto';
 import { ProductVariantImageModel } from './dto/productVariantImage.dto';
 import { VariantAttributeModel } from './dto/variant-attribute.dto';
-import { ImagesByVariantLoader } from './loader/images-by-variant.loader';
 import { OptionByIdLoader } from './loader/option-by-id.loader';
 import { OptionValuesByVariantLoader } from './loader/option-values-by-variant.loader';
 import { ProductByIdLoader } from './loader/product-by-id.loader';
+import {
+  VariantImageLoader,
+  VariantImageLoaderFactory,
+} from './loader/VariantImageLoader.factory';
 
 @Resolver(() => ProductVariantModel)
 export class ProductVariantResolver {
@@ -26,12 +29,12 @@ export class ProductVariantResolver {
   }
 
   @ResolveField('images', () => [ProductVariantImageModel])
-  getImages(
-    @Parent() variant: ProductVariant,
-    @Loader(ImagesByVariantLoader)
-    loader: DataLoader<string, ProductVariantImage[]>,
-  ): Promise<ProductVariantImage[]> {
-    return loader.load(variant.id);
+  async images(
+    @Parent() { id }: ProductVariant,
+    @Loader2(VariantImageLoaderFactory) loader: VariantImageLoader,
+  ) {
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 
   @ResolveField('optionValues', () => [ProductOptionValueModel])
