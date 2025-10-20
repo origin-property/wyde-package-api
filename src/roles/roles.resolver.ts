@@ -1,7 +1,7 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateRoleInput } from './dto/create-role.input';
-import { UpdateRoleInput } from './dto/update-role.input';
-import { Role } from './entities/role.entity';
+import { CreateRoleInput } from './input/create-role.input';
+import { UpdateRoleInput } from './input/update-role.input';
+import { Role } from './dto/role.dto';
 import { RolesService } from './roles.service';
 
 @Resolver(() => Role)

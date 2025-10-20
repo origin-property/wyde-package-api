@@ -1,4 +1,4 @@
-import { Role } from '@/roles/entities/role.entity';
+import { Role } from '@/roles/dto/role.dto';
 import { Base } from '@/shared/@types/base';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 

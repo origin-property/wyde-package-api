@@ -3,8 +3,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
 import { Repository } from 'typeorm';
-import { CreateRoleInput } from './dto/create-role.input';
-import { UpdateRoleInput } from './dto/update-role.input';
+import { CreateRoleInput } from './input/create-role.input';
+import { UpdateRoleInput } from './input/update-role.input';
 
 @Injectable()
 export class RolesService {
