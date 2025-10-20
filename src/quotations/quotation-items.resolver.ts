@@ -1,7 +1,7 @@
 import { ProductModel } from '@/products/dto/product.dto';
 import { ProductVariantModel } from '@/products/dto/productVariant.dto';
 import { ProductByIdLoader } from '@/products/loader/product-by-id.loader';
-import { ProductVariantLoader } from '@/products/product-variant.loader';
+import { ProductVariantLoader } from '@/products/loader/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
 import {
