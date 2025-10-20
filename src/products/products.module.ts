@@ -16,7 +16,6 @@ import { CategoryResolver } from './category.resolver';
 import { CategoryService } from './category.service';
 import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLoader.factory';
 import { DataloadersService } from './loader/dataloaders.service';
-import { ImagesByVariantLoader } from './loader/images-by-variant.loader';
 import { OptionByIdLoader } from './loader/option-by-id.loader';
 import { OptionValuesByOptionIdLoader } from './loader/option-values-by-option-id.loader';
 import { OptionValuesByVariantLoader } from './loader/option-values-by-variant.loader';
@@ -45,6 +44,7 @@ import { ProductVariantImagesService } from './product-variant-images.service';
 import { ProductVariantResolver } from './product-variant.resolver';
 import { ProductsResolver } from './products.resolver';
 import { ProductsService } from './products.service';
+import { VariantImageLoaderFactory } from './loader/VariantImageLoader.factory';
 
 @Module({
   imports: [
@@ -71,7 +71,6 @@ import { ProductsService } from './products.service';
     ProductOptionValueResolver,
     ProductOptionResolver,
     ProductTypeLoader,
-    ImagesByVariantLoader,
     OptionByIdLoader,
     OptionValuesByOptionIdLoader,
     OptionValuesByVariantLoader,
@@ -95,6 +94,7 @@ import { ProductsService } from './products.service';
     ProductCategoryLoaderFactory,
     ProductVariantLoaderFactory,
     ProductOptionLoaderFactory,
+    VariantImageLoaderFactory,
   ],
   exports: [ProductsService],
 })
