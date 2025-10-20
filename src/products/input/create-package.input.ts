@@ -31,13 +31,13 @@ registerEnumType(PackageItemType, {
 @InputType()
 export class PackageItemInput {
   @Field(() => String, { nullable: true })
-  @IsUUID('4')
+  @IsUUID()
   @IsOptional()
   id?: string;
 
 
   @Field(() => String)
-  @IsUUID('4')
+  @IsUUID()
   @IsNotEmpty()
   productVariantId: string;
 
