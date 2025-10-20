@@ -335,6 +335,7 @@ type Mutation {
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
+  updateIsActiveProduct(id: ID!, isActive: Boolean!): Product!
   updatePackage(input: UpdatePacakgeInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   updatePromotion(updatePromotionInput: UpdatePromotionInput!): Promotion!

@@ -126,6 +126,15 @@ export class ProductsResolver {
     return this.productsService.findOne(id);
   }
 
+  @Mutation(() => ProductModel)
+  updateIsActiveProduct(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('isActive', { type: () => Boolean }) isActive: boolean,
+    @CurrentUser() user: any,
+  ) {
+    return this.productsService.updateIsActiveProduct(id, isActive, user.id);
+  }
+
   @ResolveField('category', () => CategoryModel, { nullable: true })
   async category(
     @Parent() { categoryId }: Product,
