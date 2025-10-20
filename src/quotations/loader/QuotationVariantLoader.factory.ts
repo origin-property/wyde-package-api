@@ -1,10 +1,6 @@
-import { Injectable, type ExecutionContext } from '@nestjs/common';
-import {
-  DataloaderFactory,
-  type Aggregated,
-  type LoaderFrom,
-} from '@strv/nestjs-dataloader';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
+import { Injectable, type ExecutionContext } from '@nestjs/common';
+import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { ProductsService } from '../../products/products.service';
 
 type VariantId = string;

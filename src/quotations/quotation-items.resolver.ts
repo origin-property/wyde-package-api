@@ -11,31 +11,32 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader as Loader2 } from '@strv/nestjs-dataloader';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
-import { CreateQuotationItemInput } from './input/create-quotation-item.input';
-import { UpdateQuotationItemInput } from './input/update-quotation-item.input';
+import { Loader } from '@strv/nestjs-dataloader';
 import { QuotationItem } from './dto/quotation-item.dto';
 import { Quotation } from './dto/quotation.dto';
+import { CreateQuotationItemInput } from './input/create-quotation-item.input';
+import { UpdateQuotationItemInput } from './input/update-quotation-item.input';
+import {
+  ItemQuotationLoader,
+  ItemQuotationLoaderFactory,
+} from './loader/ItemQuotationLoader.factory';
+import {
+  QuotationItemPackageLoader,
+  QuotationItemPackageLoaderFactory,
+} from './loader/QuotationItemPackageLoader.factory';
 import {
   QuotationProductLoader,
   QuotationProductLoaderFactory,
 } from './loader/QuotationProductLoader.factory';
 import {
+  QuotationUserLoader,
+  QuotationUserLoaderFactory,
+} from './loader/QuotationUserLoader.factory';
+import {
   QuotationVariantLoader,
   QuotationVariantLoaderFactory,
 } from './loader/QuotationVariantLoader.factory';
 import { QuotationItemsService } from './quotation-items.service';
-import { QuotationLoader } from './quotation.loader';
-import {
-  QuotationItemPackageLoader,
-  QuotationItemPackageLoaderFactory,
-} from './QuotationItemPackageLoader.factory';
-import {
-  QuotationUserLoader,
-  QuotationUserLoaderFactory,
-} from './QuotationUserLoader.factory';
 
 @Resolver(() => QuotationItem)
 export class QuotationItemsResolver {
@@ -80,9 +81,10 @@ export class QuotationItemsResolver {
   @ResolveField(() => Quotation, { nullable: true, description: 'ใบเสนอราคา' })
   async quotation(
     @Parent() { quotationId }: QuotationItem,
-    @Loader(QuotationLoader) loader: DataLoader<string, Quotation>,
+    @Loader(ItemQuotationLoaderFactory) loader: ItemQuotationLoader,
   ) {
-    return loader.load(quotationId);
+    const result = await loader.load(quotationId);
+    return result?.values;
   }
 
   @ResolveField(() => ProductModel, { nullable: true, description: 'สินค้า' })
@@ -90,6 +92,10 @@ export class QuotationItemsResolver {
     @Parent() { productId }: QuotationItem,
     @Loader(QuotationProductLoaderFactory) loader: QuotationProductLoader,
   ) {
+    if (!productId) {
+      return null;
+    }
+
     const result = await loader.load(productId);
     return result?.values;
   }
@@ -100,7 +106,7 @@ export class QuotationItemsResolver {
   })
   async productVariant(
     @Parent() { productVariantId }: QuotationItem,
-    @Loader2(QuotationVariantLoaderFactory) loader: QuotationVariantLoader,
+    @Loader(QuotationVariantLoaderFactory) loader: QuotationVariantLoader,
   ) {
     const result = await loader.load(productVariantId);
     return result?.values;
@@ -112,7 +118,7 @@ export class QuotationItemsResolver {
   })
   async packageItems(
     @Parent() { id }: QuotationItem,
-    @Loader2(QuotationItemPackageLoaderFactory)
+    @Loader(QuotationItemPackageLoaderFactory)
     loader: QuotationItemPackageLoader,
   ) {
     const result = await loader.load(id);
@@ -122,7 +128,7 @@ export class QuotationItemsResolver {
   @ResolveField(() => User, { nullable: true })
   async createdBy(
     @Parent() { createdBy }: User,
-    @Loader2(QuotationUserLoaderFactory) units: QuotationUserLoader,
+    @Loader(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
     const result = await units.load(createdBy);
     return result?.values || null;
@@ -131,7 +137,7 @@ export class QuotationItemsResolver {
   @ResolveField(() => User, { nullable: true })
   async updatedBy(
     @Parent() { updatedBy }: User,
-    @Loader2(QuotationUserLoaderFactory) units: QuotationUserLoader,
+    @Loader(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
     const result = await units.load(updatedBy);
     return result?.values || null;
@@ -140,7 +146,7 @@ export class QuotationItemsResolver {
   @ResolveField(() => User, { nullable: true })
   async deletedBy(
     @Parent() { deletedBy }: User,
-    @Loader2(QuotationUserLoaderFactory) units: QuotationUserLoader,
+    @Loader(QuotationUserLoaderFactory) units: QuotationUserLoader,
   ) {
     if (!deletedBy) {
       return null;

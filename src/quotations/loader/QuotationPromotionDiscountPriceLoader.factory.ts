@@ -1,6 +1,6 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { QuotationPromotionsService } from './quotation-promotion.service';
+import { QuotationPromotionsService } from '../quotation-promotion.service';
 
 type QuotationId = string;
 type QuotationPromotionDiscountPriceInfo = { id: string; value: number };

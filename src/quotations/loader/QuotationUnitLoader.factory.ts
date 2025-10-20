@@ -4,8 +4,8 @@ import {
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { Unit } from '../projects/dto/unit.dto';
-import { UnitsService } from '../projects/units.service';
+import { Unit } from '../../projects/dto/unit.dto';
+import { UnitsService } from '../../projects/units.service';
 
 type UnitId = string;
 type QuotationUnitInfo = Aggregated<UnitId, Unit>;

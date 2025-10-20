@@ -4,8 +4,8 @@ import {
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { Project } from '../projects/dto/project.dto';
-import { ProjectsService } from '../projects/projects.service';
+import { Project } from '../../projects/dto/project.dto';
+import { ProjectsService } from '../../projects/projects.service';
 
 type ProjectId = string;
 type QuotationProjectInfo = Aggregated<ProjectId, Project>;
