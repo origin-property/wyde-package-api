@@ -204,6 +204,7 @@ input CreateVariantImageInput {
   fileExtension: String!
   filePath: String!
   filePrevName: String
+  id: String
   isMain: Boolean! = false
   sortOrder: Float! = 0
 }
@@ -334,6 +335,7 @@ type Mutation {
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
   updateFile(updateFileInput: UpdateFileInput!): File!
+  updatePackage(input: UpdatePacakgeInput!): Product!
   updateProduct(updateProductInput: UpdateProductInput!): Product!
   updatePromotion(updatePromotionInput: UpdatePromotionInput!): Promotion!
   updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
@@ -354,6 +356,7 @@ type PackageItem {
 }
 
 input PackageItemInput {
+  id: String
   packageSeq: Float!
   productVariantId: String!
   quantity: Float!
@@ -773,6 +776,17 @@ input UpdateFileInput {
   isPublic: Boolean = true
   projectId: String
   refId: String
+}
+
+input UpdatePacakgeInput {
+  description: String
+  id: ID!
+  images: [CreateVariantImageInput!]!
+  isActive: Boolean = true
+  items: [PackageItemInput!]!
+  modelId: String!
+  name: String
+  projectId: String!
 }
 
 input UpdateProductInput {

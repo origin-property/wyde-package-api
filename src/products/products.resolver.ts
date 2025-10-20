@@ -25,7 +25,10 @@ import { ProductTypeModel } from './dto/product-type.dto';
 import { ProductModel } from './dto/product.dto';
 import { ProductOptionModel } from './dto/productOption.dto';
 import { ProductVariantModel } from './dto/productVariant.dto';
-import { CreatePackageInput } from './input/create-package.input';
+import {
+  CreatePackageInput,
+  UpdatePacakgeInput,
+} from './input/create-package.input';
 import { CreateProductInput } from './input/create-product.input';
 import {
   FindAllPackagesInput,
@@ -82,6 +85,14 @@ export class ProductsResolver {
     @CurrentUser() user: any,
   ) {
     return this.packagesService.create(createPackageInput, user.id);
+  }
+
+  @Mutation(() => ProductModel)
+  updatePackage(
+    @Args('input') input: UpdatePacakgeInput,
+    @CurrentUser() user: any,
+  ) {
+    return this.packagesService.update(input, user.id);
   }
 
   @Query(() => [ProductModel], { name: 'packages' })

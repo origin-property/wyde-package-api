@@ -14,6 +14,11 @@ import {
 // DTO สำหรับรูปภาพ (เป็นส่วนหนึ่งของ Variant)
 @InputType()
 export class CreateVariantImageInput {
+  @Field(() => String, { nullable: true })
+  @IsUUID('4')
+  @IsOptional()
+  id?: string;
+
   @Field()
   @IsString()
   @IsNotEmpty()

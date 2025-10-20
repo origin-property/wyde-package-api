@@ -5,6 +5,7 @@ import {
   registerEnumType,
   PartialType,
   OmitType,
+  ID,
 } from '@nestjs/graphql';
 import {
   CreateProductInput,
@@ -29,6 +30,12 @@ registerEnumType(PackageItemType, {
 
 @InputType()
 export class PackageItemInput {
+  @Field(() => String, { nullable: true })
+  @IsUUID('4')
+  @IsOptional()
+  id?: string;
+
+
   @Field(() => String)
   @IsUUID('4')
   @IsNotEmpty()
@@ -86,4 +93,12 @@ export class CreatePackageInput extends PartialType(
   @ValidateNested({ each: true })
   @Type(() => CreateVariantImageInput)
   images: CreateVariantImageInput[];
+}
+
+@InputType()
+export class UpdatePacakgeInput extends CreatePackageInput {
+  @Field(() => ID)
+  @IsUUID()
+  @IsNotEmpty()
+  id: string;
 }

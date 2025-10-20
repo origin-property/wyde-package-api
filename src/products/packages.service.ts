@@ -3,7 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, In, Like, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CreatePackageInput } from './input/create-package.input';
+import {
+  CreatePackageInput,
+  PackageItemInput,
+  UpdatePacakgeInput,
+} from './input/create-package.input';
 
 import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
 import { ProductVariant as ProductVariantEntity } from '@/database/entities/product-variant.entity';
@@ -43,21 +47,7 @@ export class PackagesService {
       createPackageInput;
 
     // ตรวจสอบว่า ProductVariant ที่อ้างอิงมีอยู่จริงหรือไม่
-    const variantIds = items.map((item) => item.productVariantId);
-    const existingVariants = await this.variantRepository.find({
-      where: { id: In(variantIds) },
-      select: ['id', 'sellingPrice'],
-    });
-
-    if (existingVariants.length !== variantIds.length) {
-      const existingVariantIds = existingVariants.map((v) => v.id);
-      const missingVariantIds = variantIds.filter(
-        (id) => !existingVariantIds.includes(id),
-      );
-      throw new NotFoundException(
-        `ProductVariants not found: ${missingVariantIds.join(', ')}`,
-      );
-    }
+    const existingVariants = await this.checkExistingVariants(items);
 
     const newSku = await this.generateSKU();
 
@@ -105,6 +95,59 @@ export class PackagesService {
     });
 
     return product;
+  }
+
+  async update(
+    input: UpdatePacakgeInput,
+    userId: string,
+  ): Promise<ProductEntity> {
+    const { id, name, description, isActive, images, items } = input;
+
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: {
+        packageItems: true,
+        packageDetail: true,
+        variants: { images: true },
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const existingVariants = await this.checkExistingVariants(items);
+
+    const updatedPackage = await this.productRepository.save({
+      id,
+      name,
+      description,
+      isActive,
+      updatedBy: userId,
+      variants: [
+        {
+          id: product.variants[0].id,
+          budgetPrice: sumBy(existingVariants, (i) => Number(i.sellingPrice)),
+          sellingPrice: sumBy(items, 'specialPrice'),
+          stock: 0,
+          images: images.map((img) => ({
+            ...img,
+            fileBucket: this.buckketName,
+            variantId: product.variants[0].id,
+            updatedBy: userId,
+          })),
+          updatedBy: userId,
+          isActive: true,
+        },
+      ],
+      packageItems: items.map((item, idx) => ({
+        ...item,
+        seq: idx + 1,
+        updatedBy: userId,
+      })),
+    });
+
+    return updatedPackage;
   }
 
   async findAll(input: FindAllPackagesInput): Promise<ProductEntity[]> {
@@ -208,5 +251,21 @@ export class PackagesService {
     const nextSKU = nextSKUNumber.toString().padStart(5, '0');
 
     return `${prefix}${nextSKU}`;
+  }
+
+  private async checkExistingVariants(
+    items: PackageItemInput[],
+  ): Promise<ProductVariantEntity[] | undefined> {
+    const variantIds = items.map((item) => item.productVariantId);
+    const existingVariants = await this.variantRepository.find({
+      where: { id: In(variantIds) },
+      select: ['id', 'sellingPrice'],
+    });
+
+    if (existingVariants.length !== variantIds.length) {
+      throw new NotFoundException('ProductVariants not found');
+    }
+
+    return existingVariants;
   }
 }
