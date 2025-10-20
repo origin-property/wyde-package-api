@@ -1,6 +1,5 @@
 import { ProductModel } from '@/products/dto/product.dto';
 import { ProductVariantModel } from '@/products/dto/productVariant.dto';
-import { ProductVariantLoader } from '@/products/loader/product-variant.loader';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { User } from '@/users/entities/user.entity';
 import {
@@ -23,6 +22,10 @@ import {
   QuotationProductLoader,
   QuotationProductLoaderFactory,
 } from './loader/QuotationProductLoader.factory';
+import {
+  QuotationVariantLoader,
+  QuotationVariantLoaderFactory,
+} from './loader/QuotationVariantLoader.factory';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationLoader } from './quotation.loader';
 import {
@@ -95,12 +98,12 @@ export class QuotationItemsResolver {
     nullable: true,
     description: 'รายการสินค้า',
   })
-  async variant(
+  async productVariant(
     @Parent() { productVariantId }: QuotationItem,
-    @Loader(ProductVariantLoader)
-    loader: DataLoader<string, ProductVariantModel>,
+    @Loader2(QuotationVariantLoaderFactory) loader: QuotationVariantLoader,
   ) {
-    return productVariantId ? loader.load(productVariantId) : null;
+    const result = await loader.load(productVariantId);
+    return result?.values;
   }
 
   @ResolveField(() => [QuotationItem], {

@@ -359,21 +359,10 @@ export class ProductsService {
     }
   }
 
-  async findByVariantIds(
-    variantIds: readonly string[],
-  ): Promise<ProductVariantModel[]> {
-    // 1. ค้นหา Variant จาก ID ที่ได้รับมา
-    //    พร้อมกับโหลดข้อมูล Product ที่เป็นแม่ของมันมาด้วย (relations: { product: true })
-    const variants = await this.variantRepository.find({
+  async findByVariantIds(variantIds: readonly string[]) {
+    return this.variantRepository.find({
       where: { id: In(variantIds) },
-      relations: {
-        product: true, // <-- สำคัญมาก: บอกให้ TypeORM ดึง Product มาด้วย
-      },
     });
-
-    return variantIds.map((id) =>
-      variants.find((variant) => variant.id === id),
-    );
   }
 
   async findTypesByIds(ids: readonly string[]): Promise<ProductType[]> {

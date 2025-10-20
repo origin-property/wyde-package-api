@@ -23,6 +23,7 @@ import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
 import { QuotationUnitLoaderFactory } from './QuotationUnitLoader.factory';
 import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
+import { QuotationVariantLoaderFactory } from './loader/QuotationVariantLoader.factory';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { QuotationUserLoaderFactory } from './QuotationUserLoader.factory';
     QuotationPromotionLoaderFactory,
     QuotationPromotionDiscountPriceLoaderFactory,
     QuotationPromotionVoucherPriceLoaderFactory,
+    QuotationVariantLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })
