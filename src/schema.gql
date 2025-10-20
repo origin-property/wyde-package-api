@@ -380,7 +380,6 @@ type Product {
   name: String!
   options: [ProductOption!]!
   packageItems: [PackageItem!]!
-  productType: ProductType
   productTypeId: String
   project: Project
   updatedAt: String!

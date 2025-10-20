@@ -44,23 +44,22 @@ export class ProductsService {
     userId: string,
   ): Promise<Product> {
     try {
-      const [productType, category] = await Promise.all([
-        this.productTypeRepository.findOneBy({
-          id: createProductInput.productTypeId,
-        }),
-        this.categoryRepository.findOneBy({
-          id: createProductInput.categoryId,
-        }),
-      ]);
+      const category = await this.categoryRepository.findOneBy({
+        id: createProductInput.categoryId,
+      });
 
-      if (!productType) throw new GraphQLError('Product Type ID is invalid.');
       if (!category) throw new GraphQLError('Category ID is invalid.');
+
+      const productType = await this.productTypeRepository.findOneBy({
+        id: category.productTypeId,
+      });
+
+      if (!productType) throw new GraphQLError('productType ID is invalid.');
 
       // 1. สร้าง Product หลัก
       const product = this.productRepository.create({
         name: createProductInput.name,
         description: createProductInput.description,
-        productType: productType,
         category: category,
         createdBy: userId,
         updatedBy: userId,
@@ -178,7 +177,6 @@ export class ProductsService {
         { description: Like(query) },
         { variants: { sku: Like(query.toLocaleUpperCase()) } },
         { category: { name: Like(query) } },
-        { productType: { name: Like(query) } },
       );
     }
 
@@ -193,7 +191,6 @@ export class ProductsService {
           : [{ itemType: ProductItemType.PRODUCT }],
 
       relations: {
-        productType: true,
         category: true,
         variants: {
           images: true,
@@ -281,14 +278,6 @@ export class ProductsService {
       if (name) product.name = name;
       if (description) product.description = description;
 
-      if (productTypeId) {
-        const newProductType = await this.productTypeRepository.findOneBy({
-          id: productTypeId,
-        });
-        if (!newProductType)
-          throw new GraphQLError('New Product Type ID is invalid.');
-        product.productType = newProductType;
-      }
       if (categoryId) {
         const newCategory = await this.categoryRepository.findOneBy({
           id: categoryId,

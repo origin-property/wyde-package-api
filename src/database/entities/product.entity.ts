@@ -39,19 +39,12 @@ export class Product extends BaseEntity {
   })
   variants: Relation<ProductVariant[]>;
 
-  @Column({ name: 'product_type_id', nullable: true })
-  productTypeId: string;
-
   @Column({
     name: 'is_active',
     type: 'boolean',
     default: true,
   })
   isActive: boolean;
-
-  @ManyToOne(() => ProductType, (type) => type.products)
-  @JoinColumn({ name: 'product_type_id' })
-  productType: Relation<ProductType>;
 
   @Column({ name: 'category_id', nullable: true })
   categoryId: string;
