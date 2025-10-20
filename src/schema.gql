@@ -347,7 +347,7 @@ type Mutation {
 type PackageItem {
   id: String!
   packageSeq: Float!
-  product: ProductVariant!
+  productVariant: ProductVariant!
   productVariantId: String!
   quantity: Float!
   seq: Float!
@@ -416,7 +416,7 @@ type ProductOptionValue {
   id: ID!
   image: String
   price: Float!
-  productOption: ProductOption!
+  productOption: ProductOption
   updatedAt: String!
   updatedBy: String
   value: String!
@@ -675,6 +675,9 @@ type QuotationItem {
   """ประเภทสินค้า"""
   productType: ProductItemType!
 
+  """รายการสินค้า"""
+  productVariant: ProductVariant
+
   """รหัสรายการสินค้า"""
   productVariantId: String
 
@@ -691,9 +694,6 @@ type QuotationItem {
   specialPrice: Float
   updatedAt: Date!
   updatedBy: User
-
-  """รายการสินค้า"""
-  variant: ProductVariant
 }
 
 type QuotationPaginate {

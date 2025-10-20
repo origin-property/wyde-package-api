@@ -15,15 +15,11 @@ import { DataloaderModule } from '@tracworx/nestjs-dataloader';
 import { CategoryResolver } from './category.resolver';
 import { CategoryService } from './category.service';
 import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLoader.factory';
-import { OptionByIdLoader } from './loader/option-by-id.loader';
 import { OptionValuesByOptionIdLoader } from './loader/option-values-by-option-id.loader';
 import { PackageImageLoaderFactory } from './loader/PackageImageLoader.factory';
 import { PackageItemLoaderFactory } from './loader/PackageItemLoader.factory';
+import { PackageItemVariantLoaderFactory } from './loader/PackageItemVariantLoader.factory';
 import { PackageProjectLoaderFactory } from './loader/PackageProjectLoader.factory';
-import {
-  ProductByVariantIdLoader,
-  ProductVariantLoader,
-} from './loader/product-variant.loader';
 import { ProductCategoryLoaderFactory } from './loader/ProductCategoryLoader.factory';
 import { ProductFileLoaderFactory } from './loader/ProductFileLoader.factory';
 import { ProductOptionLoaderFactory } from './loader/ProductOptionLoader.factory';
@@ -66,10 +62,7 @@ import { ProductsService } from './products.service';
     ProductVariantResolver,
     ProductOptionValueResolver,
     ProductOptionResolver,
-    OptionByIdLoader,
     OptionValuesByOptionIdLoader,
-    ProductByVariantIdLoader,
-    ProductVariantLoader,
     ProductVariantImagesResolver,
     ProductVariantImagesService,
     CategoryService,
@@ -89,6 +82,7 @@ import { ProductsService } from './products.service';
     ProductOptionLoaderFactory,
     VariantImageLoaderFactory,
     VariantProductLoaderFactory,
+    PackageItemVariantLoaderFactory,
   ],
   exports: [ProductsService],
 })

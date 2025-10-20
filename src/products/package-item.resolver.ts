@@ -1,18 +1,20 @@
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
 import { PackageItem } from './dto/package.dto';
 import { ProductVariantModel } from './dto/productVariant.dto';
-import { ProductByVariantIdLoader } from './loader/product-variant.loader';
+import {
+  PackageItemVariantLoader,
+  PackageItemVariantLoaderFactory,
+} from './loader/PackageItemVariantLoader.factory';
 
 @Resolver(() => PackageItem)
 export class PackageItemsResolver {
   @ResolveField(() => ProductVariantModel)
-  async product(
+  async productVariant(
     @Parent() { productVariantId }: PackageItem,
-    @Loader(ProductByVariantIdLoader)
-    productByVariantLoader: DataLoader<string, ProductVariantModel>,
-  ): Promise<ProductVariantModel> {
-    return productByVariantLoader.load(productVariantId);
+    @Loader(PackageItemVariantLoaderFactory) loader: PackageItemVariantLoader,
+  ) {
+    const result = await loader.load(productVariantId);
+    return result?.values;
   }
 }
