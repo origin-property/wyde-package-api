@@ -18,11 +18,9 @@ import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLo
 import { DataloadersService } from './loader/dataloaders.service';
 import { OptionByIdLoader } from './loader/option-by-id.loader';
 import { OptionValuesByOptionIdLoader } from './loader/option-values-by-option-id.loader';
-import { OptionValuesByVariantLoader } from './loader/option-values-by-variant.loader';
 import { PackageImageLoaderFactory } from './loader/PackageImageLoader.factory';
 import { PackageItemLoaderFactory } from './loader/PackageItemLoader.factory';
 import { PackageProjectLoaderFactory } from './loader/PackageProjectLoader.factory';
-import { ProductByIdLoader } from './loader/product-by-id.loader';
 import { ProductTypeLoader } from './loader/product-type.loader';
 import {
   ProductByVariantIdLoader,
@@ -33,6 +31,8 @@ import { ProductFileLoaderFactory } from './loader/ProductFileLoader.factory';
 import { ProductOptionLoaderFactory } from './loader/ProductOptionLoader.factory';
 import { ProductTypeCategoryLoaderFactory } from './loader/ProductTypeCategoryLoader.factory';
 import { ProductVariantLoaderFactory } from './loader/ProductVariantLoader.factory';
+import { VariantImageLoaderFactory } from './loader/VariantImageLoader.factory';
+import { VariantProductLoaderFactory } from './loader/VariantProductLoader.factory';
 import { PackageItemsResolver } from './package-item.resolver';
 import { PackagesService } from './packages.service';
 import { ProductOptionValueResolver } from './product-option-value.resolver';
@@ -44,7 +44,6 @@ import { ProductVariantImagesService } from './product-variant-images.service';
 import { ProductVariantResolver } from './product-variant.resolver';
 import { ProductsResolver } from './products.resolver';
 import { ProductsService } from './products.service';
-import { VariantImageLoaderFactory } from './loader/VariantImageLoader.factory';
 
 @Module({
   imports: [
@@ -73,8 +72,6 @@ import { VariantImageLoaderFactory } from './loader/VariantImageLoader.factory';
     ProductTypeLoader,
     OptionByIdLoader,
     OptionValuesByOptionIdLoader,
-    OptionValuesByVariantLoader,
-    ProductByIdLoader,
     ProductByVariantIdLoader,
     ProductVariantLoader,
     ProductVariantImagesResolver,
@@ -95,6 +92,7 @@ import { VariantImageLoaderFactory } from './loader/VariantImageLoader.factory';
     ProductVariantLoaderFactory,
     ProductOptionLoaderFactory,
     VariantImageLoaderFactory,
+    VariantProductLoaderFactory,
   ],
   exports: [ProductsService],
 })
