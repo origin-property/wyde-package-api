@@ -177,6 +177,13 @@ export class ProductsService {
         { description: Like(query) },
         { variants: { sku: Like(query.toLocaleUpperCase()) } },
         { category: { name: Like(query) } },
+        {
+          category: {
+            productType: {
+              name: Like(query),
+            },
+          },
+        },
       );
     }
 
@@ -233,10 +240,7 @@ export class ProductsService {
       id,
       name,
       description,
-      productTypeId,
       categoryId,
-      createOptions,
-      createVariants,
       updateVariants,
       deleteOptionIds,
       deleteVariantIds,
