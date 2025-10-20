@@ -4,7 +4,7 @@ import { Unit } from '@/projects/dto/unit.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
-import { User } from '@/users/entities/user.entity';
+import { User } from '@/users/dto/user.dto';
 import {
   Args,
   Float,

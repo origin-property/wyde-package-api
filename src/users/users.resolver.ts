@@ -9,7 +9,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { User } from './entities/user.entity';
+import { User } from './dto/user.dto';
 import { UsersService } from './users.service';
 import { Loader } from '@strv/nestjs-dataloader';
 import { UserLoader, UserLoaderFactory } from './UserLoader.factory';
