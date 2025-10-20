@@ -1,4 +1,5 @@
 import { File } from '@/database/entities/file.entity';
+import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Quotation } from '@/database/entities/quotation.entity';
 import { ProductItemType } from '@/shared/enums/product.enum';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
@@ -17,28 +18,116 @@ import {
   Between,
   DataSource,
   FindManyOptions,
-  FindOptionsWhere,
   In,
   Like,
+  QueryRunner,
   Repository,
 } from 'typeorm';
 import { CreateQuotationInput } from './input/create-quotation.input';
 import { SearchQuotationArgs } from './input/search-quotation.agrs';
 import { UpdateQuotationInput } from './input/update-quotation.input';
-import { QuotationPromotionsService } from './quotation-promotion.service';
+
+interface TransactionCallback<T> {
+  (queryRunner: QueryRunner): Promise<T>;
+}
 
 @Injectable()
 export class QuotationsService {
   constructor(
     @InjectRepository(Quotation)
     private quotationRepository: Repository<Quotation>,
+    @InjectRepository(ProductVariant)
+    private readonly productVariantRepository: Repository<ProductVariant>,
 
     @InjectDataSource()
     private readonly dataSource: DataSource,
 
-    private readonly quotationPromotionsService: QuotationPromotionsService,
     private readonly configService: ConfigService,
   ) {}
+
+  /**
+   * Base transaction method to handle common transaction operations
+   */
+  private async executeTransaction<T>(
+    callback: TransactionCallback<T>,
+  ): Promise<T> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const result = await callback(queryRunner);
+      await queryRunner.commitTransaction();
+      return result;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new GraphQLError(error.message);
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  private async validateStockAvailability(
+    queryRunner: QueryRunner,
+    quotation: Quotation,
+  ): Promise<void> {
+    const variants = quotation.items.map((item) => ({
+      quantity: item.quantity,
+      productVariantId: item.productVariantId,
+    }));
+
+    if (variants.length === 0) {
+      return;
+    }
+
+    const products = await queryRunner.manager
+      .getRepository(ProductVariant)
+      .find({
+        where: { id: In(variants.map((variant) => variant.productVariantId)) },
+        select: {
+          id: true,
+          stock: true,
+          sku: true,
+          product: {
+            name: true,
+            description: true,
+          },
+        },
+        relations: {
+          product: true,
+        },
+      });
+
+    const productById = keyBy(products, 'id');
+
+    const unavailableItems: string[] = [];
+
+    for (const variant of variants) {
+      const product = productById[variant.productVariantId];
+
+      if (!product) {
+        throw new Error('ไม่พอข้อมูลสินค้าที่เลือก กรุณาติดต่อแอดมิน');
+      }
+
+      if (product.stock < variant.quantity) {
+        unavailableItems.push(
+          `${product.product.name} (SKU: ${product.sku}) - มีสต็อกเพียง ${product.stock} แต่ต้องการ ${variant.quantity}`,
+        );
+      }
+    }
+
+    if (unavailableItems.length > 0) {
+      throw new Error(
+        `สินค้าบางรายการมี stock ไม่เพียงพอ:\n${unavailableItems.join('\n')}`,
+      );
+    }
+
+    for (const variant of variants) {
+      await queryRunner.manager
+        .getRepository(ProductVariant)
+        .decrement({ id: variant.productVariantId }, 'stock', variant.quantity);
+    }
+  }
 
   async generateCode() {
     const today = dayjs();
@@ -61,12 +150,10 @@ export class QuotationsService {
   }
 
   async create(createQuotationInput: CreateQuotationInput, userId: string) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
+    return this.executeTransaction(async (queryRunner) => {
       const code = await this.generateCode();
+
+      // Check stock availability for product variants
 
       const quotation = await queryRunner.manager
         .getRepository(Quotation)
@@ -128,25 +215,22 @@ export class QuotationsService {
         });
       }
 
-      await queryRunner.commitTransaction();
+      await this.validateStockAvailability(queryRunner, quotation);
+
       return quotation;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      throw new GraphQLError(error.message || 'Failed to create quotation');
-    } finally {
-      await queryRunner.release();
-    }
+    });
   }
 
   async searchWithPaginate(args: SearchQuotationArgs) {
     const { page, limit, searchText } = args;
 
-    const wheres: FindOptionsWhere<Quotation>[] = [];
+    const findOptions: FindManyOptions<Quotation> = {
+      order: { updatedAt: 'DESC' },
+    };
 
-    if (searchText && searchText.trim() !== '') {
+    if (searchText?.trim()) {
       const query = `%${searchText.trim()}%`;
-
-      wheres.push(
+      findOptions.where = [
         { code: Like(query) },
         { customerFirstName: Like(query) },
         { customerLastName: Like(query) },
@@ -154,16 +238,10 @@ export class QuotationsService {
         { customerEmail: Like(query) },
         { unitId: Like(query) },
         { unitNumber: Like(query) },
-      );
+      ];
     }
 
-    return this.paginate(
-      { page, limit },
-      {
-        where: wheres.length > 0 ? wheres : undefined,
-        order: { updatedAt: 'DESC' },
-      },
-    );
+    return this.paginate({ page, limit }, findOptions);
   }
 
   async findAll() {

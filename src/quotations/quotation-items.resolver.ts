@@ -97,7 +97,7 @@ export class QuotationItemsResolver {
     }
 
     const result = await loader.load(productId);
-    return result?.values;
+    return result?.values?.[0];
   }
 
   @ResolveField(() => ProductVariantModel, {
@@ -108,6 +108,7 @@ export class QuotationItemsResolver {
     @Parent() { productVariantId }: QuotationItem,
     @Loader(QuotationVariantLoaderFactory) loader: QuotationVariantLoader,
   ) {
+    if (!productVariantId) return;
     const result = await loader.load(productVariantId);
     return result?.values;
   }

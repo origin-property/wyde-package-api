@@ -17,13 +17,13 @@ import {
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
 import { PackageProjectLoaderFactory } from '../products/loader/PackageProjectLoader.factory';
-import { CreateQuotationInput } from './input/create-quotation.input';
-import { SearchQuotationArgs } from './input/search-quotation.agrs';
-import { UpdateQuotationInput } from './input/update-quotation.input';
 import { QuotationItem } from './dto/quotation-item.dto';
 import { QuotationPaginate } from './dto/quotation-paginate.dto';
 import { QuotationPromotionDto } from './dto/quotation-promotion.dto';
 import { Quotation } from './dto/quotation.dto';
+import { CreateQuotationInput } from './input/create-quotation.input';
+import { SearchQuotationArgs } from './input/search-quotation.agrs';
+import { UpdateQuotationInput } from './input/update-quotation.input';
 import {
   QuotationFileLoader,
   QuotationFileLoaderFactory,
@@ -135,7 +135,7 @@ export class QuotationsResolver {
   ) {
     const discountPrice = await loader.load(id);
     if (!discountPrice) return 0;
-    return discountPrice.value;
+    return discountPrice?.value ?? 0;
   }
 
   @ResolveField(() => Float, { defaultValue: 0, description: 'voucher wyde' })
@@ -146,7 +146,7 @@ export class QuotationsResolver {
   ) {
     const voucherPrice = await loader.load(id);
     if (!voucherPrice) return 0;
-    return voucherPrice.value;
+    return voucherPrice?.value ?? 0;
   }
 
   @ResolveField(() => Project)
