@@ -9,6 +9,7 @@ import {
 import { Loader } from '@strv/nestjs-dataloader';
 import { ModelType } from './dto/model-type.dto';
 import { Model } from './dto/model.dto';
+import { Project } from './dto/project.dto';
 import {
   ModelFileLoader,
   ModelFileLoaderFactory,
@@ -17,6 +18,10 @@ import {
   ModelTypeLoader,
   ModelTypeLoaderFactory,
 } from './loader/ModelTypeLoader.factory';
+import {
+  ModelProjectLoader,
+  ModelProjectLoaderFactory,
+} from './ModelProjectLoader.factory';
 import { ModelsService } from './models.service';
 
 @Resolver(() => Model)
@@ -39,6 +44,15 @@ export class ModelsResolver {
     @Loader(ModelTypeLoaderFactory) modelTypeLoader: ModelTypeLoader,
   ) {
     const result = await modelTypeLoader.load(modelTypeId);
+    return result?.values ?? null;
+  }
+
+  @ResolveField(() => Project)
+  async project(
+    @Parent() { projectId }: Model,
+    @Loader(ModelProjectLoaderFactory) projectLoader: ModelProjectLoader,
+  ) {
+    const result = await projectLoader.load(projectId);
     return result?.values ?? null;
   }
 

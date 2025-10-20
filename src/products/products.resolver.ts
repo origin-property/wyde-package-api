@@ -192,8 +192,6 @@ export class ProductsResolver {
 }
 @Resolver(() => PackageItem)
 export class PackageItemsResolver {
-  // constructor(private readonly packageItemsService: PackageItemsService) {}
-
   @ResolveField(() => ProductVariantModel)
   async product(
     @Parent() { productVariantId }: PackageItem,
