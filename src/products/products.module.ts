@@ -14,7 +14,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataloaderModule } from '@tracworx/nestjs-dataloader';
 import { CategoryResolver } from './category.resolver';
 import { CategoryService } from './category.service';
-import { CategoriesByProductTypeLoader } from './loader/categories-by-product-type.loader';
 import { CategoryLoader } from './loader/category.loader';
 import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLoader.factory';
 import { DataloadersService } from './loader/dataloaders.service';
@@ -29,6 +28,7 @@ import { PackageProjectLoaderFactory } from './loader/PackageProjectLoader.facto
 import { ProductByIdLoader } from './loader/product-by-id.loader';
 import { ProductTypeLoader } from './loader/product-type.loader';
 import { ProductFileLoaderFactory } from './loader/ProductFileLoader.factory';
+import { ProductTypeCategoryLoaderFactory } from './loader/ProductTypeCategoryLoader.factory';
 import { VariantsByProductLoader } from './loader/variants-by-product.loader';
 import { PackagesService } from './packages.service';
 import { ProductOptionValueResolver } from './product-option-value.resolver';
@@ -86,7 +86,6 @@ import { ProductsService } from './products.service';
     ProductTypesService,
     ProductTypesResolver,
     CategoryResolver,
-    CategoriesByProductTypeLoader,
     PackagesService,
     PackageItemsResolver,
     PackageItemLoaderFactory,
@@ -94,6 +93,7 @@ import { ProductsService } from './products.service';
     PackageImageLoaderFactory,
     ProductFileLoaderFactory,
     CategoryProductTypeLoaderFactory,
+    ProductTypeCategoryLoaderFactory,
   ],
   exports: [ProductsService],
 })
