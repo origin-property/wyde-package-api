@@ -16,6 +16,7 @@ import { CategoryResolver } from './category.resolver';
 import { CategoryService } from './category.service';
 import { CategoriesByProductTypeLoader } from './loader/categories-by-product-type.loader';
 import { CategoryLoader } from './loader/category.loader';
+import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLoader.factory';
 import { DataloadersService } from './loader/dataloaders.service';
 import { ImagesByVariantLoader } from './loader/images-by-variant.loader';
 import { OptionByIdLoader } from './loader/option-by-id.loader';
@@ -26,7 +27,6 @@ import { PackageImageLoaderFactory } from './loader/PackageImageLoader.factory';
 import { PackageItemLoaderFactory } from './loader/PackageItemLoader.factory';
 import { PackageProjectLoaderFactory } from './loader/PackageProjectLoader.factory';
 import { ProductByIdLoader } from './loader/product-by-id.loader';
-import { ProductTypeByIdLoader } from './loader/product-type-by-id.loader';
 import { ProductTypeLoader } from './loader/product-type.loader';
 import { ProductFileLoaderFactory } from './loader/ProductFileLoader.factory';
 import { VariantsByProductLoader } from './loader/variants-by-product.loader';
@@ -87,13 +87,13 @@ import { ProductsService } from './products.service';
     ProductTypesResolver,
     CategoryResolver,
     CategoriesByProductTypeLoader,
-    ProductTypeByIdLoader,
     PackagesService,
     PackageItemsResolver,
     PackageItemLoaderFactory,
     PackageProjectLoaderFactory,
     PackageImageLoaderFactory,
     ProductFileLoaderFactory,
+    CategoryProductTypeLoaderFactory,
   ],
   exports: [ProductsService],
 })
