@@ -27,9 +27,7 @@ export class ProductTypesService {
   }
 
   async findByIds(ids: readonly string[]): Promise<ProductType[]> {
-    const types = await this.productTypeRepository.findBy({ id: In([...ids]) });
-    const map = new Map(types.map((t) => [t.id, t]));
-    return ids.map((id) => map.get(id));
+    return this.productTypeRepository.findBy({ id: In([...ids]) });
   }
 
   async findCategoriesByProductTypeIds(

@@ -1,22 +1,23 @@
+import { Category } from '@/database/entities/category.entity';
+import { CurrentUser } from '@/shared/decorators/decorators';
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
   ID,
-  ResolveField,
+  Mutation,
   Parent,
+  Query,
+  ResolveField,
+  Resolver,
 } from '@nestjs/graphql';
+import { Loader } from '@strv/nestjs-dataloader';
 import { CategoryService } from './category.service';
 import { CategoryModel } from './dto/category.dto';
 import { ProductTypeModel } from './dto/product-type.dto';
-import { Category } from '@/database/entities/category.entity';
-import { ProductType } from '@/database/entities/product-type.entity';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
-import { ProductTypeByIdLoader } from './loader/product-type-by-id.loader';
 import { CreateCategoryInput } from './input/create-category.input';
-import { CurrentUser } from '@/shared/decorators/decorators';
+import {
+  CategoryProductTypeLoader,
+  CategoryProductTypeLoaderFactory,
+} from './loader/CategoryProductTypeLoader.factory';
 
 @Resolver(() => CategoryModel)
 export class CategoryResolver {
@@ -44,10 +45,11 @@ export class CategoryResolver {
   }
 
   @ResolveField('productType', () => ProductTypeModel)
-  getProductType(
-    @Parent() category: Category,
-    @Loader(ProductTypeByIdLoader) loader: DataLoader<string, ProductType>,
+  async productType(
+    @Parent() { productTypeId }: Category,
+    @Loader(CategoryProductTypeLoaderFactory) loader: CategoryProductTypeLoader,
   ) {
-    return loader.load(category.productTypeId);
+    const result = await loader.load(productTypeId);
+    return result?.values;
   }
 }
