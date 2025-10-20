@@ -24,12 +24,7 @@ COPY --from=builder /app/bun.lock* ./bun.lock
 ENV CI=true NODE_ENV=production
 RUN bun install --production --frozen-lockfile --ignore-scripts
 
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nestjs
-
-COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
-
-USER nestjs
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 4000
 
