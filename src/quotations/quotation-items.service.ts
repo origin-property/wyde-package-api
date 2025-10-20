@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
 import { In, IsNull, Repository } from 'typeorm';
-import { CreateQuotationItemInput } from './dto/create-quotation-item.input';
-import { UpdateQuotationItemInput } from './dto/update-quotation-item.input';
+import { CreateQuotationItemInput } from './input/create-quotation-item.input';
+import { UpdateQuotationItemInput } from './input/update-quotation-item.input';
 
 @Injectable()
 export class QuotationItemsService {

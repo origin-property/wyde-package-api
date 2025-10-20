@@ -14,10 +14,10 @@ import {
 import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { CreateQuotationItemInput } from './dto/create-quotation-item.input';
-import { UpdateQuotationItemInput } from './dto/update-quotation-item.input';
-import { QuotationItem } from './entities/quotation-item.entity';
-import { Quotation } from './entities/quotation.entity';
+import { CreateQuotationItemInput } from './input/create-quotation-item.input';
+import { UpdateQuotationItemInput } from './input/update-quotation-item.input';
+import { QuotationItem } from './dto/quotation-item.dto';
+import { Quotation } from './dto/quotation.dto';
 import {
   QuotationProductLoader,
   QuotationProductLoaderFactory,

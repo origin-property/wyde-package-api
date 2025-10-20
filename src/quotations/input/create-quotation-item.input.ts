@@ -1,4 +1,4 @@
-import { QuotationItem } from '@/quotations/entities/quotation-item.entity';
+import { QuotationItem } from '@/quotations/dto/quotation-item.dto';
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 
 @InputType()

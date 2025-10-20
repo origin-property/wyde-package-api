@@ -1,5 +1,5 @@
 import { CreateFileInput } from '@/files/dto/create-file.input';
-import { Quotation } from '@/quotations/entities/quotation.entity';
+import { Quotation } from '@/quotations/dto/quotation.dto';
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { CreateQuotationItemInput } from './create-quotation-item.input';
 import { CreateQuotationPromotionInput } from './create-quotation-promotion.input';
