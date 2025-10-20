@@ -32,13 +32,9 @@ export class ProductTypesService {
 
   async findCategoriesByProductTypeIds(
     productTypeIds: readonly string[],
-  ): Promise<Category[][]> {
-    const categories = await this.categoryRepository.find({
+  ): Promise<Category[]> {
+    return this.categoryRepository.find({
       where: { productTypeId: In([...productTypeIds]) },
     });
-    const map = new Map<string, Category[]>();
-    productTypeIds.forEach((id) => map.set(id, []));
-    categories.forEach((cat) => map.get(cat.productTypeId).push(cat));
-    return productTypeIds.map((id) => map.get(id));
   }
 }

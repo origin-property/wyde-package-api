@@ -1,4 +1,3 @@
-import { Category } from '@/database/entities/category.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
 import {
   Args,
@@ -8,11 +7,13 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Loader } from '@tracworx/nestjs-dataloader';
-import DataLoader from 'dataloader';
+import { Loader } from '@strv/nestjs-dataloader';
 import { CategoryModel } from './dto/category.dto';
 import { ProductTypeModel } from './dto/product-type.dto';
-import { CategoriesByProductTypeLoader } from './loader/categories-by-product-type.loader';
+import {
+  ProductTypeCategoryLoader,
+  ProductTypeCategoryLoaderFactory,
+} from './loader/ProductTypeCategoryLoader.factory';
 import { ProductTypesService } from './product-types.service';
 
 @Resolver(() => ProductTypeModel)
@@ -30,11 +31,11 @@ export class ProductTypesResolver {
   }
 
   @ResolveField('categories', () => [CategoryModel])
-  getCategories(
-    @Parent() productType: ProductType,
-    @Loader(CategoriesByProductTypeLoader)
-    loader: DataLoader<string, Category[]>,
+  async categories(
+    @Parent() { id }: ProductType,
+    @Loader(ProductTypeCategoryLoaderFactory) loader: ProductTypeCategoryLoader,
   ) {
-    return loader.load(productType.id);
+    const result = await loader.load(id);
+    return result?.values || [];
   }
 }
