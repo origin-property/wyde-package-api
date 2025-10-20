@@ -1,4 +1,4 @@
-import { CreateFileInput } from '@/files/dto/create-file.input';
+import { CreateFileInput } from '@/files/input/create-file.input';
 import { Quotation } from '@/quotations/dto/quotation.dto';
 import { Field, InputType, OmitType, PartialType } from '@nestjs/graphql';
 import { CreateQuotationItemInput } from './create-quotation-item.input';
