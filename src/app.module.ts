@@ -4,12 +4,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataloaderModule } from '@tracworx/nestjs-dataloader';
+import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
 import { S3Module } from 'nestjs-s3';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
 import { GqlRolesGuard } from './auth/guard/gql-roles.guard';
 import {
   CRM,
@@ -18,22 +19,18 @@ import {
 } from './config/data-source.service';
 import { FilesModule } from './files/files.module';
 import { HealthModule } from './health/health.module';
-// import { PackagesModule } from './packages/packages.module';
 import { ProductsModule } from './products/products.module';
 import { ProjectsModule } from './projects/projects.module';
+import { PromotionsModule } from './promotions/promotions.module';
 import { QuotationsModule } from './quotations/quotations.module';
 import { RolesModule } from './roles/roles.module';
 import { DateScalar } from './shared/scalars/date.scalar';
 import { UploadModule } from './upload/upload.module';
 import { UsersModule } from './users/users.module';
-import { GqlAuthGuard } from './auth/guard/gql-auth.guard';
-import { DataloaderModule as DataloaderModule2 } from '@strv/nestjs-dataloader';
-import { PromotionsModule } from './promotions/promotions.module';
 
 @Module({
   imports: [
     DataloaderModule2.forRoot(),
-    DataloaderModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
