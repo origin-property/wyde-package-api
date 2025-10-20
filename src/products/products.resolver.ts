@@ -35,7 +35,6 @@ import {
   FindAllProductsInput,
 } from './input/find-all-products.input';
 import { UpdateProductInput } from './input/update-product.input';
-import { CategoryLoader } from './loader/category.loader';
 import { OptionsByProductLoader } from './loader/options-by-product.loader';
 import {
   PackageItemLoader,
@@ -54,6 +53,10 @@ import { VariantsByProductLoader } from './loader/variants-by-product.loader';
 import { PackagesService } from './packages.service';
 import { ProductByVariantIdLoader } from './loader/product-variant.loader';
 import { ProductsService } from './products.service';
+import {
+  ProductCategoryLoader,
+  ProductCategoryLoaderFactory,
+} from './loader/ProductCategoryLoader.factory';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
@@ -133,11 +136,12 @@ export class ProductsResolver {
   }
 
   @ResolveField('category', () => CategoryModel, { nullable: true })
-  getCategory(
+  async category(
     @Parent() { categoryId }: Product,
-    @Loader(CategoryLoader) loader: DataLoader<string, Category>,
+    @Loader2(ProductCategoryLoaderFactory) loader: ProductCategoryLoader,
   ) {
-    return categoryId ? loader.load(categoryId) : null;
+    const result = await loader.load(categoryId);
+    return result?.values;
   }
 
   @ResolveField('variants', () => [ProductVariantModel])

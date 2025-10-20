@@ -383,11 +383,9 @@ export class ProductsService {
   }
 
   async findCategoriesByIds(ids: readonly string[]): Promise<Category[]> {
-    const categories = await this.categoryRepository.findBy({
+    return this.categoryRepository.findBy({
       id: In([...ids]),
     });
-    const map = new Map(categories.map((c) => [c.id, c]));
-    return ids.map((id) => map.get(id));
   }
 
   async findVariantsByProductIds(
