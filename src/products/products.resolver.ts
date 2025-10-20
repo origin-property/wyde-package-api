@@ -1,3 +1,6 @@
+import { Category } from '@/database/entities/category.entity';
+import { ProductOption } from '@/database/entities/product-option.entity';
+import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Product } from '@/database/entities/product.entity';
 import { File } from '@/files/entities/file.entity';
 import { Project } from '@/projects/dto/project.dto';
@@ -182,15 +185,6 @@ export class ProductsResolver {
     @Loader(PackageItemLoaderFactory) packageItemLoader: PackageItemLoader,
   ) {
     const result = await packageItemLoader.load(id);
-    return result?.values || [];
-  }
-
-  @ResolveField(() => [File])
-  async images(
-    @Parent() { id }: Product,
-    @Loader(ProductFileLoaderFactory) productFileLoader: ProductFileLoader,
-  ) {
-    const result = await productFileLoader.load(id);
     return result?.values || [];
   }
 }

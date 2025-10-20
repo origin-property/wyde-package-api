@@ -51,7 +51,7 @@ export class ProductsService {
       if (!category) throw new GraphQLError('Category ID is invalid.');
 
       const productType = await this.productTypeRepository.findOneBy({
-        id: category.productTypeId,
+        id: createProductInput.productTypeId,
       });
 
       if (!productType) throw new GraphQLError('productType ID is invalid.');

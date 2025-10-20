@@ -376,7 +376,6 @@ type Product {
   createdBy: String
   description: String
   id: ID!
-  images: [File!]!
   isActive: Boolean!
   itemType: ProductItemType
   model: String
