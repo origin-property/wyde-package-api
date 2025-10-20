@@ -11,11 +11,11 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
-import { CreatePromotionInput } from './dto/create-promotion.input';
-import { SearchPromotionArgs } from './dto/search-promotion.agrs';
-import { UpdatePromotionInput } from './dto/update-promotion.input';
-import { PromotionPaginateDto } from './entities/promotion-paginate.dto';
-import { PromotionDto } from './entities/promotion.dto';
+import { CreatePromotionInput } from './input/create-promotion.input';
+import { SearchPromotionArgs } from './input/search-promotion.agrs';
+import { UpdatePromotionInput } from './input/update-promotion.input';
+import { PromotionPaginateDto } from './dto/promotion-paginate.dto';
+import { PromotionDto } from './dto/promotion.dto';
 import { PromotionsService } from './promotions.service';
 import {
   PromotionUserLoader,

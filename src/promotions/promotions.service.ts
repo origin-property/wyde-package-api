@@ -8,9 +8,9 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
-import { CreatePromotionInput } from './dto/create-promotion.input';
-import { SearchPromotionArgs } from './dto/search-promotion.agrs';
-import { UpdatePromotionInput } from './dto/update-promotion.input';
+import { CreatePromotionInput } from './input/create-promotion.input';
+import { SearchPromotionArgs } from './input/search-promotion.agrs';
+import { UpdatePromotionInput } from './input/update-promotion.input';
 
 @Injectable()
 export class PromotionsService {

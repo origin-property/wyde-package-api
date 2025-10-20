@@ -1,5 +1,5 @@
 import { InputType, OmitType, PartialType } from '@nestjs/graphql';
-import { PromotionDto } from '../entities/promotion.dto';
+import { PromotionDto } from '../dto/promotion.dto';
 
 @InputType()
 export class CreatePromotionInput extends PartialType(
