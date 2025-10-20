@@ -4,7 +4,7 @@ import {
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { QuotationItem } from './entities/quotation-item.entity';
+import { QuotationItem } from './dto/quotation-item.dto';
 import { QuotationItemsService } from './quotation-items.service';
 
 type QuotationId = string;

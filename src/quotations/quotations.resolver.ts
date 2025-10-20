@@ -17,13 +17,13 @@ import {
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
 import { PackageProjectLoaderFactory } from '../products/loader/PackageProjectLoader.factory';
-import { CreateQuotationInput } from './dto/create-quotation.input';
-import { SearchQuotationArgs } from './dto/search-quotation.agrs';
-import { UpdateQuotationInput } from './dto/update-quotation.input';
-import { QuotationItem } from './entities/quotation-item.entity';
-import { QuotationPaginate } from './entities/quotation-paginate.entity';
-import { QuotationPromotionDto } from './entities/quotation-promotion.dto';
-import { Quotation } from './entities/quotation.entity';
+import { CreateQuotationInput } from './input/create-quotation.input';
+import { SearchQuotationArgs } from './input/search-quotation.agrs';
+import { UpdateQuotationInput } from './input/update-quotation.input';
+import { QuotationItem } from './dto/quotation-item.dto';
+import { QuotationPaginate } from './dto/quotation-paginate.dto';
+import { QuotationPromotionDto } from './dto/quotation-promotion.dto';
+import { Quotation } from './dto/quotation.dto';
 import {
   QuotationFileLoader,
   QuotationFileLoaderFactory,

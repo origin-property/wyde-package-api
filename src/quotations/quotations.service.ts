@@ -22,9 +22,9 @@ import {
   Like,
   Repository,
 } from 'typeorm';
-import { CreateQuotationInput } from './dto/create-quotation.input';
-import { SearchQuotationArgs } from './dto/search-quotation.agrs';
-import { UpdateQuotationInput } from './dto/update-quotation.input';
+import { CreateQuotationInput } from './input/create-quotation.input';
+import { SearchQuotationArgs } from './input/search-quotation.agrs';
+import { UpdateQuotationInput } from './input/update-quotation.input';
 import { QuotationPromotionsService } from './quotation-promotion.service';
 
 @Injectable()
