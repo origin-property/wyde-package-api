@@ -9,23 +9,19 @@ import { UpdateFileInput } from './dto/update-file.input';
 
 @Injectable()
 export class FilesService {
-  private readonly bucketName: string;
-
   constructor(
     @InjectRepository(File)
     private fileRepository: Repository<File>,
 
     private readonly configService: ConfigService,
-  ) {
-    this.bucketName = this.configService.getOrThrow<string>('AWS_S3_BUCKET');
-  }
+  ) {}
 
   private readonly logger = new Logger(FilesService.name);
 
   async create(createFileInput: CreateFileInput, userId: string) {
     return this.fileRepository.save({
       ...createFileInput,
-      fileBucket: this.bucketName,
+      fileBucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET'),
       createdBy: userId,
       updatedBy: userId,
     });
@@ -73,6 +69,32 @@ export class FilesService {
     const deleted = await this.fileRepository.softDelete(id);
 
     return !!deleted.affected;
+  }
+
+  async createOrUpdateModelFile(
+    fileName: string,
+    filePath: string,
+    modelId: string,
+    projectId: string,
+    userId: string,
+  ) {
+    await this.fileRepository.softDelete({
+      refId: modelId,
+      projectId: projectId,
+    });
+
+    const file = await this.fileRepository.save({
+      refId: modelId,
+      fileName: fileName,
+      filePath: filePath,
+      fileBucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET'),
+      isPublic: true,
+      projectId: projectId,
+      createdBy: userId,
+      updatedBy: userId,
+    });
+
+    return file;
   }
 
   async getFileWithIds(ids: readonly string[]): Promise<File[]> {

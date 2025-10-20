@@ -20,4 +20,7 @@ export class File extends Base {
 
   @Field(() => Boolean, { defaultValue: true })
   isPublic: boolean;
+
+  @Field(() => String, { nullable: true })
+  projectId: string;
 }
