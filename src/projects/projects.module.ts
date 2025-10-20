@@ -19,6 +19,7 @@ import { TowerFloorLoaderFactory } from './loader/TowerFloorLoader.factory';
 import { UnitModelLoaderFactory } from './loader/UnitModelLoader.factory';
 import { UnitProjectLoaderFactory } from './loader/UnitProjectLoader.factory';
 import { ModelTypesService } from './model-types.serice';
+import { ModelProjectLoaderFactory } from './ModelProjectLoader.factory';
 import { ModelsResolver } from './models.resolver';
 import { ModelsService } from './models.service';
 import { ProjectsResolver } from './projects.resolver';
@@ -63,6 +64,7 @@ import { UnitsService } from './units.service';
     ModelFileLoaderFactory,
     ModelTypeLoaderFactory,
     UnitProjectLoaderFactory,
+    ModelProjectLoaderFactory,
   ],
   exports: [
     ProjectsService,

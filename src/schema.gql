@@ -301,6 +301,7 @@ type Model {
   modelTypeId: String
   nameEn: String
   nameTh: String
+  project: Project!
   projectId: String
   shortName: String
 }

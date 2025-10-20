@@ -43,6 +43,8 @@ export class Product extends BaseEntity {
   productTypeId: string;
 
   @Column({
+    name: 'is_active',
+    type: 'boolean',
     default: true,
   })
   isActive: boolean;
