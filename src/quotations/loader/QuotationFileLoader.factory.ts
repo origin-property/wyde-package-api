@@ -1,6 +1,6 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { File } from '../../files/entities/file.entity';
+import { File } from '../../files/dto/file.dto';
 import { FilesService } from '../../files/files.service';
 
 type QuotationId = string;

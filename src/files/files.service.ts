@@ -4,8 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GraphQLError } from 'graphql';
 import { In, Repository } from 'typeorm';
-import { CreateFileInput } from './dto/create-file.input';
-import { UpdateFileInput } from './dto/update-file.input';
+import { CreateFileInput } from './input/create-file.input';
+import { UpdateFileInput } from './input/update-file.input';
 
 @Injectable()
 export class FilesService {

@@ -10,9 +10,9 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { CreateFileInput } from './dto/create-file.input';
-import { UpdateFileInput } from './dto/update-file.input';
-import { File } from './entities/file.entity';
+import { CreateFileInput } from './input/create-file.input';
+import { UpdateFileInput } from './input/update-file.input';
+import { File } from './dto/file.dto';
 import { FilesService } from './files.service';
 
 @Resolver(() => File)

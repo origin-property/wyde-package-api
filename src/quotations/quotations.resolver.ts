@@ -1,4 +1,4 @@
-import { File } from '@/files/entities/file.entity';
+import { File } from '@/files/dto/file.dto';
 import { Project } from '@/projects/dto/project.dto';
 import { Unit } from '@/projects/dto/unit.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
