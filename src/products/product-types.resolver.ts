@@ -1,19 +1,19 @@
+import { Category } from '@/database/entities/category.entity';
+import { ProductType } from '@/database/entities/product-type.entity';
 import {
-  Resolver,
-  Query,
   Args,
   ID,
-  ResolveField,
   Parent,
+  Query,
+  ResolveField,
+  Resolver,
 } from '@nestjs/graphql';
-import { ProductTypesService } from './product-types.service';
-import { ProductTypeModel } from './dto/product-type.dto';
-import { CategoryModel } from './dto/category.dto';
-import { ProductType } from '@/database/entities/product-type.entity';
-import { CategoriesByProductTypeLoader } from './dataloaders/categories-by-product-type.loader';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { Category } from '@/database/entities/category.entity';
+import { CategoryModel } from './dto/category.dto';
+import { ProductTypeModel } from './dto/product-type.dto';
+import { CategoriesByProductTypeLoader } from './loader/categories-by-product-type.loader';
+import { ProductTypesService } from './product-types.service';
 
 @Resolver(() => ProductTypeModel)
 export class ProductTypesResolver {

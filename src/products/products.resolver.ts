@@ -3,6 +3,7 @@ import { ProductOption } from '@/database/entities/product-option.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Product } from '@/database/entities/product.entity';
+import { File } from '@/files/entities/file.entity';
 import { Project } from '@/projects/dto/project.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import {
@@ -18,22 +19,6 @@ import {
 import { Loader as Loader2 } from '@strv/nestjs-dataloader';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { CategoryLoader } from './dataloaders/category.loader';
-import { OptionsByProductLoader } from './dataloaders/options-by-product.loader';
-import {
-  PackageItemLoader,
-  PackageItemLoaderFactory,
-} from './dataloaders/PackageItemLoader.factory';
-import {
-  PackageProjectLoader,
-  PackageProjectLoaderFactory,
-} from './dataloaders/PackageProjectLoader.factory';
-import { ProductTypeLoader } from './dataloaders/product-type.loader';
-import {
-  ProductFileLoader,
-  ProductFileLoaderFactory,
-} from './dataloaders/ProductFileLoader.factory';
-import { VariantsByProductLoader } from './dataloaders/variants-by-product.loader';
 import { CategoryModel } from './dto/category.dto';
 import { PackageItem } from './dto/package.dto';
 import { ProductTypeModel } from './dto/product-type.dto';
@@ -47,10 +32,25 @@ import {
   FindAllProductsInput,
 } from './input/find-all-products.input';
 import { UpdateProductInput } from './input/update-product.input';
+import { CategoryLoader } from './loader/category.loader';
+import { OptionsByProductLoader } from './loader/options-by-product.loader';
+import {
+  PackageItemLoader,
+  PackageItemLoaderFactory,
+} from './loader/PackageItemLoader.factory';
+import {
+  PackageProjectLoader,
+  PackageProjectLoaderFactory,
+} from './loader/PackageProjectLoader.factory';
+import { ProductTypeLoader } from './loader/product-type.loader';
+import {
+  ProductFileLoader,
+  ProductFileLoaderFactory,
+} from './loader/ProductFileLoader.factory';
+import { VariantsByProductLoader } from './loader/variants-by-product.loader';
 import { PackagesService } from './packages.service';
 import { ProductByVariantIdLoader } from './product-variant.loader';
 import { ProductsService } from './products.service';
-import { File } from '@/files/entities/file.entity';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
