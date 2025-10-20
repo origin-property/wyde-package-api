@@ -4,8 +4,8 @@ import {
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { TowersService } from './towers.service.js';
-import { Tower } from './entities/tower.entity.js';
+import { TowersService } from './towers.service';
+import { Tower } from './dto/tower.dto';
 
 type TowerId = string;
 type ProjectTowerInfo = Aggregated<TowerId, Tower>;

@@ -7,9 +7,9 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
-import { Model } from './entities/model.entity';
-import { Project } from './entities/project.entity';
-import { Unit } from './entities/unit.entity';
+import { Model } from './dto/model.dto';
+import { Project } from './dto/project.dto';
+import { Unit } from './dto/unit.dto';
 import {
   UnitModelLoader,
   UnitModelLoaderFactory,

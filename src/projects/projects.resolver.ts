@@ -8,9 +8,9 @@ import {
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { Project } from './entities/project.entity';
-import { Tower } from './entities/tower.entity';
-import { Unit } from './entities/unit.entity';
+import { Project } from './dto/project.dto';
+import { Tower } from './dto/tower.dto';
+import { Unit } from './dto/unit.dto';
 import { ProjectsService } from './projects.service';
 import {
   ProjectTowerLoader,

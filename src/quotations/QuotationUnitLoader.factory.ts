@@ -4,7 +4,7 @@ import {
   type Aggregated,
   type LoaderFrom,
 } from '@strv/nestjs-dataloader';
-import { Unit } from '../projects/entities/unit.entity';
+import { Unit } from '../projects/dto/unit.dto';
 import { UnitsService } from '../projects/units.service';
 
 type UnitId = string;

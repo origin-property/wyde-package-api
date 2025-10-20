@@ -6,8 +6,8 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Floor } from './entities/floor.entity';
-import { Tower } from './entities/tower.entity';
+import { Floor } from './dto/floor.dto';
+import { Tower } from './dto/tower.dto';
 import { TowersService } from './towers.service';
 import { Loader } from '@strv/nestjs-dataloader';
 import {

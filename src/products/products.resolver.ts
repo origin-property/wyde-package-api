@@ -37,6 +37,7 @@ import {
   PackageItemLoader,
   PackageItemLoaderFactory,
 } from './dataloaders/PackageItemLoader.factory';
+import { Project } from '@/projects/dto/project.dto';
 import {
   PackageProjectLoader,
   PackageProjectLoaderFactory,
@@ -47,7 +48,6 @@ import {
 } from './dataloaders/ProductFileLoader.factory';
 import { FindAllPackagesInput } from './input/find-all-products.input';
 import { ProductByVariantIdLoader } from './product-variant.loader';
-import { Project } from '../projects/entities/project.entity';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
