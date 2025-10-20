@@ -197,6 +197,9 @@ export class PackagesService {
         },
         packageDetail: true,
       },
+      order: {
+        createdAt: 'DESC',
+      },
     });
   }
 
