@@ -31,6 +31,7 @@ input CreateFileInput {
   fileName: String
   filePath: String
   isPublic: Boolean = true
+  projectId: String
   refId: String
 }
 
@@ -219,6 +220,7 @@ type File {
   fileUrl: String!
   id: ID!
   isPublic: Boolean!
+  projectId: String
   refId: String
   updatedAt: Date!
 }
@@ -316,6 +318,7 @@ type ModelType {
 type Mutation {
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   createFile(createFileInput: CreateFileInput!): File!
+  createOrUpdateModelFile(createFileInput: CreateFileInput!): File!
   createPackage(createPackageInput: CreatePackageInput!): Product!
   createProduct(createProductInput: CreateProductInput!): Product!
   createPromotion(createPromotionInput: CreatePromotionInput!): Promotion!
@@ -769,6 +772,7 @@ input UpdateFileInput {
   filePath: String
   id: ID!
   isPublic: Boolean = true
+  projectId: String
   refId: String
 }
 

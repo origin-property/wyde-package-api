@@ -41,6 +41,21 @@ export class FilesResolver {
   }
 
   @Mutation(() => File)
+  async createOrUpdateModelFile(
+    @Args('createFileInput')
+    createFileInput: CreateFileInput,
+    @CurrentUser() user: User,
+  ) {
+    return this.filesService.createOrUpdateModelFile(
+      createFileInput.fileName,
+      createFileInput.filePath,
+      createFileInput.refId,
+      createFileInput.projectId,
+      user.id,
+    );
+  }
+
+  @Mutation(() => File)
   async updateFile(
     @Args('updateFileInput') updateFileInput: UpdateFileInput,
     @CurrentUser() user: User,

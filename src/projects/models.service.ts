@@ -26,7 +26,10 @@ export class ModelsService {
   }
 
   async findAll(projectId: string) {
-    return this.modelsRepository.find({ where: { projectId } });
+    return this.modelsRepository.find({
+      where: { projectId },
+      order: { id: 'ASC' },
+    });
   }
 
   async findOne(id: string) {
