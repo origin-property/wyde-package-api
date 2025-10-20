@@ -325,8 +325,6 @@ export class ProductsService {
     isActive: boolean,
     userId: string,
   ): Promise<Product> {
-    throw new GraphQLError('Failed to update isActive status');
-
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
