@@ -13,12 +13,12 @@ import { Unit } from './dto/unit.dto';
 import {
   UnitModelLoader,
   UnitModelLoaderFactory,
-} from './UnitModelLoader.factory';
-import { UnitsService } from './units.service';
+} from './loader/UnitModelLoader.factory';
 import {
   UnitProjectLoader,
   UnitProjectLoaderFactory,
-} from './UnitProjectLoader.factory';
+} from './loader/UnitProjectLoader.factory';
+import { UnitsService } from './units.service';
 
 @Resolver(() => Unit)
 export class UnitsResolver {

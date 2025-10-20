@@ -11,6 +11,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FloorsResolver } from './floors.resolver';
 import { FloorsService } from './floors.service';
+import { ModelFileLoaderFactory } from './loader/ModelFileLoader.factory';
+import { ModelTypeLoaderFactory } from './loader/ModelTypeLoader.factory';
+import { ProjectTowerLoaderFactory } from './loader/ProjectTowerLoader.factory';
+import { ProjectUnitLoaderFactory } from './loader/ProjectUnitLoader.factory';
+import { TowerFloorLoaderFactory } from './loader/TowerFloorLoader.factory';
+import { UnitModelLoaderFactory } from './loader/UnitModelLoader.factory';
+import { UnitProjectLoaderFactory } from './loader/UnitProjectLoader.factory';
 import { ModelTypesService } from './model-types.serice';
 import { ModelsResolver } from './models.resolver';
 import { ModelsService } from './models.service';
@@ -20,13 +27,6 @@ import { TowersResolver } from './towers.resolver';
 import { TowersService } from './towers.service';
 import { UnitsResolver } from './units.resolver';
 import { UnitsService } from './units.service';
-import { ProjectTowerLoaderFactory } from './ProjectTowerLoader.factory';
-import { ProjectUnitLoaderFactory } from './ProjectUnitLoader.factory';
-import { TowerFloorLoaderFactory } from './TowerFloorLoader.factory';
-import { UnitModelLoaderFactory } from './UnitModelLoader.factory';
-import { ModelFileLoaderFactory } from './ModelFileLoader.factory';
-import { ModelTypeLoaderFactory } from './ModelTypeLoader.factory';
-import { UnitProjectLoaderFactory } from './UnitProjectLoader.factory';
 
 @Module({
   imports: [

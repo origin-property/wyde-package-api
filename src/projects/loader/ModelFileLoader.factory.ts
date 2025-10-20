@@ -1,29 +1,28 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { ModelsService } from './models.service';
-import { Model } from './dto/model.dto';
+import { ModelsService } from '../models.service';
 
 type ModelId = { id: string; projectId: string };
-type UnitModelInfo = { id: ModelId; values: Model };
-type UnitModelLoader = LoaderFrom<UnitModelLoaderFactory>;
+type ModelFileInfo = { id: ModelId; values: string };
+type ModelFileLoader = LoaderFrom<ModelFileLoaderFactory>;
 
 @Injectable()
-class UnitModelLoaderFactory extends DataloaderFactory<ModelId, UnitModelInfo> {
+class ModelFileLoaderFactory extends DataloaderFactory<ModelId, ModelFileInfo> {
   constructor(private readonly modelService: ModelsService) {
     super();
   }
 
   async load(ids: ModelId[], context: ExecutionContext) {
-    const results: Model[] = await this.modelService.getModelWithIds(ids);
+    const results: string[] = await this.modelService.getModelFileUrl(ids);
 
     return ids.map((id, index) => {
       return { id, values: results[index] };
     });
   }
 
-  id(entity: UnitModelInfo) {
+  id(entity: ModelFileInfo) {
     return entity.id;
   }
 }
 
-export { UnitModelLoaderFactory, UnitModelLoader };
+export { ModelFileLoaderFactory, ModelFileLoader };

@@ -12,12 +12,12 @@ import { Model } from './dto/model.dto';
 import {
   ModelFileLoader,
   ModelFileLoaderFactory,
-} from './ModelFileLoader.factory';
-import { ModelsService } from './models.service';
+} from './loader/ModelFileLoader.factory';
 import {
   ModelTypeLoader,
   ModelTypeLoaderFactory,
-} from './ModelTypeLoader.factory';
+} from './loader/ModelTypeLoader.factory';
+import { ModelsService } from './models.service';
 
 @Resolver(() => Model)
 export class ModelsResolver {

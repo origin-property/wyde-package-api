@@ -6,14 +6,14 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { Loader } from '@strv/nestjs-dataloader';
 import { Floor } from './dto/floor.dto';
 import { Tower } from './dto/tower.dto';
-import { TowersService } from './towers.service';
-import { Loader } from '@strv/nestjs-dataloader';
 import {
   TowerFloorLoader,
   TowerFloorLoaderFactory,
-} from './TowerFloorLoader.factory';
+} from './loader/TowerFloorLoader.factory';
+import { TowersService } from './towers.service';
 
 @Resolver(() => Tower)
 export class TowersResolver {
