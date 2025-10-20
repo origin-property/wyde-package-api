@@ -14,7 +14,7 @@ import { Category } from '@/database/entities/category.entity';
 import { ProductType } from '@/database/entities/product-type.entity';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { ProductTypeByIdLoader } from './dataloaders/product-type-by-id.loader';
+import { ProductTypeByIdLoader } from './loader/product-type-by-id.loader';
 import { CreateCategoryInput } from './input/create-category.input';
 import { CurrentUser } from '@/shared/decorators/decorators';
 

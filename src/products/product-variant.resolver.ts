@@ -5,15 +5,15 @@ import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { ImagesByVariantLoader } from './dataloaders/images-by-variant.loader';
-import { OptionByIdLoader } from './dataloaders/option-by-id.loader';
-import { OptionValuesByVariantLoader } from './dataloaders/option-values-by-variant.loader';
-import { ProductByIdLoader } from './dataloaders/product-by-id.loader';
 import { ProductModel } from './dto/product.dto';
 import { ProductOptionValueModel } from './dto/productOptionValue.dto';
 import { ProductVariantModel } from './dto/productVariant.dto';
 import { ProductVariantImageModel } from './dto/productVariantImage.dto';
 import { VariantAttributeModel } from './dto/variant-attribute.dto';
+import { ImagesByVariantLoader } from './loader/images-by-variant.loader';
+import { OptionByIdLoader } from './loader/option-by-id.loader';
+import { OptionValuesByVariantLoader } from './loader/option-values-by-variant.loader';
+import { ProductByIdLoader } from './loader/product-by-id.loader';
 
 @Resolver(() => ProductVariantModel)
 export class ProductVariantResolver {

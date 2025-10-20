@@ -1,11 +1,11 @@
-import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
-import { ProductOption } from '@/database/entities/product-option.entity';
 import { ProductOptionValue } from '@/database/entities/product-option-value.entity';
-import { ProductOptionModel } from './dto/productOption.dto';
-import { ProductOptionValueModel } from './dto/productOptionValue.dto';
+import { ProductOption } from '@/database/entities/product-option.entity';
+import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { Loader } from '@tracworx/nestjs-dataloader';
 import DataLoader from 'dataloader';
-import { OptionValuesByOptionIdLoader } from './dataloaders/option-values-by-option-id.loader';
+import { ProductOptionModel } from './dto/productOption.dto';
+import { ProductOptionValueModel } from './dto/productOptionValue.dto';
+import { OptionValuesByOptionIdLoader } from './loader/option-values-by-option-id.loader';
 
 @Resolver(() => ProductOptionModel)
 export class ProductOptionResolver {
