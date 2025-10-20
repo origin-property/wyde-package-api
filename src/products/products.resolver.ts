@@ -1,8 +1,4 @@
-import { Category } from '@/database/entities/category.entity';
-import { ProductOption } from '@/database/entities/product-option.entity';
-import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Product } from '@/database/entities/product.entity';
-import { File } from '@/files/entities/file.entity';
 import { Project } from '@/projects/dto/project.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import {
@@ -42,10 +38,6 @@ import {
   ProductCategoryLoader,
   ProductCategoryLoaderFactory,
 } from './loader/ProductCategoryLoader.factory';
-import {
-  ProductFileLoader,
-  ProductFileLoaderFactory,
-} from './loader/ProductFileLoader.factory';
 import {
   ProductOptionLoader,
   ProductOptionLoaderFactory,
