@@ -11,7 +11,6 @@ import { FilesModule } from '@/files/files.module';
 import { ProjectsModule } from '@/projects/projects.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataloaderModule } from '@tracworx/nestjs-dataloader';
 import { CategoryResolver } from './category.resolver';
 import { CategoryService } from './category.service';
 import { CategoryProductTypeLoaderFactory } from './loader/CategoryProductTypeLoader.factory';
@@ -40,7 +39,6 @@ import { ProductsService } from './products.service';
 
 @Module({
   imports: [
-    DataloaderModule,
     TypeOrmModule.forFeature([
       Product,
       ProductOptionValue,
