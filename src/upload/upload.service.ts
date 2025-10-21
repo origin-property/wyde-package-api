@@ -62,7 +62,9 @@ export class UploadService {
         Key: name,
       });
 
-      const url = await getSignedUrl(this.s3Client, command);
+      const url = await getSignedUrl(this.s3Client, command, {
+        expiresIn: 60 * 60 * 24 * 7, // 7 days
+      });
 
       return url;
     } catch (e) {

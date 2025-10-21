@@ -1,4 +1,4 @@
-import { UploadService } from '@/upload/upload.service';
+import { ConfigService } from '@nestjs/config';
 import { Args, ID, Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { ProductVariantImageModel } from './dto/productVariantImage.dto';
 import { ProductVariantImagesService } from './product-variant-images.service';
@@ -7,7 +7,7 @@ import { ProductVariantImagesService } from './product-variant-images.service';
 export class ProductVariantImagesResolver {
   constructor(
     private readonly productVariantImagesService: ProductVariantImagesService,
-    private readonly uploadService: UploadService,
+    private readonly configService: ConfigService,
   ) {}
 
   @ResolveField(() => [ProductVariantImageModel], {
@@ -25,7 +25,7 @@ export class ProductVariantImagesResolver {
   }
 
   @ResolveField(() => String, { name: 'fileUrl' })
-  async fileUrl(@Parent() { filePath, fileBucket }: ProductVariantImageModel) {
-    return this.uploadService.getSignedUrl(fileBucket, filePath);
+  async fileUrl(@Parent() { filePath }: ProductVariantImageModel) {
+    return `${this.configService.getOrThrow<string>('AWS_CLOUDFRONT_URL')}/${filePath}`;
   }
 }

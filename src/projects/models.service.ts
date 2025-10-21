@@ -1,7 +1,6 @@
 import { CRM } from '@/config/data-source.service';
 import { SysREMProjectModel } from '@/database/crm/SysREMProjectModel.entity';
 import { File } from '@/database/entities/file.entity';
-import { UploadService } from '@/upload/upload.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,7 +18,6 @@ export class ModelsService {
     @InjectRepository(File)
     private readonly filesRepository: Repository<File>,
 
-    private readonly uploadService: UploadService,
     private readonly configService: ConfigService,
   ) {
     this.bucketName = this.configService.getOrThrow<string>('AWS_S3_BUCKET');
@@ -68,8 +66,8 @@ export class ModelsService {
         );
 
         return file
-          ? this.uploadService.getSignedUrl(file.fileBucket, file.filePath)
-          : this.uploadService.getSignedUrl(this.bucketName, 'model/model.png');
+          ? `${this.configService.getOrThrow<string>('AWS_CLOUDFRONT_URL')}/${file.filePath}`
+          : `${this.configService.getOrThrow<string>('AWS_CLOUDFRONT_URL')}/model/model.png`;
       }),
     );
 
