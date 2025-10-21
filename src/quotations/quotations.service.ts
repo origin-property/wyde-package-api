@@ -18,6 +18,7 @@ import {
   Between,
   DataSource,
   FindManyOptions,
+  FindOptionsWhere,
   In,
   Like,
   QueryRunner,
@@ -251,13 +252,12 @@ export class QuotationsService {
   async searchWithPaginate(args: SearchQuotationArgs) {
     const { page, limit, searchText } = args;
 
-    const findOptions: FindManyOptions<Quotation> = {
-      order: { updatedAt: 'DESC' },
-    };
+    const wheres: FindOptionsWhere<Quotation>[] = [];
 
     if (searchText?.trim()) {
       const query = `%${searchText.trim()}%`;
-      findOptions.where = [
+
+      wheres.push(
         { code: Like(query) },
         { customerFirstName: Like(query) },
         { customerLastName: Like(query) },
@@ -265,10 +265,16 @@ export class QuotationsService {
         { customerEmail: Like(query) },
         { unitId: Like(query) },
         { unitNumber: Like(query) },
-      ];
+      );
     }
 
-    return this.paginate({ page, limit }, findOptions);
+    return this.paginate(
+      { page, limit },
+      {
+        where: wheres.length > 0 ? wheres : {},
+        order: { updatedAt: 'DESC' },
+      },
+    );
   }
 
   async findAll() {

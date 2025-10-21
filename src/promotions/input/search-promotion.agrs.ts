@@ -14,4 +14,16 @@ export class SearchPromotionArgs extends PaginateInput {
     nullable: true,
   })
   type: PromotionType;
+
+  @Field(() => Boolean, {
+    nullable: true,
+    description: 'สถานะโปรโมชั่น: true หรือ false',
+  })
+  isActive: boolean;
+
+  @Field(() => String, {
+    nullable: true,
+    description: 'ค้นหาด้วยชื่อ, รหัสโค้ด, รายละเอียด',
+  })
+  searchText: string;
 }

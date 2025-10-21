@@ -11,11 +11,11 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
+import { PromotionPaginateDto } from './dto/promotion-paginate.dto';
+import { PromotionDto } from './dto/promotion.dto';
 import { CreatePromotionInput } from './input/create-promotion.input';
 import { SearchPromotionArgs } from './input/search-promotion.agrs';
 import { UpdatePromotionInput } from './input/update-promotion.input';
-import { PromotionPaginateDto } from './dto/promotion-paginate.dto';
-import { PromotionDto } from './dto/promotion.dto';
 import { PromotionsService } from './promotions.service';
 import {
   PromotionUserLoader,
@@ -60,6 +60,16 @@ export class PromotionsResolver {
 
   @Roles(['admin'])
   @Mutation(() => PromotionDto)
+  async updateActivePromotion(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('isActive', { type: () => Boolean }) isActive: boolean,
+    @CurrentUser() user: User,
+  ) {
+    return this.promotionsService.updateActive(id, isActive, user.id);
+  }
+
+  @Roles(['admin'])
+  @Mutation(() => Boolean)
   async removePromotion(
     @Args('id', { type: () => ID }) id: string,
     @CurrentUser() user: User,
