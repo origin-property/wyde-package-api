@@ -4,7 +4,16 @@ import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { GraphQLError } from 'graphql';
-import { DataSource, FindOptionsWhere, In, Like, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindOptionsWhere,
+  In,
+  Like,
+  Repository,
+  Between,
+  QueryRunner,
+  FindManyOptions,
+} from 'typeorm';
 import { ProductOptionValue } from '../database/entities/product-option-value.entity';
 import { ProductOption } from '../database/entities/product-option.entity';
 import { ProductType } from '../database/entities/product-type.entity';
@@ -14,7 +23,11 @@ import { Product } from '../database/entities/product.entity';
 import { ProductItemType } from '@/shared/enums/product.enum';
 import { CreateProductInput } from './input/create-product.input';
 import { UpdateProductInput } from './input/update-product.input';
-import { ProductVariantModel } from './dto/productVariant.dto';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsService {
@@ -196,20 +209,60 @@ export class ProductsService {
         wheres.length > 0
           ? wheres.map((w) => ({ ...w, itemType: ProductItemType.PRODUCT }))
           : [{ itemType: ProductItemType.PRODUCT }],
-
-      relations: {
-        category: true,
-        variants: {
-          images: true,
-          optionValues: true,
-        },
-      },
       order: {
         createdAt: 'DESC',
       },
       skip: skip,
       take: limit,
     });
+  }
+
+  async searchWithPaginate(
+    searchText?: string,
+    categoryIds?: string[],
+    page = 1,
+    limit = 10,
+  ) {
+    const baseWhere: FindOptionsWhere<Product> = {
+      itemType: ProductItemType.PRODUCT,
+      ...(categoryIds?.length > 0 && { category: { id: In(categoryIds) } }),
+    };
+
+    let finalWhere: FindOptionsWhere<Product> | FindOptionsWhere<Product>[];
+
+    if (searchText?.trim()) {
+      const query = `%${searchText.trim()}%`;
+      const searchWhere: FindOptionsWhere<Product>[] = [
+        { name: Like(query) },
+        { description: Like(query) },
+        { variants: { sku: Like(query.toLocaleUpperCase()) } },
+        { category: { name: Like(query) } },
+        { category: { productType: { name: Like(query) } } },
+      ];
+
+      finalWhere = searchWhere.map((condition) => ({
+        ...baseWhere,
+        ...condition,
+      }));
+    } else {
+      finalWhere = baseWhere;
+    }
+
+    const findOptions: FindManyOptions<Product> = {
+      where: finalWhere,
+      order: { updatedAt: 'DESC' },
+    };
+
+    console.log('findOptions', JSON.stringify(findOptions, null, 2));
+
+    return this.paginate({ page, limit }, findOptions);
+  }
+
+  private async paginate(
+    pageOptions: IPaginationOptions,
+    findOptions?: FindManyOptions<Product>,
+  ): Promise<Pagination<Product>> {
+    return paginate<Product>(this.productRepository, pageOptions, findOptions);
   }
 
   async findOne(id: string): Promise<Product> {

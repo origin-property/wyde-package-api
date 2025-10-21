@@ -422,6 +422,16 @@ type ProductOptionValue {
   value: String!
 }
 
+type ProductPaginate {
+  items: [Product!]!
+
+  """ลิงค์หน้า"""
+  links: IPaginateLinks
+
+  """ข้อมูลการจัดการหน้า"""
+  meta: IPaginateMeta
+}
+
 type ProductType {
   categories: [Category!]!
   createdAt: String!
@@ -551,7 +561,7 @@ type Query {
   product(id: String!): Product!
   productType(id: ID!): ProductType!
   productTypes: [ProductType!]!
-  products(findAllProductsInput: FindAllProductsInput!): [Product!]!
+  products(findAllProductsInput: FindAllProductsInput!): ProductPaginate!
   project(id: ID!): Project!
   projects: [Project!]!
   promotion(id: ID!): Promotion!
