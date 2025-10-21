@@ -48,6 +48,7 @@ import {
 } from './loader/ProductVariantLoader.factory';
 import { PackagesService } from './packages.service';
 import { ProductsService } from './products.service';
+import { ProductPaginate } from './dto/productPaginate.dto';
 
 @Resolver(() => ProductModel)
 export class ProductsResolver {
@@ -112,13 +113,18 @@ export class ProductsResolver {
     return this.productsService.remove(id, user.id);
   }
 
-  @Query(() => [ProductModel], { name: 'products' })
+  @Query(() => ProductPaginate, { name: 'products' })
   findAll(
     @Args('findAllProductsInput') findAllProductsInput: FindAllProductsInput,
   ) {
     const { searchText, categoryIds, page, limit } = findAllProductsInput;
 
-    return this.productsService.findAll(searchText, categoryIds, page, limit);
+    return this.productsService.searchWithPaginate(
+      searchText,
+      categoryIds,
+      page,
+      limit,
+    );
   }
 
   @Query(() => ProductModel, { name: 'product' })
