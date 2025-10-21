@@ -329,11 +329,12 @@ type Mutation {
   refreshToken: Auth!
   removeFile(id: ID!): Boolean!
   removeProduct(id: ID!): Product!
-  removePromotion(id: ID!): Promotion!
+  removePromotion(id: ID!): Boolean!
   removeQuotation(id: ID!): Quotation!
   removeQuotationItem(id: ID!): Boolean!
   removeRole(id: ID!): Boolean!
   signIn(password: String!, username: String!): Auth!
+  updateActivePromotion(id: ID!, isActive: Boolean!): Promotion!
   updateFile(updateFileInput: UpdateFileInput!): File!
   updateIsActiveProduct(id: ID!, isActive: Boolean!): Product!
   updatePackage(input: UpdatePacakgeInput!): Product!
@@ -566,10 +567,16 @@ type Query {
   projects: [Project!]!
   promotion(id: ID!): Promotion!
   promotions(
+    """สถานะโปรโมชั่น: true หรือ false"""
+    isActive: Boolean
+
     """ประเภทโปรโมชั่น: discount หรือ voucher"""
     kind: PromotionKind
     limit: Int! = 10
     page: Int! = 1
+
+    """ค้นหาด้วยชื่อ, รหัสโค้ด, รายละเอียด"""
+    searchText: String
     type: PromotionType
   ): PromotionPaginate!
   quotation(id: ID!): Quotation!

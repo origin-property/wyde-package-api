@@ -7,7 +7,7 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, Like, Repository } from 'typeorm';
 import { CreatePromotionInput } from './input/create-promotion.input';
 import { SearchPromotionArgs } from './input/search-promotion.agrs';
 import { UpdatePromotionInput } from './input/update-promotion.input';
@@ -32,17 +32,29 @@ export class PromotionsService {
   }
 
   async searchWithPaginate(args: SearchPromotionArgs) {
-    const { page, limit, kind, type } = args;
+    const { page, limit, kind, type, isActive, searchText } = args;
 
-    const wheres: FindOptionsWhere<Promotion> = {
+    const baseWhere: FindOptionsWhere<Promotion> = {
       ...(kind && { kind }),
       ...(kind && { type }),
+      ...(isActive !== undefined && { isActive }),
     };
+
+    const wheres: FindOptionsWhere<Promotion>[] = [];
+
+    if (searchText?.trim()) {
+      const query = `%${searchText.trim()}%`;
+      wheres.push(
+        { code: Like(query), ...baseWhere },
+        { name: Like(query), ...baseWhere },
+        { description: Like(query), ...baseWhere },
+      );
+    }
 
     return this.paginate(
       { page, limit },
       {
-        where: wheres,
+        where: wheres.length > 0 ? wheres : baseWhere,
         order: { updatedAt: 'DESC' },
       },
     );
@@ -68,10 +80,10 @@ export class PromotionsService {
     updatePromotionInput: UpdatePromotionInput,
     userId: string,
   ) {
-    const quotation = await this.promotionRepository.findOne({ where: { id } });
+    const promotion = await this.promotionRepository.findOne({ where: { id } });
 
-    if (!quotation) {
-      throw new GraphQLError('ไม่พบข้อมูล กรุณาลองใหม่อีกครั้ง');
+    if (!promotion) {
+      throw new GraphQLError('ไม่พบโปรโมชั่น กรุณาลองใหม่อีกครั้ง');
     }
 
     await this.promotionRepository.update(id, {
@@ -82,11 +94,22 @@ export class PromotionsService {
     return this.promotionRepository.findOne({ where: { id } });
   }
 
-  async remove(id: string, userId: string) {
-    const quotation = await this.promotionRepository.findOne({ where: { id } });
+  async updateActive(id: string, isActive: boolean, userId: string) {
+    const promotion = await this.promotionRepository.findOne({ where: { id } });
+    if (!promotion) {
+      throw new GraphQLError('ไม่พบโปรโมชั่น กรุณาลองใหม่อีกครั้ง');
+    }
 
-    if (!quotation) {
-      throw new GraphQLError('ไม่พบข้อมูล กรุณาลองใหม่อีกครั้ง');
+    await this.promotionRepository.update(id, { isActive, updatedBy: userId });
+
+    return this.promotionRepository.findOne({ where: { id } });
+  }
+
+  async remove(id: string, userId: string) {
+    const promotion = await this.promotionRepository.findOne({ where: { id } });
+
+    if (!promotion) {
+      throw new GraphQLError('ไม่พบโปรโมชั่น กรุณาลองใหม่อีกครั้ง');
     }
 
     await this.promotionRepository.update(id, {
