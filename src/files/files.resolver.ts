@@ -1,6 +1,6 @@
 import { CurrentUser } from '@/shared/decorators/decorators';
-import { UploadService } from '@/upload/upload.service';
 import { User } from '@/users/dto/user.dto';
+import { ConfigService } from '@nestjs/config';
 import {
   Args,
   ID,
@@ -10,16 +10,16 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { CreateFileInput } from './input/create-file.input';
-import { UpdateFileInput } from './input/update-file.input';
 import { File } from './dto/file.dto';
 import { FilesService } from './files.service';
+import { CreateFileInput } from './input/create-file.input';
+import { UpdateFileInput } from './input/update-file.input';
 
 @Resolver(() => File)
 export class FilesResolver {
   constructor(
     private readonly filesService: FilesService,
-    private readonly uploadService: UploadService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Mutation(() => File)
@@ -76,7 +76,7 @@ export class FilesResolver {
   }
 
   @ResolveField(() => String, { name: 'fileUrl' })
-  async url(@Parent() { filePath, fileBucket }: File) {
-    return this.uploadService.getSignedUrl(fileBucket, filePath);
+  async url(@Parent() { filePath }: File) {
+    return `${this.configService.getOrThrow<string>('AWS_CLOUDFRONT_URL')}/${filePath}`;
   }
 }
