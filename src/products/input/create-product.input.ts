@@ -1,4 +1,4 @@
-import { InputType, Field, Float } from '@nestjs/graphql';
+import { InputType, Field, Float, ID } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -87,6 +87,9 @@ export class CreateProductOptionInput {
 // DTO สำหรับสินค้าย่อย (SKU)
 @InputType()
 export class CreateProductVariantInput {
+  @Field(() => ID, { nullable: true })
+  id: string;
+
   @Field(() => Float, { nullable: true, defaultValue: 0.0 })
   @IsNumber()
   @IsOptional()

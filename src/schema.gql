@@ -70,6 +70,7 @@ input CreateProductOptionInput {
 
 input CreateProductVariantInput {
   budgetPrice: Float
+  id: ID
   images: [CreateVariantImageInput!] = []
   optionValues: [String!] = []
   sellingPrice: Float
@@ -800,21 +801,17 @@ input UpdatePacakgeInput {
 }
 
 input UpdateProductInput {
+  """The UUID of the product category"""
   categoryId: String
-  createOptions: [CreateProductOptionInput!]
-  createVariants: [CreateProductVariantInput!]
-  deleteOptionIds: [ID!]
-  deleteVariantIds: [ID!]
   description: String
   id: ID!
+  isActive: Boolean = true
   name: String
-  productTypeId: String
-  updateVariants: [UpdateProductVariantInput!]
-}
+  options: [CreateProductOptionInput!] = []
 
-input UpdateProductVariantInput {
-  data: UpdateVariantDataInput!
-  id: ID!
+  """The UUID of the product type"""
+  productTypeId: String
+  variants: [CreateProductVariantInput!]
 }
 
 input UpdatePromotionInput {
@@ -925,11 +922,6 @@ input UpdateRoleInput {
   description: String
   id: ID!
   name: String
-}
-
-input UpdateVariantDataInput {
-  price: Float
-  stock: Float
 }
 
 type User {

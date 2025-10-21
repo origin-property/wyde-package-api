@@ -253,8 +253,6 @@ export class ProductsService {
       order: { updatedAt: 'DESC' },
     };
 
-    console.log('findOptions', JSON.stringify(findOptions, null, 2));
-
     return this.paginate({ page, limit }, findOptions);
   }
 
@@ -289,67 +287,59 @@ export class ProductsService {
     updateProductInput: UpdateProductInput,
     userId: string,
   ): Promise<Product> {
-    const {
-      id,
-      name,
-      description,
-      categoryId,
-      updateVariants,
-      deleteOptionIds,
-      deleteVariantIds,
-    } = updateProductInput;
+    const { id, name, description, categoryId } = updateProductInput;
 
     const product = await this.productRepository.findOneBy({ id });
     if (!product) {
       throw new GraphQLError(`Product with ID "${id}" not found`);
     }
 
-    try {
-      if (deleteOptionIds?.length > 0) {
-        await this.optionRepository.softDelete({
-          id: In(deleteOptionIds),
-          productId: id,
-        });
-      }
-      if (deleteVariantIds?.length > 0) {
-        await this.variantRepository.softDelete({
-          id: In(deleteVariantIds),
-          productId: id,
-        });
-      }
+    // try {
+    //   if (deleteOptionIds?.length > 0) {
+    //     await this.optionRepository.softDelete({
+    //       id: In(deleteOptionIds),
+    //       productId: id,
+    //     });
+    //   }
+    //   if (deleteVariantIds?.length > 0) {
+    //     await this.variantRepository.softDelete({
+    //       id: In(deleteVariantIds),
+    //       productId: id,
+    //     });
+    //   }
 
-      if (updateVariants?.length > 0) {
-        for (const variantUpdate of updateVariants) {
-          const variant = await this.variantRepository.findOneBy({
-            id: variantUpdate.id,
-            productId: id,
-          });
-          if (variant) {
-            Object.assign(variant, variantUpdate.data);
-            variant.updatedBy = userId;
-            await this.variantRepository.save(variant);
-          }
-        }
-      }
+    //   if (updateVariants?.length > 0) {
+    //     for (const variantUpdate of updateVariants) {
+    //       const variant = await this.variantRepository.findOneBy({
+    //         id: variantUpdate.id,
+    //         productId: id,
+    //       });
+    //       if (variant) {
+    //         Object.assign(variant, variantUpdate.data);
+    //         variant.updatedBy = userId;
+    //         await this.variantRepository.save(variant);
+    //       }
+    //     }
+    //   }
 
-      if (name) product.name = name;
-      if (description) product.description = description;
+    if (name) product.name = name;
+    if (description) product.description = description;
 
-      if (categoryId) {
-        const newCategory = await this.categoryRepository.findOneBy({
-          id: categoryId,
-        });
-        if (!newCategory) throw new GraphQLError('New Category ID is invalid.');
-        product.category = newCategory;
-      }
-
-      product.updatedBy = userId;
-      await this.productRepository.save(product);
-
-      return this.findOne(id);
-    } catch (error) {
-      throw new GraphQLError(error.message || 'Failed to update product');
+    if (categoryId) {
+      const newCategory = await this.categoryRepository.findOneBy({
+        id: categoryId,
+      });
+      if (!newCategory) throw new GraphQLError('New Category ID is invalid.');
+      product.category = newCategory;
     }
+
+    product.updatedBy = userId;
+    await this.productRepository.save(product);
+
+    return this.findOne(id);
+    // } catch (error) {
+    //   throw new GraphQLError(error.message || 'Failed to update product');
+    // }
   }
 
   async remove(id: string, userId: string): Promise<Product> {
