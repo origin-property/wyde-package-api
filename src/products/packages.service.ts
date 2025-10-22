@@ -50,8 +50,21 @@ export class PackagesService {
     const { name, description, projectId, modelId, isActive, images, items } =
       createPackageInput;
 
+    const defaultItems = items.filter(
+      (i) => i.type === PackageItemType.DEFAULT,
+    );
+    const defaultItemIds = new Set(
+      defaultItems.map((item) => item.productVariantId),
+    );
+
     // ตรวจสอบว่า ProductVariant ที่อ้างอิงมีอยู่จริงหรือไม่
     const existingVariants = await this.checkExistingVariants(items);
+
+    const totalDefaultProductPrice = sumBy(existingVariants, (variant) =>
+      defaultItemIds.has(variant.id) ? Number(variant.sellingPrice) : 0,
+    );
+
+    const totalPackagePrice = sumBy(defaultItems, 'specialPrice');
 
     const newSku = await this.generateSKU();
 
@@ -81,8 +94,8 @@ export class PackagesService {
         {
           id: variantId,
           sku: newSku,
-          budgetPrice: sumBy(existingVariants, (i) => Number(i.sellingPrice)),
-          sellingPrice: sumBy(items, 'specialPrice'),
+          budgetPrice: totalDefaultProductPrice,
+          sellingPrice: totalPackagePrice,
           stock: 0,
           images: images.map((img, idx) => ({
             ...img,
@@ -125,7 +138,9 @@ export class PackagesService {
     const defaultItems = items.filter(
       (i) => i.type === PackageItemType.DEFAULT,
     );
-    const defaultItemIds = new Set(defaultItems.map((item) => item.id));
+    const defaultItemIds = new Set(
+      defaultItems.map((item) => item.productVariantId),
+    );
 
     const existingVariants = await this.checkExistingVariants(items);
 
@@ -282,8 +297,14 @@ export class PackagesService {
       select: ['id', 'sellingPrice'],
     });
 
-    if (existingVariants.length !== variantIds.length) {
-      throw new NotFoundException('ProductVariants not found');
+    const variantIdsNotFound = variantIds.filter(
+      (id) => !existingVariants.some((v) => v.id === id),
+    );
+
+    if (variantIdsNotFound.length > 0) {
+      throw new NotFoundException(
+        `ProductVariants not found: ${variantIdsNotFound.join(', ')}`,
+      );
     }
 
     return existingVariants;
