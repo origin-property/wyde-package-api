@@ -2,6 +2,7 @@ import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { File } from '../../files/dto/file.dto';
 import { FilesService } from '../../files/files.service';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type QuotationId = string;
 type QuotationFileInfo = { id: QuotationId; values: File };
@@ -18,10 +19,7 @@ class QuotationFileLoaderFactory extends DataloaderFactory<
 
   async load(ids: QuotationId[], context: ExecutionContext) {
     const results: File[] = await this.fileService.getFileWithIds(ids);
-
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<QuotationId, File>(results, (item) => item.refId);
   }
 
   id(entity: QuotationFileInfo) {

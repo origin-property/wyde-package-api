@@ -20,7 +20,7 @@ import { PromotionsService } from './promotions.service';
 import {
   PromotionUserLoader,
   PromotionUserLoaderFactory,
-} from './PromotionsUserLoader.factory';
+} from './loader/PromotionsUserLoader.factory';
 
 @Resolver(() => PromotionDto)
 export class PromotionsResolver {
