@@ -233,7 +233,7 @@ export class QuotationsService {
           })),
         });
 
-      if (createQuotationInput.signatureFile) {
+      if (createQuotationInput?.signatureFile) {
         await queryRunner.manager.getRepository(File).save({
           ...createQuotationInput.signatureFile,
           fileBucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET'),

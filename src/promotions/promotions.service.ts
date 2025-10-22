@@ -20,6 +20,19 @@ export class PromotionsService {
   ) {}
 
   async create(createPromotionInput: CreatePromotionInput, userId: string) {
+    const existingPromotion = await this.promotionRepository.findOne({
+      where: {
+        code: createPromotionInput.code,
+      },
+      withDeleted: true,
+    });
+
+    if (existingPromotion) {
+      throw new GraphQLError(
+        'โปรโมชั่นนี้มีอยู่ในระบบแล้ว กรุณาเปลี่ยนรหัสโค้ด',
+      );
+    }
+
     return this.promotionRepository.save({
       ...createPromotionInput,
       createdBy: userId,
