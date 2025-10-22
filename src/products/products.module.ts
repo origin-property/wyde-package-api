@@ -36,6 +36,7 @@ import { ProductVariantImagesService } from './product-variant-images.service';
 import { ProductVariantResolver } from './product-variant.resolver';
 import { ProductsResolver } from './products.resolver';
 import { ProductsService } from './products.service';
+import { VariantMainImageLoaderFactory } from './loader/VariantMainImageLoader.factory';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { ProductsService } from './products.service';
     VariantImageLoaderFactory,
     VariantProductLoaderFactory,
     PackageItemVariantLoaderFactory,
+    VariantMainImageLoaderFactory,
   ],
   exports: [ProductsService],
 })

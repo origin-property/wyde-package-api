@@ -9,7 +9,10 @@ import {
   UpdatePacakgeInput,
 } from './input/create-package.input';
 
-import { PackageItem as PackageItemEntity } from '@/database/entities/package-item.entity';
+import {
+  PackageItem as PackageItemEntity,
+  PackageItemType,
+} from '@/database/entities/package-item.entity';
 import { ProductVariant as ProductVariantEntity } from '@/database/entities/product-variant.entity';
 import { Product as ProductEntity } from '@/database/entities/product.entity';
 import { FilesService } from '@/files/files.service';
@@ -19,6 +22,7 @@ import dayjs from 'dayjs';
 import { sumBy } from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { FindAllPackagesInput } from './input/find-all-products.input';
+import { ProductType } from '@/database/entities/product-type.entity';
 
 @Injectable()
 export class PackagesService {
@@ -80,9 +84,11 @@ export class PackagesService {
           budgetPrice: sumBy(existingVariants, (i) => Number(i.sellingPrice)),
           sellingPrice: sumBy(items, 'specialPrice'),
           stock: 0,
-          images: images.map((img) => ({
+          images: images.map((img, idx) => ({
             ...img,
             fileBucket: this.buckketName,
+            isMain: idx === 0,
+            sortOrder: idx + 1,
             variantId,
             createdBy: userId,
             updatedBy: userId,
@@ -116,7 +122,18 @@ export class PackagesService {
       throw new NotFoundException('Product not found');
     }
 
+    const defaultItems = items.filter(
+      (i) => i.type === PackageItemType.DEFAULT,
+    );
+    const defaultItemIds = new Set(defaultItems.map((item) => item.id));
+
     const existingVariants = await this.checkExistingVariants(items);
+
+    const totalDefaultProductPrice = sumBy(existingVariants, (variant) =>
+      defaultItemIds.has(variant.id) ? Number(variant.sellingPrice) : 0,
+    );
+
+    const totalPackagePrice = sumBy(defaultItems, 'specialPrice');
 
     const updatedPackage = await this.productRepository.save({
       id,
@@ -127,8 +144,8 @@ export class PackagesService {
       variants: [
         {
           id: product.variants[0].id,
-          budgetPrice: sumBy(existingVariants, (i) => Number(i.sellingPrice)),
-          sellingPrice: sumBy(items, 'specialPrice'),
+          budgetPrice: totalDefaultProductPrice,
+          sellingPrice: totalPackagePrice,
           stock: 0,
           images: images.map((img) => ({
             ...img,

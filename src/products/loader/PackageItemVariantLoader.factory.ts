@@ -6,6 +6,10 @@ import {
 } from '@strv/nestjs-dataloader';
 import { ProductsService } from '../products.service';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
+import {
+  singleAggregateBy,
+  SingleAggregated,
+} from '@/shared/singleAggregateBy';
 
 type VariantId = string;
 type PackageItemVariantInfo = { id: VariantId; values: ProductVariant };
@@ -20,12 +24,16 @@ class PackageItemVariantLoaderFactory extends DataloaderFactory<
     super();
   }
 
-  async load(ids: VariantId[], context: ExecutionContext) {
+  async load(
+    ids: VariantId[],
+    context: ExecutionContext,
+  ): Promise<SingleAggregated<VariantId, ProductVariant>[]> {
     const results = await this.productService.findByVariantIds(ids);
 
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<VariantId, ProductVariant>(
+      results,
+      (item) => item.id,
+    );
   }
 
   id(entity: PackageItemVariantInfo) {

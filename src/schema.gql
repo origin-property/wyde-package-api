@@ -452,6 +452,7 @@ type ProductVariant {
   id: ID!
   images: [ProductVariantImage!]!
   isActive: Boolean!
+  mainImage: ProductVariantImage
   optionValues: [ProductOptionValue!]!
   product: Product!
   sellingPrice: Float!

@@ -447,6 +447,17 @@ export class ProductsService {
   ): Promise<ProductVariantImage[]> {
     return this.imageRepository.find({
       where: { productVariantId: In([...variantIds]) },
+      order: {
+        sortOrder: 'ASC',
+      },
+    });
+  }
+
+  async findMainImageByVariantIds(
+    variantIds: readonly string[],
+  ): Promise<ProductVariantImage[]> {
+    return this.imageRepository.find({
+      where: { productVariantId: In([...variantIds]), isMain: true },
     });
   }
 

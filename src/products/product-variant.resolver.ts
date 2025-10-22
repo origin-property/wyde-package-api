@@ -15,6 +15,10 @@ import {
   VariantProductLoader,
   VariantProductLoaderFactory,
 } from './loader/VariantProductLoader.factory';
+import {
+  VariantMainImageLoader,
+  VariantMainImageLoaderFactory,
+} from './loader/VariantMainImageLoader.factory';
 
 @Resolver(() => ProductVariantModel)
 export class ProductVariantResolver {
@@ -34,6 +38,16 @@ export class ProductVariantResolver {
   ) {
     const result = await loader.load(id);
     return result?.values || [];
+  }
+
+  @ResolveField(() => ProductVariantImageModel, { nullable: true })
+  async mainImage(
+    @Parent() { id }: ProductVariant,
+    @Loader(VariantMainImageLoaderFactory) loader: VariantMainImageLoader,
+  ) {
+    const result = await loader.load(id);
+
+    return result?.values ?? null;
   }
 
   @ResolveField('optionValues', () => [ProductOptionValueModel])
