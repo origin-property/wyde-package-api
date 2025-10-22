@@ -1,0 +1,16 @@
+services:
+  app:
+    container_name: wyde-package-api
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    restart: always
+    networks:
+      - wyde-package-api
+    ports:
+      - 4000:4000
+    env_file:
+      - .env
+
+networks:
+  wyde-package-api:
