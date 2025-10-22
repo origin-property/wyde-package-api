@@ -21,7 +21,7 @@ import {
 import {
   ModelProjectLoader,
   ModelProjectLoaderFactory,
-} from './ModelProjectLoader.factory';
+} from './loader/ModelProjectLoader.factory';
 import { ModelsService } from './models.service';
 
 @Resolver(() => Model)
