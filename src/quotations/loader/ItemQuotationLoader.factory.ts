@@ -2,6 +2,7 @@ import { Quotation } from '@/database/entities/quotation.entity';
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { QuotationsService } from '../quotations.service';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type QuotationId = string;
 type ItemQuotationInfo = { id: QuotationId; values: Quotation };
@@ -18,9 +19,10 @@ class ItemQuotationLoaderFactory extends DataloaderFactory<
 
   async load(ids: QuotationId[], context: ExecutionContext) {
     const results = await this.quotationService.getQuotationWithIds(ids);
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<QuotationId, Quotation>(
+      results,
+      (item) => item.id,
+    );
   }
 
   id(entity: ItemQuotationInfo) {

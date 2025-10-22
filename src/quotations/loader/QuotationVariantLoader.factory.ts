@@ -2,6 +2,7 @@ import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { ProductsService } from '../../products/products.service';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type VariantId = string;
 type QuotationVariantInfo = { id: VariantId; values: ProductVariant };
@@ -18,10 +19,10 @@ class QuotationVariantLoaderFactory extends DataloaderFactory<
 
   async load(ids: VariantId[], context: ExecutionContext) {
     const results = await this.productService.findByVariantIds(ids);
-
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<VariantId, ProductVariant>(
+      results,
+      (item) => item.id,
+    );
   }
 
   id(entity: QuotationVariantInfo) {

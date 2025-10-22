@@ -2,6 +2,7 @@ import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { User } from '../../users/dto/user.dto';
 import { UsersService } from '../../users/users.service';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type UserId = string;
 type QuotationUserInfo = { id: UserId; values: User };
@@ -18,10 +19,7 @@ class QuotationUserLoaderFactory extends DataloaderFactory<
 
   async load(ids: UserId[], context: ExecutionContext) {
     const results: User[] = await this.userService.getUserWithIds(ids);
-
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<UserId, User>(results, (item) => item.id);
   }
 
   id(entity: QuotationUserInfo) {
