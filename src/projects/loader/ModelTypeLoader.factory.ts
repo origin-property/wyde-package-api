@@ -2,6 +2,7 @@ import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { ModelTypesService } from '../model-types.serice';
 import { ModelType } from '../dto/model-type.dto';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type ModelTypeId = string;
 type ModelTypeInfo = { id: ModelTypeId; values: ModelType };
@@ -20,9 +21,10 @@ class ModelTypeLoaderFactory extends DataloaderFactory<
     const results: ModelType[] =
       await this.modelTypeService.getModelTypesWithIds(ids);
 
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<ModelTypeId, ModelType>(
+      results,
+      (item) => item.id,
+    );
   }
 
   id(entity: ModelTypeInfo) {

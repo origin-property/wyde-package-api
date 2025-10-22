@@ -17,7 +17,13 @@ class UnitModelLoaderFactory extends DataloaderFactory<ModelId, UnitModelInfo> {
     const results: Model[] = await this.modelService.getModelWithIds(ids);
 
     return ids.map((id, index) => {
-      return { id, values: results[index] };
+      return {
+        id,
+        values:
+          results.find(
+            (res) => res.id === id.id && res.projectId === id.projectId,
+          ) ?? null,
+      };
     });
   }
 

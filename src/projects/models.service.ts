@@ -65,9 +65,11 @@ export class ModelsService {
           (file) => file.projectId === data.projectId && file.refId === data.id,
         );
 
-        return file
+        const url = file
           ? `${this.configService.getOrThrow<string>('AWS_CLOUDFRONT_URL')}/${file.filePath}`
           : `${this.configService.getOrThrow<string>('AWS_CLOUDFRONT_URL')}/model/model.png`;
+
+        return { id: data.id, projectId: data.projectId, url };
       }),
     );
 

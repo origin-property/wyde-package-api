@@ -13,10 +13,16 @@ class ModelFileLoaderFactory extends DataloaderFactory<ModelId, ModelFileInfo> {
   }
 
   async load(ids: ModelId[], context: ExecutionContext) {
-    const results: string[] = await this.modelService.getModelFileUrl(ids);
+    const results = await this.modelService.getModelFileUrl(ids);
 
     return ids.map((id, index) => {
-      return { id, values: results[index] };
+      return {
+        id,
+        values:
+          results.find(
+            (res) => res.id === id.id && res.projectId === id.projectId,
+          )?.url ?? null,
+      };
     });
   }
 

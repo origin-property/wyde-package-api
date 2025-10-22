@@ -1,7 +1,8 @@
 import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
-import { Project } from '../projects/dto/project.dto';
-import { ProjectsService } from '../projects/projects.service';
+import { Project } from '../dto/project.dto';
+import { ProjectsService } from '../projects.service';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type ProjectId = string;
 type ModelProjectInfo = { id: ProjectId; values: Project };
@@ -18,9 +19,7 @@ class ModelProjectLoaderFactory extends DataloaderFactory<
 
   async load(ids: ProjectId[], context: ExecutionContext) {
     const results: Project[] = await this.projectService.getProjectWithIds(ids);
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<ProjectId, Project>(results, (item) => item.id);
   }
 
   id(entity: ModelProjectInfo) {
