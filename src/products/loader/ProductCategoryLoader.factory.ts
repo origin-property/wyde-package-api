@@ -2,6 +2,7 @@ import { Injectable, type ExecutionContext } from '@nestjs/common';
 import { DataloaderFactory, type LoaderFrom } from '@strv/nestjs-dataloader';
 import { Category } from '@/database/entities/category.entity';
 import { ProductsService } from '@/products/products.service';
+import { singleAggregateBy } from '../../shared/singleAggregateBy';
 
 type CategoryId = string;
 type ProductCategoryInfo = { id: CategoryId; values: Category };
@@ -18,9 +19,7 @@ class ProductCategoryLoaderFactory extends DataloaderFactory<
 
   async load(ids: CategoryId[], context: ExecutionContext) {
     const results = await this.productsService.findCategoriesByIds(ids);
-    return ids.map((id, index) => {
-      return { id, values: results[index] };
-    });
+    return singleAggregateBy<CategoryId, Category>(results, (item) => item.id);
   }
 
   id(entity: ProductCategoryInfo) {
