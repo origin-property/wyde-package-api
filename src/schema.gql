@@ -132,7 +132,7 @@ input CreateQuotationInput {
   promotions: [CreateQuotationPromotionInput!]
 
   """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
-  signatureFile: CreateFileInput!
+  signatureFile: CreateFileInput
 
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING

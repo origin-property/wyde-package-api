@@ -21,6 +21,9 @@ export class CreateQuotationInput extends PartialType(
   })
   promotions: CreateQuotationPromotionInput[];
 
-  @Field(() => CreateFileInput, { description: 'ข้อมูลไฟล์ลายเซ็นลูกค้า' })
+  @Field(() => CreateFileInput, {
+    description: 'ข้อมูลไฟล์ลายเซ็นลูกค้า',
+    nullable: true,
+  })
   signatureFile: CreateFileInput;
 }
