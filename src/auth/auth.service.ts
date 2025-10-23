@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { Client } from 'ldapts';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import {
   JwtPayload,
@@ -57,13 +57,20 @@ export class AuthService {
   }
 
   async validateJwtPayload(payload: JwtPayload) {
+    const employee = await this.employeeActive(payload.id);
+
+    if (!employee) {
+      return null;
+    }
+
     return this.usersService.findOne({ id: payload.id });
   }
 
   async validateRefreshTokenPayload(payload: RefreshTokenPayload) {
     const user = await this.usersService.findOne({ id: payload.id });
+    const employee = await this.employeeActive(payload.id);
 
-    if (user.securityCount !== payload.securityCount) {
+    if (user.securityCount !== payload.securityCount || !employee) {
       return null;
     }
 
@@ -81,7 +88,10 @@ export class AuthService {
 
     if (!user) {
       const newUser = await this.employeeRepository.findOne({
-        where: { user: { username } },
+        where: {
+          user: { username },
+          status: In([1, 2, 4]),
+        },
         relations: ['user'],
       });
 
@@ -161,5 +171,11 @@ export class AuthService {
       return [];
     }
     return user.roles;
+  }
+
+  async employeeActive(id: string) {
+    return this.employeeRepository.exists({
+      where: { id, status: In([1, 2, 4]) },
+    });
   }
 }
