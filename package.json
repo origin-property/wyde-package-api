@@ -51,6 +51,7 @@
     "compression": "^1.8.1",
     "dataloader": "^2.2.3",
     "dayjs": "^1.11.18",
+    "dotenv": "^17.2.3",
     "graphql": "^16.11.0",
     "helmet": "^8.1.0",
     "ldapts": "^8.0.9",
