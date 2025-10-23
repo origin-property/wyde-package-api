@@ -1,4 +1,5 @@
 import { Base } from '@/shared/@types/base';
+import { AttachmentType } from '@/shared/enums/file.enum';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
@@ -23,4 +24,7 @@ export class File extends Base {
 
   @Field(() => String, { nullable: true })
   projectId: string;
+
+  @Field(() => AttachmentType, { nullable: true })
+  attachmentType: AttachmentType;
 }

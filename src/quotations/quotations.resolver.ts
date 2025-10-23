@@ -1,5 +1,5 @@
 import { File } from '@/files/dto/file.dto';
-import { Project } from '@/projects/dto/project.dto';
+import { CreateFileInput } from '@/files/input/create-file.input';
 import { Unit } from '@/projects/dto/unit.dto';
 import { CurrentUser } from '@/shared/decorators/decorators';
 import { Roles } from '@/shared/decorators/roles.decorator';
@@ -16,7 +16,6 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { Loader } from '@strv/nestjs-dataloader';
-import { PackageProjectLoaderFactory } from '../products/loader/PackageProjectLoader.factory';
 import { QuotationItem } from './dto/quotation-item.dto';
 import { QuotationPaginate } from './dto/quotation-paginate.dto';
 import { QuotationPromotionDto } from './dto/quotation-promotion.dto';
@@ -25,14 +24,13 @@ import { CreateQuotationInput } from './input/create-quotation.input';
 import { SearchQuotationArgs } from './input/search-quotation.agrs';
 import { UpdateQuotationInput } from './input/update-quotation.input';
 import {
-  QuotationFileLoader,
-  QuotationFileLoaderFactory,
-} from './loader/QuotationFileLoader.factory';
-import {
   QuotationItemLoader,
   QuotationItemLoaderFactory,
 } from './loader/QuotationItemLoader.factory';
-import { QuotationProjectLoader } from './loader/QuotationProjectLoader.factory';
+import {
+  QuotationPaymentFilesLoader,
+  QuotationPaymentFilesLoaderFactory,
+} from './loader/QuotationPaymentFilesLoader.factory';
 import {
   QuotationPromotionDiscountPriceLoader,
   QuotationPromotionDiscountPriceLoaderFactory,
@@ -45,7 +43,10 @@ import {
   QuotationPromotionVoucherPriceLoader,
   QuotationPromotionVoucherPriceLoaderFactory,
 } from './loader/QuotationPromotionVoucherPriceLoader.factory';
-import { QuotationsService } from './quotations.service';
+import {
+  QuotationSignatureFileLoader,
+  QuotationSignatureFileLoaderFactory,
+} from './loader/QuotationSignatureFileLoader.factory';
 import {
   QuotationUnitLoader,
   QuotationUnitLoaderFactory,
@@ -54,6 +55,7 @@ import {
   QuotationUserLoader,
   QuotationUserLoaderFactory,
 } from './loader/QuotationUserLoader.factory';
+import { QuotationsService } from './quotations.service';
 
 @Resolver(() => Quotation)
 export class QuotationsResolver {
@@ -98,6 +100,22 @@ export class QuotationsResolver {
     @CurrentUser() user: User,
   ) {
     return this.quotationsService.updateStatus(id, status, user.id);
+  }
+
+  @Roles(['admin'])
+  @Mutation(() => Quotation)
+  async updateQuotationPayment(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('paymentDate', { type: () => Date }) paymentDate: Date,
+    @Args('files', { type: () => [CreateFileInput] }) files: CreateFileInput[],
+    @CurrentUser() user: User,
+  ) {
+    return this.quotationsService.updatePayment(
+      id,
+      paymentDate,
+      files,
+      user.id,
+    );
   }
 
   @Roles(['admin'])
@@ -149,15 +167,6 @@ export class QuotationsResolver {
     return voucherPrice?.value ?? 0;
   }
 
-  @ResolveField(() => Project)
-  async project(
-    @Parent() { projectId }: Quotation,
-    @Loader(PackageProjectLoaderFactory) projectLoader: QuotationProjectLoader,
-  ) {
-    const result = await projectLoader.load(projectId);
-    return result?.values?.[0];
-  }
-
   @ResolveField(() => Unit)
   async unit(
     @Parent() { unitId }: Quotation,
@@ -170,7 +179,18 @@ export class QuotationsResolver {
   @ResolveField(() => File, { nullable: true, description: 'ลายเซ็นลูกค้า' })
   async signatureFile(
     @Parent() { id }: Quotation,
-    @Loader(QuotationFileLoaderFactory) units: QuotationFileLoader,
+    @Loader(QuotationSignatureFileLoaderFactory)
+    units: QuotationSignatureFileLoader,
+  ) {
+    const result = await units.load(id);
+    return result?.values || null;
+  }
+
+  @ResolveField(() => [File], { nullable: true, description: 'รูปชำระเงิน' })
+  async paymentFiles(
+    @Parent() { id }: Quotation,
+    @Loader(QuotationPaymentFilesLoaderFactory)
+    units: QuotationPaymentFilesLoader,
   ) {
     const result = await units.load(id);
     return result?.values || null;

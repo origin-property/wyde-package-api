@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import { ProductItemType } from '../../shared/enums/product.enum';
-import { QuotationStatus } from '../../shared/enums/quotation.enum';
 import { Quotation } from '../entities/quotation.entity';
 
 export default class QuotationSeeder implements Seeder {
@@ -47,20 +46,15 @@ export default class QuotationSeeder implements Seeder {
       });
 
       return dataSource.getRepository(Quotation).create({
-        customerFirstName,
-        customerLastName,
-        customerPhone,
-        customerEmail,
-        customerAddress,
-        status: QuotationStatus.PENDING,
-        date: dayjs().toDate(),
-        code,
+        firstName: customerFirstName,
+        lastName: customerLastName,
+        telephone: customerPhone,
+        email: customerEmail,
+        address: customerAddress,
+        unitId: 'PRK04AA1007',
+        items: items,
         createdBy: userId,
         updatedBy: userId,
-        projectId: 'PRK04',
-        unitId: 'PRK04AA1007',
-        unitNumber: 'A1007',
-        items: items,
       });
     });
 

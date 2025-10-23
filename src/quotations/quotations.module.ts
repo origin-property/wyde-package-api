@@ -10,14 +10,15 @@ import { ProductsModule } from '../products/products.module';
 import { ProjectsModule } from '../projects/projects.module';
 import { UsersModule } from '../users/users.module';
 import { ItemQuotationLoaderFactory } from './loader/ItemQuotationLoader.factory';
-import { QuotationFileLoaderFactory } from './loader/QuotationFileLoader.factory';
 import { QuotationItemLoaderFactory } from './loader/QuotationItemLoader.factory';
 import { QuotationItemPackageLoaderFactory } from './loader/QuotationItemPackageLoader.factory';
+import { QuotationPaymentFilesLoaderFactory } from './loader/QuotationPaymentFilesLoader.factory';
 import { QuotationProductLoaderFactory } from './loader/QuotationProductLoader.factory';
 import { QuotationProjectLoaderFactory } from './loader/QuotationProjectLoader.factory';
 import { QuotationPromotionDiscountPriceLoaderFactory } from './loader/QuotationPromotionDiscountPriceLoader.factory';
 import { QuotationPromotionLoaderFactory } from './loader/QuotationPromotionLoader.factory';
 import { QuotationPromotionVoucherPriceLoaderFactory } from './loader/QuotationPromotionVoucherPriceLoader.factory';
+import { QuotationSignatureFileLoaderFactory } from './loader/QuotationSignatureFileLoader.factory';
 import { QuotationUnitLoaderFactory } from './loader/QuotationUnitLoader.factory';
 import { QuotationUserLoaderFactory } from './loader/QuotationUserLoader.factory';
 import { QuotationVariantLoaderFactory } from './loader/QuotationVariantLoader.factory';
@@ -49,7 +50,7 @@ import { QuotationsService } from './quotations.service';
     QuotationProductLoaderFactory,
     QuotationUnitLoaderFactory,
     QuotationProjectLoaderFactory,
-    QuotationFileLoaderFactory,
+    QuotationSignatureFileLoaderFactory,
     QuotationItemLoaderFactory,
     QuotationUserLoaderFactory,
     QuotationItemPackageLoaderFactory,
@@ -60,6 +61,7 @@ import { QuotationsService } from './quotations.service';
     QuotationVariantLoaderFactory,
     ItemQuotationLoaderFactory,
     QuotationProductLoaderFactory,
+    QuotationPaymentFilesLoaderFactory,
   ],
   exports: [QuotationsService, QuotationItemsService],
 })

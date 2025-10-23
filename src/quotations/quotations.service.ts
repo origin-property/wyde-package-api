@@ -1,6 +1,7 @@
 import { File } from '@/database/entities/file.entity';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Quotation } from '@/database/entities/quotation.entity';
+import { CreateFileInput } from '@/files/input/create-file.input';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -252,12 +253,11 @@ export class QuotationsService {
 
       wheres.push(
         { code: Like(query) },
-        { customerFirstName: Like(query) },
-        { customerLastName: Like(query) },
-        { customerPhone: Like(query) },
-        { customerEmail: Like(query) },
+        { firstName: Like(query) },
+        { lastName: Like(query) },
+        { telephone: Like(query) },
+        { email: Like(query) },
         { unitId: Like(query) },
-        { unitNumber: Like(query) },
       );
     }
 
@@ -306,6 +306,47 @@ export class QuotationsService {
     });
 
     return this.quotationRepository.findOne({ where: { id } });
+  }
+
+  async updatePayment(
+    id: string,
+    paymentDate: Date,
+    files: CreateFileInput[],
+    userId: string,
+  ) {
+    return this.executeTransaction(async (queryRunner) => {
+      const quotation = await queryRunner.manager
+        .getRepository(Quotation)
+        .findOne({
+          where: { id },
+        });
+
+      if (!quotation) {
+        throw new GraphQLError('ไม่พบใบเสนอราคา กรุณาตรวจสอบรหัสใบเสนอราคา');
+      }
+
+      await queryRunner.manager.getRepository(Quotation).update(id, {
+        paymentDate,
+        status: QuotationStatus.PAID,
+        updatedBy: userId,
+      });
+
+      if (files?.length > 0) {
+        await queryRunner.manager.getRepository(File).save(
+          files.map((file) => ({
+            ...file,
+            fileBucket: this.configService.getOrThrow<string>('AWS_S3_BUCKET'),
+            refId: quotation.id,
+            createdBy: userId,
+            updatedBy: userId,
+          })),
+        );
+      }
+
+      return queryRunner.manager
+        .getRepository(Quotation)
+        .findOne({ where: { id } });
+    });
   }
 
   async updateStatus(id: string, status: QuotationStatus, userId: string) {
