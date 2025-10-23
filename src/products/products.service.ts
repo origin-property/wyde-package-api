@@ -1,18 +1,22 @@
 import { Category } from '@/database/entities/category.entity';
+import { ProductItemType } from '@/shared/enums/product.enum';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import dayjs from 'dayjs';
 import { GraphQLError } from 'graphql';
 import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
+import {
   DataSource,
+  FindManyOptions,
   FindOptionsWhere,
   In,
   Like,
   Repository,
-  Between,
-  QueryRunner,
-  FindManyOptions,
 } from 'typeorm';
 import { ProductOptionValue } from '../database/entities/product-option-value.entity';
 import { ProductOption } from '../database/entities/product-option.entity';
@@ -20,14 +24,8 @@ import { ProductType } from '../database/entities/product-type.entity';
 import { ProductVariantImage } from '../database/entities/product-variant-image.entity';
 import { ProductVariant } from '../database/entities/product-variant.entity';
 import { Product } from '../database/entities/product.entity';
-import { ProductItemType } from '@/shared/enums/product.enum';
 import { CreateProductInput } from './input/create-product.input';
 import { UpdateProductInput } from './input/update-product.input';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsService {
@@ -225,7 +223,8 @@ export class ProductsService {
   ) {
     const baseWhere: FindOptionsWhere<Product> = {
       itemType: ProductItemType.PRODUCT,
-      ...(categoryIds?.length > 0 && { category: { id: In(categoryIds) } }),
+      ...(categoryIds &&
+        categoryIds.length > 0 && { category: { id: In(categoryIds) } }),
     };
 
     let finalWhere: FindOptionsWhere<Product> | FindOptionsWhere<Product>[];
@@ -252,8 +251,6 @@ export class ProductsService {
       where: finalWhere,
       order: { updatedAt: 'DESC' },
     };
-
-    console.log('findOptions', JSON.stringify(findOptions, null, 2));
 
     return this.paginate({ page, limit }, findOptions);
   }
