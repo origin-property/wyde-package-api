@@ -533,6 +533,7 @@ type ProductVariantImage {
 }
 
 type Project {
+  base64Image: String
   id: ID!
   nameEn: String!
   nameTh: String!

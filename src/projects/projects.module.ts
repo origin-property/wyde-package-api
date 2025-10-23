@@ -12,14 +12,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FloorsResolver } from './floors.resolver';
 import { FloorsService } from './floors.service';
 import { ModelFileLoaderFactory } from './loader/ModelFileLoader.factory';
+import { ModelProjectLoaderFactory } from './loader/ModelProjectLoader.factory';
 import { ModelTypeLoaderFactory } from './loader/ModelTypeLoader.factory';
+import { ProjectImageLoaderFactory } from './loader/ProjectImageLoader.factroy';
 import { ProjectTowerLoaderFactory } from './loader/ProjectTowerLoader.factory';
 import { ProjectUnitLoaderFactory } from './loader/ProjectUnitLoader.factory';
 import { TowerFloorLoaderFactory } from './loader/TowerFloorLoader.factory';
 import { UnitModelLoaderFactory } from './loader/UnitModelLoader.factory';
 import { UnitProjectLoaderFactory } from './loader/UnitProjectLoader.factory';
 import { ModelTypesService } from './model-types.serice';
-import { ModelProjectLoaderFactory } from './loader/ModelProjectLoader.factory';
 import { ModelsResolver } from './models.resolver';
 import { ModelsService } from './models.service';
 import { ProjectsResolver } from './projects.resolver';
@@ -65,6 +66,7 @@ import { UnitsService } from './units.service';
     ModelTypeLoaderFactory,
     UnitProjectLoaderFactory,
     ModelProjectLoaderFactory,
+    ProjectImageLoaderFactory,
   ],
   exports: [
     ProjectsService,

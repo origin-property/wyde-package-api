@@ -2,7 +2,6 @@ import { CRM } from '@/config/data-source.service';
 import { SysMasterProjects } from '@/database/crm/SysMasterProjects.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { keyBy } from 'lodash';
 import { In, IsNull, Repository } from 'typeorm';
 
 @Injectable()
@@ -39,6 +38,13 @@ export class ProjectsService {
         { id: In(ids), isDelete: IsNull(), type: 'C' },
       ],
       select: ['id', 'nameTh', 'nameEn'],
+    });
+  }
+
+  async getBase64ImagesWithIds(ids: string[]) {
+    return this.projectsRepository.find({
+      where: { id: In(ids) },
+      select: ['id', 'base64Image'],
     });
   }
 }
