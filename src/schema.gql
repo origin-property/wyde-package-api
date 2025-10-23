@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""ประเภทในดึงไฟล์จากฐานข้อมูล เช่น ลายเซ็น, รูปชำระเงิน"""
+enum AttachmentType {
+  """รูปภาพรูปแบบตัวอย่าง"""
+  MODEL
+
+  """รูปชำระเงิน"""
+  PAYMENT
+
+  """ใบเสนอราคา"""
+  QUOTATION
+
+  """ลายเซ็น"""
+  SIGNATURE
+}
+
 type Auth {
   accessToken: String!
   accessTokenExpires: Int!
@@ -28,6 +43,7 @@ input CreateCategoryInput {
 }
 
 input CreateFileInput {
+  attachmentType: AttachmentType
   fileName: String
   filePath: String
   isPublic: Boolean = true
@@ -108,28 +124,61 @@ input CreatePromotionInput {
 
 input CreateQuotationInput {
   """ที่อยู่ลูกค้า"""
-  customerAddress: String
+  address: String
+
+  """รับชำระก่อนเริ่มงาน วันที่"""
+  beforeStartPaymentDate: Date
+
+  """มัดจำ"""
+  deposit: Float
 
   """อีเมลลูกค้า"""
-  customerEmail: String
+  email: String
+
+  """วันที่ผู้ว่าจ้าง"""
+  employerDate: Date
+
+  """ผู้ว่าจ้าง"""
+  employerName: String
+
+  """คาดการณ์เริ่มตกแต่งวันที่"""
+  estimatedStartDate: Date
+
+  """บริษัทฯ ประเมินระยะเวลาตกแต่ง"""
+  evaluationDuration: Int
 
   """ชื่อลูกค้า"""
-  customerFirstName: String
-
-  """นามสกุลลูกค้า"""
-  customerLastName: String
-
-  """หมายเลขโทรศัพท์ลูกค้า"""
-  customerPhone: String
+  firstName: String
 
   """รายการสินค้า"""
   items: [CreateQuotationItemInput!]!
 
-  """รหัสโครงการ"""
-  projectId: String
+  """นามสกุลลูกค้า"""
+  lastName: String
+
+  """วันที่ชำระเงิน"""
+  paymentDate: Date
+
+  """ชำระเมื่อตกแต่งเสร็จ"""
+  postPayment: Float
+
+  """ชำระก่อนตกแต่ง"""
+  prePayment: Float
+
+  """ผู้ว่าจ้างรับมอบห้องจากโครงการ วันที่"""
+  projectManagerReceiveDate: Date
 
   """รายการโปรโมชั่น"""
   promotions: [CreateQuotationPromotionInput!]
+
+  """ผู้เสนอราคา"""
+  quotationOfferBy: String
+
+  """วันที่เสนอราคา"""
+  quotationOfferDate: Date
+
+  """วันที่ลายเซ็น"""
+  signatureDate: Date
 
   """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
   signatureFile: CreateFileInput
@@ -137,11 +186,11 @@ input CreateQuotationInput {
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING
 
+  """หมายเลขโทรศัพท์ลูกค้า"""
+  telephone: String
+
   """รหัสยูนิต"""
   unitId: String
-
-  """หมายเลขยูนิต"""
-  unitNumber: String
 }
 
 input CreateQuotationItemInput {
@@ -213,6 +262,7 @@ input CreateVariantImageInput {
 scalar Date
 
 type File {
+  attachmentType: AttachmentType
   createdAt: Date!
   deletedAt: Date
   fileBucket: String!
@@ -342,6 +392,7 @@ type Mutation {
   updatePromotion(updatePromotionInput: UpdatePromotionInput!): Promotion!
   updateQuotation(updateQuotationInput: UpdateQuotationInput!): Quotation!
   updateQuotationItem(updateQuotationItemInput: UpdateQuotationItemInput!): QuotationItem!
+  updateQuotationPayment(files: [CreateFileInput!]!, id: ID!, paymentDate: Date!): Quotation!
   updateQuotationStatus(id: ID!, status: QuotationStatus!): Quotation!
   updateRole(updateRoleInput: UpdateRoleInput!): Role!
 }
@@ -526,8 +577,15 @@ type Promotion {
   value: Float!
 }
 
+"""ประเภทโปรโมชั่น: discount, voucher หรือ code"""
 enum PromotionKind {
+  """รหัสโค้ด"""
+  CODE
+
+  """ส่วนลด"""
   DISCOUNT
+
+  """voucher"""
   VOUCHER
 }
 
@@ -541,8 +599,12 @@ type PromotionPaginate {
   meta: IPaginateMeta
 }
 
+"""ประเภทโปรโมชั่น: percentage หรือ fixed_amount"""
 enum PromotionType {
+  """ส่วนลดเป็นจำนวนเงิน"""
   FIXED_AMOUNT
+
+  """ส่วนลดเป็นร้อยละ"""
   PERCENTAGE
 }
 
@@ -571,14 +633,16 @@ type Query {
     """สถานะโปรโมชั่น: true หรือ false"""
     isActive: Boolean
 
-    """ประเภทโปรโมชั่น: discount หรือ voucher"""
-    kind: PromotionKind
+    """ประเภทโปรโมชั่น: ส่วนลด, voucher หรือ รหัสโค้ด"""
+    kind: [PromotionKind!]
     limit: Int! = 10
     page: Int! = 1
 
     """ค้นหาด้วยชื่อ, รหัสโค้ด, รายละเอียด"""
     searchText: String
-    type: PromotionType
+
+    """ประเภทโปรโมชั่น: ส่วนลดเป็นจำนวนเงิน หรือ ส่วนลดเป็นร้อยละ"""
+    type: [PromotionType!]
   ): PromotionPaginate!
   quotation(id: ID!): Quotation!
   quotationItem(id: ID!): QuotationItem!
@@ -605,53 +669,88 @@ type Query {
 }
 
 type Quotation {
+  """ที่อยู่ลูกค้า"""
+  address: String
+
+  """รับชำระก่อนเริ่มงาน วันที่"""
+  beforeStartPaymentDate: Date
+
   """รหัสใบเสนอราคา"""
   code: String!
   createdAt: Date!
   createdBy: User
-
-  """ที่อยู่ลูกค้า"""
-  customerAddress: String
-
-  """อีเมลลูกค้า"""
-  customerEmail: String
-
-  """ชื่อลูกค้า"""
-  customerFirstName: String
-
-  """นามสกุลลูกค้า"""
-  customerLastName: String
-
-  """หมายเลขโทรศัพท์ลูกค้า"""
-  customerPhone: String
 
   """วันที่ใบเสนอราคา"""
   date: Date!
   deletedAt: Date
   deletedBy: User
 
+  """มัดจำ"""
+  deposit: Float
+
   """ส่วนลดพิเศษ"""
   discountPrice: Float!
+
+  """อีเมลลูกค้า"""
+  email: String
+
+  """วันที่ผู้ว่าจ้าง"""
+  employerDate: Date
+
+  """ผู้ว่าจ้าง"""
+  employerName: String
+
+  """คาดการณ์เริ่มตกแต่งวันที่"""
+  estimatedStartDate: Date
+
+  """บริษัทฯ ประเมินระยะเวลาตกแต่ง"""
+  evaluationDuration: Int
+
+  """ชื่อลูกค้า"""
+  firstName: String
   id: ID!
   items: [QuotationItem!]!
-  project: Project!
 
-  """รหัสโครงการ"""
-  projectId: String!
+  """นามสกุลลูกค้า"""
+  lastName: String
+
+  """วันที่ชำระเงิน"""
+  paymentDate: Date
+
+  """รูปชำระเงิน"""
+  paymentFiles: [File!]
+
+  """ชำระเมื่อตกแต่งเสร็จ"""
+  postPayment: Float
+
+  """ชำระก่อนตกแต่ง"""
+  prePayment: Float
+
+  """ผู้ว่าจ้างรับมอบห้องจากโครงการ วันที่"""
+  projectManagerReceiveDate: Date
   promotions: [QuotationPromotion!]!
+
+  """ผู้เสนอราคา"""
+  quotationOfferBy: String
+
+  """วันที่เสนอราคา"""
+  quotationOfferDate: Date
+
+  """วันที่ลายเซ็น"""
+  signatureDate: Date
 
   """ลายเซ็นลูกค้า"""
   signatureFile: File
 
   """สถานะใบเสนอราคา"""
   status: QuotationStatus!
+
+  """หมายเลขโทรศัพท์ลูกค้า"""
+  telephone: String
   unit: Unit!
 
   """รหัสยูนิต"""
   unitId: String!
-
-  """หมายเลขยูนิต"""
-  unitNumber: String!
   updatedAt: Date!
   updatedBy: User
 
@@ -788,6 +887,7 @@ type Unit {
 }
 
 input UpdateFileInput {
+  attachmentType: AttachmentType
   fileName: String
   filePath: String
   id: ID!
@@ -858,29 +958,62 @@ input UpdatePromotionInput {
 
 input UpdateQuotationInput {
   """ที่อยู่ลูกค้า"""
-  customerAddress: String
+  address: String
+
+  """รับชำระก่อนเริ่มงาน วันที่"""
+  beforeStartPaymentDate: Date
+
+  """มัดจำ"""
+  deposit: Float
 
   """อีเมลลูกค้า"""
-  customerEmail: String
+  email: String
+
+  """วันที่ผู้ว่าจ้าง"""
+  employerDate: Date
+
+  """ผู้ว่าจ้าง"""
+  employerName: String
+
+  """คาดการณ์เริ่มตกแต่งวันที่"""
+  estimatedStartDate: Date
+
+  """บริษัทฯ ประเมินระยะเวลาตกแต่ง"""
+  evaluationDuration: Int
 
   """ชื่อลูกค้า"""
-  customerFirstName: String
-
-  """นามสกุลลูกค้า"""
-  customerLastName: String
-
-  """หมายเลขโทรศัพท์ลูกค้า"""
-  customerPhone: String
+  firstName: String
   id: ID!
 
   """รายการสินค้า"""
   items: [CreateQuotationItemInput!]
 
-  """รหัสโครงการ"""
-  projectId: String
+  """นามสกุลลูกค้า"""
+  lastName: String
+
+  """วันที่ชำระเงิน"""
+  paymentDate: Date
+
+  """ชำระเมื่อตกแต่งเสร็จ"""
+  postPayment: Float
+
+  """ชำระก่อนตกแต่ง"""
+  prePayment: Float
+
+  """ผู้ว่าจ้างรับมอบห้องจากโครงการ วันที่"""
+  projectManagerReceiveDate: Date
 
   """รายการโปรโมชั่น"""
   promotions: [CreateQuotationPromotionInput!]
+
+  """ผู้เสนอราคา"""
+  quotationOfferBy: String
+
+  """วันที่เสนอราคา"""
+  quotationOfferDate: Date
+
+  """วันที่ลายเซ็น"""
+  signatureDate: Date
 
   """ข้อมูลไฟล์ลายเซ็นลูกค้า"""
   signatureFile: CreateFileInput
@@ -888,11 +1021,11 @@ input UpdateQuotationInput {
   """สถานะใบเสนอราคา"""
   status: QuotationStatus = PENDING
 
+  """หมายเลขโทรศัพท์ลูกค้า"""
+  telephone: String
+
   """รหัสยูนิต"""
   unitId: String
-
-  """หมายเลขยูนิต"""
-  unitNumber: String
 }
 
 input UpdateQuotationItemInput {

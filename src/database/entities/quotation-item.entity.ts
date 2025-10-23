@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -19,6 +20,11 @@ import { Quotation } from './quotation.entity';
     id: 'ASC',
   },
 })
+@Index(['quotationId'])
+@Index(['productId'])
+@Index(['productVariantId'])
+@Index(['packageItemId'])
+@Index(['parentId'])
 export class QuotationItem extends BaseEntity {
   @PrimaryColumn({
     type: 'uuid',

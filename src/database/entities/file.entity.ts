@@ -1,4 +1,5 @@
 import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
+import { AttachmentType } from '../../shared/enums/file.enum';
 import { BaseEntity } from './base';
 
 @Entity()
@@ -27,4 +28,13 @@ export class File extends BaseEntity {
 
   @Column({ name: 'project_id', length: 15, nullable: true })
   projectId: string;
+
+  @Column({
+    name: 'attachment_type',
+    type: 'enum',
+    enum: AttachmentType,
+    comment: 'ประเภทในดึงไฟล์จากฐานข้อมูล เช่น ลายเซ็น, รูปชำระเงิน',
+    nullable: true,
+  })
+  attachmentType: AttachmentType;
 }

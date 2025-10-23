@@ -27,7 +27,7 @@ export class Promotion extends BaseEntity {
     type: 'enum',
     enum: PromotionKind,
     default: PromotionKind.DISCOUNT,
-    comment: 'ประเภทโปรโมชั่น: discount หรือ voucher',
+    comment: 'ประเภทโปรโมชั่น: discount, voucher หรือ code',
   })
   kind: PromotionKind;
 

@@ -7,7 +7,13 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
-import { FindManyOptions, FindOptionsWhere, Like, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Like,
+  Repository,
+} from 'typeorm';
 import { CreatePromotionInput } from './input/create-promotion.input';
 import { SearchPromotionArgs } from './input/search-promotion.agrs';
 import { UpdatePromotionInput } from './input/update-promotion.input';
@@ -48,8 +54,8 @@ export class PromotionsService {
     const { page, limit, kind, type, isActive, searchText } = args;
 
     const baseWhere: FindOptionsWhere<Promotion> = {
-      ...(kind && { kind }),
-      ...(kind && { type }),
+      ...(kind && { kind: In(kind) }),
+      ...(type && { type: In(type) }),
       ...(isActive !== undefined && { isActive }),
     };
 
