@@ -1,7 +1,6 @@
 import { File } from '@/database/entities/file.entity';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { Quotation } from '@/database/entities/quotation.entity';
-import { ProductItemType } from '@/shared/enums/product.enum';
 import { QuotationStatus } from '@/shared/enums/quotation.enum';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -191,14 +190,8 @@ export class QuotationsService {
           createdBy: userId,
           updatedBy: userId,
           items: createQuotationInput.items.map((item) => ({
-            productId:
-              item.productType === ProductItemType.PACKAGE
-                ? item.productId
-                : null,
-            productVariantId:
-              item.productType === ProductItemType.PRODUCT
-                ? item.productId
-                : null,
+            productId: item.productId,
+            productVariantId: item.productVariantId,
             productName: item.productName,
             productDescription: item.productDescription,
             productType: item.productType,
@@ -209,7 +202,7 @@ export class QuotationsService {
             updatedBy: userId,
             items: item?.items?.map((packageItem) => ({
               packageItemId: packageItem.packageItemId,
-              productVariantId: packageItem.productId,
+              productVariantId: packageItem.productVariantId,
               productType: packageItem.productType,
               productName: packageItem.productName,
               productDescription: packageItem.productDescription,
