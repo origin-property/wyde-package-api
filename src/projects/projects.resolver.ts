@@ -11,6 +11,10 @@ import { Project } from './dto/project.dto';
 import { Tower } from './dto/tower.dto';
 import { Unit } from './dto/unit.dto';
 import {
+  ProjectImageLoader,
+  ProjectImageLoaderFactory,
+} from './loader/ProjectImageLoader.factroy';
+import {
   ProjectTowerLoader,
   ProjectTowerLoaderFactory,
 } from './loader/ProjectTowerLoader.factory';
@@ -50,5 +54,14 @@ export class ProjectsResolver {
   ) {
     const result = await towers.load(id);
     return result?.values ?? [];
+  }
+
+  @ResolveField(() => String, { name: 'base64Image', nullable: true })
+  async base64Image(
+    @Parent() { id }: Project,
+    @Loader(ProjectImageLoaderFactory) imageLoader: ProjectImageLoader,
+  ) {
+    const result = await imageLoader.load(id);
+    return result?.values?.base64Image ?? null;
   }
 }
