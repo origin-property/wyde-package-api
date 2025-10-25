@@ -9,6 +9,7 @@ import { QuotationPromotion } from '@/database/entities/quotation-promotion.enti
 import { Quotation } from '@/database/entities/quotation.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '../auth/auth.module';
 import { FilesModule } from '../files/files.module';
 import { ProductsModule } from '../products/products.module';
 import { ProjectsModule } from '../projects/projects.module';
@@ -47,6 +48,7 @@ import { QuotationsService } from './quotations.service';
       [SysMasterProjects, SysMasterUnits, SysREMProjectModel],
       CRM,
     ),
+    AuthModule,
     ProjectsModule,
     FilesModule,
     UsersModule,
