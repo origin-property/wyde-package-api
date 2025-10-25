@@ -214,6 +214,7 @@ export class QuotationsGenerateService {
             fit: 'cover',
             withoutEnlargement: true,
           })
+          .png({ quality: 80 })
           .toBuffer();
 
         const extension = mainImage.filePath.split('.').pop();
@@ -285,9 +286,9 @@ export class QuotationsGenerateService {
     const image = await sharp(buffer)
       .resize({
         fit: 'cover',
-        position: 'center',
         withoutEnlargement: true,
       })
+      .png({ quality: 80 })
       .toBuffer();
 
     return image;
@@ -890,7 +891,7 @@ export class QuotationsGenerateService {
       .text('ผู้ว่าจ้าง:', leftMargin + colWidth * 2 + textIndent, sigLabelY);
 
     if (signatureFile) {
-      const signatureX = leftMargin + colWidth * 4 - 100;
+      const signatureX = leftMargin + colWidth * 4 - 80;
       const signatureY = currentY + (signatureHeight - 100) / 2;
       doc.image(signatureFile, signatureX, signatureY, {
         width: 100,
