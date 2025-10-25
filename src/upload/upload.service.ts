@@ -52,6 +52,17 @@ export class UploadService {
     }
   }
 
+  async getFile(bucket: string, name: string) {
+    const command = new GetObjectCommand({
+      Bucket: bucket,
+      Key: name,
+    });
+    const response = await this.s3Client.send(command);
+
+    const buffer = await response.Body.transformToByteArray();
+    return buffer;
+  }
+
   async getSignedUrl(
     bucket: string = this.bucketName,
     name: string,
