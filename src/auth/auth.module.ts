@@ -1,4 +1,5 @@
 import { MYORIGIN } from '@/config/data-source.service';
+import { ApiKey } from '@/database/entities/api-key.entity';
 import { Employee } from '@/database/myorigin/employee.entity';
 import { User } from '@/database/myorigin/user.entity';
 import { RolesModule } from '@/roles/roles.module';
@@ -7,15 +8,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '../users/users.module';
+import { ApiKeyService } from './api-key.service';
 import { AuthController } from './auth.controller';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Employee], MYORIGIN),
+    TypeOrmModule.forFeature([ApiKey]),
     UsersModule,
     RolesModule,
     JwtModule.registerAsync({
@@ -38,8 +41,9 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
     AuthResolver,
     JwtStrategy,
     JwtRefreshStrategy,
+    ApiKeyService,
   ],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, ApiKeyService],
   controllers: [AuthController],
 })
 export class AuthModule {}

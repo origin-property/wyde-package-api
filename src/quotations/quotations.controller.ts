@@ -1,4 +1,13 @@
-import { Controller, Get, NotFoundException, Param, Res } from '@nestjs/common';
+import { ApiKeyGuard } from '@/auth/guard/api-key.guard';
+import { Public } from '@/shared/decorators/public.decorator';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { QuotationsGenerateService } from './quotations-generate.service';
 
@@ -8,6 +17,8 @@ export class QuotationsController {
     private readonly quotationsGenerateService: QuotationsGenerateService,
   ) {}
 
+  @Public()
+  @UseGuards(ApiKeyGuard)
   @Get('/generate/:id')
   async generatePDF(@Res() res: Response, @Param('id') id: string) {
     const quotation = await this.quotationsGenerateService.findOne(id);
