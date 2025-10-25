@@ -1,4 +1,3 @@
-import { Public } from '@/shared/decorators/public.decorator';
 import { Controller, Get, NotFoundException, Param, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { QuotationsGenerateService } from './quotations-generate.service';
@@ -9,7 +8,6 @@ export class QuotationsController {
     private readonly quotationsGenerateService: QuotationsGenerateService,
   ) {}
 
-  @Public()
   @Get('/generate/:id')
   async generatePDF(@Res() res: Response, @Param('id') id: string) {
     const quotation = await this.quotationsGenerateService.findOne(id);
