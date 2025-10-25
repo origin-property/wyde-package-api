@@ -1,3 +1,7 @@
+import { CRM } from '@/config/data-source.service';
+import { SysMasterProjects } from '@/database/crm/SysMasterProjects.entity';
+import { SysMasterUnits } from '@/database/crm/SysMasterUnits.entity';
+import { SysREMProjectModel } from '@/database/crm/SysREMProjectModel.entity';
 import { File } from '@/database/entities/file.entity';
 import { ProductVariant } from '@/database/entities/product-variant.entity';
 import { QuotationItem } from '@/database/entities/quotation-item.entity';
@@ -25,6 +29,8 @@ import { QuotationVariantLoaderFactory } from './loader/QuotationVariantLoader.f
 import { QuotationItemsResolver } from './quotation-items.resolver';
 import { QuotationItemsService } from './quotation-items.service';
 import { QuotationPromotionsService } from './quotation-promotion.service';
+import { QuotationsGenerateService } from './quotations-generate.service';
+import { QuotationsController } from './quotations.controller';
 import { QuotationsResolver } from './quotations.resolver';
 import { QuotationsService } from './quotations.service';
 
@@ -37,6 +43,10 @@ import { QuotationsService } from './quotations.service';
       ProductVariant,
       File,
     ]),
+    TypeOrmModule.forFeature(
+      [SysMasterProjects, SysMasterUnits, SysREMProjectModel],
+      CRM,
+    ),
     ProjectsModule,
     FilesModule,
     UsersModule,
@@ -60,9 +70,15 @@ import { QuotationsService } from './quotations.service';
     QuotationPromotionVoucherPriceLoaderFactory,
     QuotationVariantLoaderFactory,
     ItemQuotationLoaderFactory,
+    QuotationsGenerateService,
     QuotationProductLoaderFactory,
     QuotationPaymentFilesLoaderFactory,
   ],
-  exports: [QuotationsService, QuotationItemsService],
+  exports: [
+    QuotationsService,
+    QuotationItemsService,
+    QuotationsGenerateService,
+  ],
+  controllers: [QuotationsController],
 })
 export class QuotationsModule {}
